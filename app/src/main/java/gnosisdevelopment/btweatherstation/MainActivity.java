@@ -1,5 +1,7 @@
 package gnosisdevelopment.btweatherstation;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private Intent weatherPanelIntent;
@@ -18,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView humidityText;
     private TextView windText;
 
+
+    BluetoothAdapter btAdapter;
+
+    private BluetoothAdapter mBtAdapter;
 
     private ViewGroup weatherView;
     private View tempLayout;
@@ -46,8 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
                     weatherPanelInflator();
-                    controlPanelDeflator();
-                    //weatherView.addView(childLayout);
+                    controlPanelDeflator();                    //weatherView.addView(childLayout);
                     //startActivity(weatherPanelIntent);
                     return true;
                 case R.id.navigation_dashboard:
@@ -74,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
         weatherPanelInflator();
 
 
+
+
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -96,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         return  (temp * 9/5.0) +32;
     }
     protected void weatherPanelInflator(){
-
+        weatherPanelDeflator();
         if ( tempState == true){
             tempLayout = inflater.inflate(R.layout.weather_temp,
                     (ViewGroup) findViewById(R.id.weatherPanelTemp));
@@ -135,11 +145,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     protected void weatherPanelDeflator() {
-        weatherView.removeView(windLayout);
-        weatherView.removeView(tempLayout);
-        weatherView.removeView(humidityLayout);
+        if(tempLayout != null)weatherView.removeView(tempLayout);
+        if(humidityLayout != null)weatherView.removeView(humidityLayout);
+        if( windLayout != null) weatherView.removeView(windLayout);
     }
     protected void controlPanelInflator(){
+        controlPanelDeflator();
         controlLayout = inflater.inflate(R.layout.control_panel,
                 (ViewGroup) findViewById(R.id.controlPanel));
 
@@ -147,6 +158,6 @@ public class MainActivity extends AppCompatActivity {
         weatherView.addView(controlLayout);
     }
     protected void controlPanelDeflator() {
-        weatherView.removeView(controlLayout);
+        if(controlLayout != null) weatherView.removeView(controlLayout);
     }
 }
