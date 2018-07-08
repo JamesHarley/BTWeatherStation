@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
                     weatherPanelInflator();
+                    controlPanelDeflator();
                     //weatherView.addView(childLayout);
                     //startActivity(weatherPanelIntent);
                     return true;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_notifications:
                     mTextMessage.setText(R.string.title_notifications);
                     weatherPanelDeflator();
+                    controlPanelDeflator();
                     return true;
             }
             return false;
@@ -144,5 +146,7 @@ public class MainActivity extends AppCompatActivity {
         weatherView = findViewById(R.id.container);
         weatherView.addView(controlLayout);
     }
-
+    protected void controlPanelDeflator() {
+        weatherView.removeView(controlLayout);
+    }
 }
