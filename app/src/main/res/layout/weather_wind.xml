@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:layout_marginTop="300dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="25dp"
             android:textSize="60sp" />
         <TextView
             android:id="@+id/windTitle"
@@ -22,7 +22,7 @@
             android:textColor="@color/colorPrimary"
             android:text="@string/title_wind"
             android:layout_below="@+id/wind"
-            android:layout_marginLeft="45dp"
+            android:layout_marginLeft="40dp"
             android:textSize="20sp" />
 
     </RelativeLayout>
