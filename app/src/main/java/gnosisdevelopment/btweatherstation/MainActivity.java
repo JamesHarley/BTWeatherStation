@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
 
@@ -24,6 +25,10 @@ public class MainActivity extends AppCompatActivity {
     private View windLayout;
     private View humidityLayout;
     private View controlLayout;
+
+    Switch tempSw;
+    Switch humidSw;
+    Switch windSw;
 
     private boolean tempState = true;
     private boolean humidityState = true;
@@ -139,6 +144,15 @@ public class MainActivity extends AppCompatActivity {
                 (ViewGroup) findViewById(R.id.controlPanel));
         weatherView = findViewById(R.id.container);
         weatherView.addView(controlLayout);
+
+        tempSw = (Switch)findViewById(R.id.tempSwitch);
+        humidSw = (Switch)findViewById(R.id.humiditySwitch);
+        windSw  = (Switch)findViewById(R.id.windSwitch);
+        
+        if(tempState==true)tempSw.setChecked(true);
+        if(humidityState==true)humidSw.setChecked(true);
+        if(windState==true)windSw.setChecked(true);
+
     }
     protected void controlPanelDeflator() {
         if(controlLayout != null) weatherView.removeView(controlLayout);
