@@ -7,34 +7,86 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <RelativeLayout
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="30dp"
             android:layout_marginLeft="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/bluetoothControl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="false"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Bluetooth: " />
+
+                <Button
+                    android:id="@+id/btButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="150dp"
+                    android:padding="10dp"
+                    android:textColor="#ffffff"
+                    android:background="@color/colorPrimary"
+                    android:text="Connect Bluetooth Device" />
+            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/tempControl"
-            android:layout_marginTop="60dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:text="Temperature: "
+                android:layout_below="@id/bluetoothControl"
+                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                />
-            <Switch
-                android:showText="true"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="Temperature: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    />
+                <Switch
 
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/tempSwitch"
-                android:layout_marginLeft="150dp"
-                />
-        </RelativeLayout>
+                    android:showText="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tempSwitch"
+                    android:layout_marginLeft="150dp"
+                    android:switchTextAppearance="@style/SwitchTextAppearance"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:includeFontPadding="true"
+                    android:paddingLeft="5dp"
+                    android:drawablePadding="10dp"
+                    android:thumbTint="@color/colorPrimary"
+                    android:trackTint="@color/colorPrimaryDark"
+                    />
+                <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@id/radio"
+                    android:layout_marginLeft="220dp"
+                    android:orientation="horizontal">
+                    <RadioButton android:id="@+id/radio_celsius"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:buttonTint="@color/colorPrimaryDark"
+                        android:text="C"
+                        android:onClick="onRadioButtonClicked"/>
+                    <RadioButton android:id="@+id/radio_fahrenheit"
+                        android:buttonTint="@color/colorPrimaryDark"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="F"
+                        android:onClick="onRadioButtonClicked"/>
+                </RadioGroup>
+            </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/humidControl"
                 android:layout_below="@id/tempControl"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <TextView
@@ -45,17 +97,25 @@
                     />
                 <Switch
                     android:showText="true"
-
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/humiditySwitch"
                     android:layout_marginLeft="150dp"
+                    android:switchTextAppearance="@style/SwitchTextAppearance"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:includeFontPadding="true"
+                    android:paddingLeft="5dp"
+                    android:drawablePadding="10dp"
+                    android:thumbTint="@color/colorPrimary"
+                    android:trackTint="@color/colorPrimaryDark"
+                    />
                     />
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/windControl"
                 android:layout_below="@id/humidControl"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <TextView
@@ -65,13 +125,80 @@
                     android:textSize="20sp"
                     />
                 <Switch
-                    android:showText="true"
 
+                    android:showText="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/windSwitch"
                     android:layout_marginLeft="150dp"
+                    android:switchTextAppearance="@style/SwitchTextAppearance"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:includeFontPadding="true"
+                    android:paddingLeft="5dp"
+                    android:drawablePadding="10dp"
+                    android:thumbTint="@color/colorPrimary"
+                    android:trackTint="@color/colorPrimaryDark"
                     />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/exportControl"
+                android:layout_below="@+id/windControl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="false"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/exportText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    android:text="Export to: " />
+                <RadioGroup
+                    android:id="@+id/exportRadioGroup"
+                    android:layout_marginLeft="100dp"
+                    android:orientation="horizontal"
+                    android:outlineSpotShadowColor="@color/colorPrimary"
+                    android:checkedButton="@id/radio_json"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <RadioButton
+
+                        android:buttonTint="@color/colorPrimaryDark"
+                        android:id="@+id/radio_json"
+                        android:text="JSON"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <RadioButton
+
+                        android:buttonTint="@color/colorPrimaryDark"
+                        android:id="@+id/radio_excel"
+                        android:text=" XLS"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <RadioButton
+                        android:buttonTint="@color/colorPrimaryDark"
+                        android:id="@+id/radio_html"
+                        android:layout_width="wrap_content"
+                        android:text=" HTML"
+                        android:layout_height="wrap_content" />
+
+                </RadioGroup>
+
+                <Button
+                    android:id="@+id/exportButtpm"
+                    android:layout_width="215dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="150dp"
+                    android:padding="10dp"
+                    android:textColor="#ffffff"
+                    android:background="@color/colorPrimary"
+                    android:layout_marginTop="10dp"
+                    android:layout_below="@id/exportRadioGroup"
+                    android:text="Export" />
+
             </RelativeLayout>
         </RelativeLayout>
     </ScrollView>

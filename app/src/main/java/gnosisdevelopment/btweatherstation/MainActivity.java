@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.RadioButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -25,16 +27,17 @@ public class MainActivity extends AppCompatActivity {
     private View windLayout;
     private View humidityLayout;
     private View controlLayout;
-
-    Switch tempSw;
-    Switch humidSw;
-    Switch windSw;
+    private View radioView;
+    private Switch tempSw;
+    private Switch humidSw;
+    private Switch windSw;
 
     private boolean tempState = true;
     private boolean humidityState = true;
     private boolean windState = true;
     private boolean celsius = true;
-
+    private RadioButton radioF;
+    private RadioButton radioC;
 
     final String DEGREE  = "\u00b0";
     private Double temp = 27.00;
@@ -82,7 +85,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected  void setTemp (){
-        tempText.setText(String.valueOf(temp) +DEGREE);
+        if(celsius==true) {
+            tempText.setText(String.valueOf(temp) + DEGREE);
+        }
+        else{
+            tempText.setText(String.valueOf(cToF(temp)) + DEGREE);
+        }
     }
     protected  void setHumidity (){
         humidityText.setText(String.valueOf(humidity) + "%" );
@@ -148,13 +156,76 @@ public class MainActivity extends AppCompatActivity {
         tempSw = (Switch)findViewById(R.id.tempSwitch);
         humidSw = (Switch)findViewById(R.id.humiditySwitch);
         windSw  = (Switch)findViewById(R.id.windSwitch);
-        
+
+        radioC = findViewById(R.id.radio_celsius);
+        radioF = findViewById(R.id.radio_fahrenheit);
+
         if(tempState==true)tempSw.setChecked(true);
         if(humidityState==true)humidSw.setChecked(true);
         if(windState==true)windSw.setChecked(true);
 
+        tempSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+                if(isChecked == false){
+                    tempState = false;
+                }if(isChecked == true){
+                    tempState = true;
+                }
+            }
+        });
+        humidSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+                if(isChecked == false){
+                    humidityState = false;
+                }if(isChecked == true){
+                    humidityState = true;
+                }
+            }
+        });
+        windSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // do something, the isChecked will be
+                // true if the switch is in the On position
+                if(isChecked == false){
+                    windState = false;
+                }if(isChecked == true){
+                    windState = true;
+                }
+            }
+        });
+        radioView = findViewById(R.id.radio_fahrenheit);
+        if(celsius==true){
+            radioC.setChecked(true);
+        }
+        else{
+            radioF.setChecked(true);
+        }
+        onRadioButtonClicked(radioView);
+
     }
     protected void controlPanelDeflator() {
         if(controlLayout != null) weatherView.removeView(controlLayout);
+    }
+    public void onRadioButtonClicked(View view) {
+        // Is the button now checked?
+        boolean checked = ((RadioButton) view).isChecked();
+
+        // Check which radio button was clicked
+        switch(view.getId()) {
+            case R.id.radio_celsius:
+                if (checked)
+                    // Pirates are the best
+                    celsius =true;
+                    break;
+            case R.id.radio_fahrenheit:
+                if (checked)
+                    // Ninjas rule
+                    celsius = false;
+                    break;
+        }
     }
 }
