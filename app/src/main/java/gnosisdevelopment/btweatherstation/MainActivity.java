@@ -1,7 +1,5 @@
 package gnosisdevelopment.btweatherstation;
 
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,10 +9,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
     private Intent weatherPanelIntent;
@@ -22,11 +18,6 @@ public class MainActivity extends AppCompatActivity {
     private TextView tempText;
     private TextView humidityText;
     private TextView windText;
-
-
-    BluetoothAdapter btAdapter;
-
-    private BluetoothAdapter mBtAdapter;
 
     private ViewGroup weatherView;
     private View tempLayout;
@@ -55,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
                     weatherPanelInflator();
-                    controlPanelDeflator();                    //weatherView.addView(childLayout);
-                    //startActivity(weatherPanelIntent);
+                    controlPanelDeflator();
                     return true;
                 case R.id.navigation_dashboard:
                     mTextMessage.setText(R.string.title_dashboard);
@@ -80,10 +70,6 @@ public class MainActivity extends AppCompatActivity {
         //Child layout
         inflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
         weatherPanelInflator();
-
-
-
-
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -91,9 +77,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected  void setTemp (){
-
         tempText.setText(String.valueOf(temp) +DEGREE);
-
     }
     protected  void setHumidity (){
         humidityText.setText(String.valueOf(humidity) + "%" );
@@ -153,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
         controlPanelDeflator();
         controlLayout = inflater.inflate(R.layout.control_panel,
                 (ViewGroup) findViewById(R.id.controlPanel));
-
         weatherView = findViewById(R.id.container);
         weatherView.addView(controlLayout);
     }

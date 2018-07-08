@@ -11,20 +11,68 @@
             android:layout_marginLeft="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-        <TextView
-            android:text="Tempature: "
+            <RelativeLayout
+                android:id="@+id/tempControl"
+            android:layout_marginTop="60dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            />
-        <Switch
-            android:showText="true"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="Temperature: "
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                />
+            <Switch
+                android:showText="true"
 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tempSwitch"
-            android:layout_marginLeft="100dp"
-            />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tempSwitch"
+                android:layout_marginLeft="150dp"
+                />
+        </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/humidControl"
+                android:layout_below="@id/tempControl"
+                android:layout_marginTop="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="Humidity: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    />
+                <Switch
+                    android:showText="true"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/humiditySwitch"
+                    android:layout_marginLeft="150dp"
+                    />
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/windControl"
+                android:layout_below="@id/humidControl"
+                android:layout_marginTop="60dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:text="Wind: "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="20sp"
+                    />
+                <Switch
+                    android:showText="true"
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/windSwitch"
+                    android:layout_marginLeft="150dp"
+                    />
+            </RelativeLayout>
         </RelativeLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>
