@@ -5,6 +5,10 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_weather_panel">WeatherPanel</string>
 
+    <!-- Weather -->
+    <string name="title_temp">Temparture</string>
+    <string name="title_humidity">Humidity</string>
+
     <!--  BluetoothChat -->
     <string name="send">Send</string>
     <string name="not_connected">You are not connected to a device</string>
