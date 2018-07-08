@@ -4,15 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -20,10 +16,27 @@ public class MainActivity extends AppCompatActivity {
     private TextView mTextMessage;
     private TextView tempText;
     private TextView humidityText;
+    private TextView windText;
+
+
+    private ViewGroup weatherView;
+    private View tempLayout;
+    private View windLayout;
+    private View humidityLayout;
+    private View controlLayout;
+
+    private boolean tempState = true;
+    private boolean humidityState = true;
+    private boolean windState = true;
+    private boolean celsius = true;
+
+
+    final String DEGREE  = "\u00b0";
     private Double temp = 27.00;
     private Double humidity = 50.10;
-    private ViewGroup weatherView;
-    private View childLayout;
+    private Double wind = 15.5;
+
+    private LayoutInflater inflater;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -32,18 +45,18 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
                     mTextMessage.setText(R.string.title_home);
-
-                    weatherView.addView(childLayout);
-                    setTemp();
+                    weatherPanelInflator();
+                    //weatherView.addView(childLayout);
                     //startActivity(weatherPanelIntent);
                     return true;
                 case R.id.navigation_dashboard:
                     mTextMessage.setText(R.string.title_dashboard);
-                    weatherView.removeView(childLayout);
+                    weatherPanelDeflator();
+                    controlPanelInflator();
                     return true;
                 case R.id.navigation_notifications:
                     mTextMessage.setText(R.string.title_notifications);
-                    weatherView.removeView(childLayout);
+                    weatherPanelDeflator();
                     return true;
             }
             return false;
@@ -55,38 +68,81 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Child layout
-        LayoutInflater inflater = (LayoutInflater)      this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        childLayout = inflater.inflate(R.layout.weather,
-                (ViewGroup) findViewById(R.id.weatherPanel));
+        inflater = (LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
+        weatherPanelInflator();
 
-        weatherView = findViewById(R.id.container);
-        weatherView.addView(childLayout);
-
-        tempText = (TextView) findViewById(R.id.temp);
-        humidityText = (TextView) findViewById(R.id.humidity);
-
-
-        if(temp != null && tempText != null){
-            setTemp();
-        }
-        if (humidity != null && humidityText != null){
-            setHumidity();
-        }
 
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         weatherPanelIntent = new Intent(this, WeatherPanel.class);
     }
+
     protected  void setTemp (){
-        tempText.setText(String.valueOf(temp));
+
+        tempText.setText(String.valueOf(temp) +DEGREE);
+
     }
     protected  void setHumidity (){
-        humidityText.setText(String.valueOf(humidity));
+        humidityText.setText(String.valueOf(humidity) + "%" );
+    }
+    protected  void setWind (){
+        windText.setText(String.valueOf(wind) );
     }
     // convert C to F
     protected Double cToF(Double cTemp){
         return  (temp * 9/5.0) +32;
+    }
+    protected void weatherPanelInflator(){
+
+        if ( tempState == true){
+            tempLayout = inflater.inflate(R.layout.weather_temp,
+                    (ViewGroup) findViewById(R.id.weatherPanelTemp));
+
+            weatherView = findViewById(R.id.container);
+            weatherView.addView(tempLayout);
+
+            tempText = (TextView) findViewById(R.id.temp);
+        }
+        if(humidityState == true){
+            humidityLayout = inflater.inflate(R.layout.weather_humidity,
+                    (ViewGroup) findViewById(R.id.weatherPanelHumidity));
+
+            weatherView = findViewById(R.id.container);
+            weatherView.addView(humidityLayout);
+
+            humidityText = (TextView) findViewById(R.id.humidity);
+        }
+        if(windState == true){
+            windLayout = inflater.inflate(R.layout.weather_wind,
+                    (ViewGroup) findViewById(R.id.weatherPanelWind));
+
+            weatherView = findViewById(R.id.container);
+            weatherView.addView(windLayout);
+
+            windText = (TextView) findViewById(R.id.wind);
+        }
+        if(temp != null && tempText != null){
+            setTemp();
+        }
+        if (humidity != null && humidityText != null ){
+            setHumidity();
+        }
+        if (wind != null && windText != null){
+            setWind();
+        }
+    }
+    protected void weatherPanelDeflator() {
+        weatherView.removeView(windLayout);
+        weatherView.removeView(tempLayout);
+        weatherView.removeView(humidityLayout);
+    }
+    protected void controlPanelInflator(){
+        controlLayout = inflater.inflate(R.layout.control_panel,
+                (ViewGroup) findViewById(R.id.controlPanel));
+
+        weatherView = findViewById(R.id.container);
+        weatherView.addView(controlLayout);
     }
 
 }

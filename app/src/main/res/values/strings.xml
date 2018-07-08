@@ -3,11 +3,12 @@
     <string name="title_home">Weather</string>
     <string name="title_dashboard">Control Panel</string>
     <string name="title_notifications">Notifications</string>
-    <string name="title_activity_weather_panel">WeatherPanel</string>
+    <string name="title_activity_weather_panel">Weather Panel</string>
 
     <!-- Weather -->
-    <string name="title_temp">Temparture</string>
+    <string name="title_temp">Temperature</string>
     <string name="title_humidity">Humidity</string>
+    <string name="title_wind">Wind - mph</string>
 
     <!--  BluetoothChat -->
     <string name="send">Send</string>
