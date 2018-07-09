@@ -47,11 +47,10 @@ void loop()
  
     // Keep reading from Arduino Serial Monitor and send to HC-06
          //dummy data
-          BTserial.write("@");
-         int bytesSent=BTserial.write("t27.00th51.25hw10.00w");     
-         BTserial.write("@");
+          //BTserial.write("@");
+         int bytesSent=BTserial.write("@27.00;51.25;10.00@");     
          Serial.println("Bytes: ");
-         Serial.print( bytesSent);
+        // Serial.print( bytesSent);
          delay(10);
     if (Serial.available())
     {

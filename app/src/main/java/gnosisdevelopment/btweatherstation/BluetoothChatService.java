@@ -24,6 +24,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.SystemClock;
 import android.util.Log;
 
 
@@ -496,6 +497,7 @@ public class BluetoothChatService {
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
+                     SystemClock.sleep(100);
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();

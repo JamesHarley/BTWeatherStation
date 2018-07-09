@@ -422,22 +422,32 @@ public class BluetoothChatFragment extends Fragment {
             //
             //if(t.equals(start)) {
             if(t == star) {
-                Log.d("apples","Found @ start");
+                //Log.d("apples","Found @ start");
                 while(i<input.length()) {
 
                     t = input.charAt(i);
-                    Log.d("apples","token: " + t);
+                    //Log.d("apples","token: " + t);
                     //if(!(t.equals(end))) {
                     if(t != en){
 
                         buildOutput = buildOutput + t;
-                        Log.d("apples", "buildoutput: " + buildOutput);
+                        //Log.d("apples", "buildoutput: " + buildOutput);
                     }
                     //if(t.equals(end)){
                     i++;
                     if(t == en){
-                        Log.d("apples","Found # end");
-                        output=buildOutput;
+                        //Log.d("apples","Found # end");
+
+                        int l = buildOutput.length();
+                        Log.d("apples","length: " +String.valueOf(l));
+                        if(buildOutput.length() == 21){
+                            output=buildOutput;
+
+                            Log.d ("BTWeather", java.util.Arrays.toString(output.split(";")));
+
+                            //create object and send to mainactivity
+                        }
+
                         buildOutput="";
 
                     }
