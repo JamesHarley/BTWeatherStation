@@ -16,6 +16,7 @@
 
 package gnosisdevelopment.btweatherstation;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -28,28 +29,27 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 /**
  * This fragment controls Bluetooth to communicate with other devices.
  */
 public class BluetoothChatFragment extends Fragment {
-
+    LinkedList<Byte> dataQueue = new LinkedList<Byte>();
     private static final String TAG = "BluetoothChatFragment";
 
     // Intent request codes
@@ -61,6 +61,8 @@ public class BluetoothChatFragment extends Fragment {
     private ListView mConversationView;
     private EditText mOutEditText;
     private Button mSendButton;
+
+    private String buildOutput ="";
 
     /**
      * Name of the connected device
@@ -277,6 +279,7 @@ public class BluetoothChatFragment extends Fragment {
     /**
      * The Handler that gets information back from the BluetoothChatService
      */
+    @SuppressLint("HandlerLeak")
     private final Handler mHandler = new  Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -307,8 +310,14 @@ public class BluetoothChatFragment extends Fragment {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    String tokenfied = token(readMessage);
-                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    String tokenfield = token(readMessage);
+
+
+                    //String readMessage = new String(read_byte,0,msg.arg1);
+                    if(!(tokenfield.equals("")))
+                        mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + tokenfield);
+
+                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + read_byte);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -399,13 +408,47 @@ public class BluetoothChatFragment extends Fragment {
     }
 
     public String token(String input) {
-        Pattern pattern = Pattern.compile("([A-Z][^\\##]*[\\.!?])");
-        Matcher matcher = pattern.matcher(input);
         String output ="";
-        for (int i = 1; matcher.find(); i++)
-            output= output + matcher.group();
+        String start = "@";
+        String end = "#";
+        char star = '@';
+        char en = '@';
+        char wind = 'w';
+        char temp = 't';
+        char humid = 'h';
+
+        for(int i=0;i< input.length();i++){
+            char t = input.charAt(i);
+            //
+            //if(t.equals(start)) {
+            if(t == star) {
+                Log.d("apples","Found @ start");
+                while(i<input.length()) {
+
+                    t = input.charAt(i);
+                    Log.d("apples","token: " + t);
+                    //if(!(t.equals(end))) {
+                    if(t != en){
+
+                        buildOutput = buildOutput + t;
+                        Log.d("apples", "buildoutput: " + buildOutput);
+                    }
+                    //if(t.equals(end)){
+                    i++;
+                    if(t == en){
+                        Log.d("apples","Found # end");
+                        output=buildOutput;
+                        buildOutput="";
+
+                    }
+
+                }
+            }
+
+        }
 
         return output;
+
     }
 
 }
