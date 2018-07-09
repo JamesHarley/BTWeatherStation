@@ -203,78 +203,9 @@ public class BluetoothChatFragment extends Fragment {
         }
     }
 
-    /**
-     * Sends a message.
-     *
-     * @param message A string of text to send.
 
-    private void sendMessage(String message) {
-        // Check that we're actually connected before trying anything
-        if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
-            Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
-            return;
-        }
 
-        // Check that there's actually something to send
-        if (message.length() > 0) {
-            // Get the message bytes and tell the BluetoothChatService to write
-            byte[] send = message.getBytes();
-            mChatService.write(send);
 
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
-        }
-    }*/
-
-    /**
-     * The action listener for the EditText widget, to listen for the return key
-
-    private TextView.OnEditorActionListener mWriteListener
-            = new TextView.OnEditorActionListener() {
-        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-            // If the action is a key-up event on the return key, send the message
-            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-                String message = view.getText().toString();
-                //sendMessage(message);
-            }
-            return true;
-        }
-    };*/
-
-    /**
-     * Updates the status on the action bar.
-     *
-     * @param resId a string resource ID
-     */
-    private void setStatus(int resId) {
-        FragmentActivity activity = getActivity();
-        if (null == activity) {
-            return;
-        }
-        final ActionBar actionBar = activity.getActionBar();
-        if (null == actionBar) {
-            return;
-        }
-        actionBar.setSubtitle(resId);
-    }
-
-    /**
-     * Updates the status on the action bar.
-     *
-     * @param subTitle status
-     */
-    private void setStatus(CharSequence subTitle) {
-        FragmentActivity activity = getActivity();
-        if (null == activity) {
-            return;
-        }
-        final ActionBar actionBar = activity.getActionBar();
-        if (null == actionBar) {
-            return;
-        }
-        actionBar.setSubtitle(subTitle);
-    }
 
     /**
      * The Handler that gets information back from the BluetoothChatService
@@ -285,41 +216,13 @@ public class BluetoothChatFragment extends Fragment {
         public void handleMessage(Message msg) {
             FragmentActivity activity = getActivity();
             switch (msg.what) {
-                case Constants.MESSAGE_STATE_CHANGE:
-                    switch (msg.arg1) {
-                        case BluetoothChatService.STATE_CONNECTED:
-                            setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                            mConversationArrayAdapter.clear();
-                            break;
-                        case BluetoothChatService.STATE_CONNECTING:
-                            setStatus(R.string.title_connecting);
-                            break;
-                        case BluetoothChatService.STATE_LISTEN:
-                        case BluetoothChatService.STATE_NONE:
-                            setStatus(R.string.title_not_connected);
-                            break;
-                    }
-                    break;
-                case Constants.MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("Me:  " + writeMessage);
-                    break;
+
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //send it to the tokenizer to be processed
                     token(readMessage);
-                    /**String tokenfield = token(readMessage);
-
-
-                    //String readMessage = new String(read_byte,0,msg.arg1);
-                    if(!(tokenfield.equals("")))
-                        mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + tokenfield);
-                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + read_byte);
-                     */
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -411,19 +314,15 @@ public class BluetoothChatFragment extends Fragment {
 
     public void token(String input) {
         String output ="";
-        String start = "@";
-        String end = "#";
-        char star = '@';
+
         char en = '@';
-        char wind = 'w';
-        char temp = 't';
-        char humid = 'h';
+
 
         for(int i=0;i< input.length();i++){
             char t = input.charAt(i);
             //
             //if(t.equals(start)) {
-            if(t == star) {
+            if(t == en) {
                 //Log.d("apples","Found @ start");
                 while(i<input.length()) {
 
@@ -433,16 +332,16 @@ public class BluetoothChatFragment extends Fragment {
                     if(t != en){
 
                         buildOutput = buildOutput + t;
-                        //Log.d("apples", "buildoutput: " + buildOutput);
+                        Log.d("apples", "buildoutput: " + buildOutput);
                     }
                     //if(t.equals(end)){
                     i++;
                     if(t == en){
-                        //Log.d("apples","Found # end");
+                        Log.d("apples","Found # end");
 
                         int l = buildOutput.length();
-                        //Log.d("apples","length: " +String.valueOf(l));
-                        if(buildOutput.length() == 17){
+                        Log.d("apples","length: " +String.valueOf(l));
+                        if(buildOutput.length() > 13){
                             output=buildOutput;
 
                             String [] a =output.split(";");

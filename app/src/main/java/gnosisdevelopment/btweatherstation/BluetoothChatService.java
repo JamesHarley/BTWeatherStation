@@ -497,7 +497,7 @@ public class BluetoothChatService {
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(Constants.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
-                     SystemClock.sleep(100);
+                     SystemClock.sleep(150);
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);
                     connectionLost();

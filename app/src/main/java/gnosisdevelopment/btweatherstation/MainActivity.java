@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -247,12 +248,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     public void gaugeUpdater(String [] gaugeValues){
-        temp = Double.valueOf(gaugeValues[0]);
-        setTemp();
-        humidity= Double.valueOf(gaugeValues[1]);
-        setHumidity();
-        wind = Double.valueOf(gaugeValues[2]);
-        setWind();
+            if(gaugeValues[0]!=null) {
+                try {
+                    temp = Double.valueOf(gaugeValues[0]);
+                    setTemp();
+                    humidity= Double.valueOf(gaugeValues[1]);
+                    setHumidity();
+                    wind = Double.valueOf(gaugeValues[2]);
+                    setWind();
+                }catch (Exception e)
+                {
+                    //error handling code
+                    Log.d("BTWeather", e.toString());
+                }
+            }
+
+
+
     }
 
 }

@@ -32,26 +32,52 @@ void setup()
  
 void loop()
 {
-    
-    int chk = DHT.read11(DHT11_PIN);/**
-  Serial.print("Temperature = ");
- (DHT.temperature);
-  Serial.print("Humidity = ");
-  Serial.println(DHT.humidity);
-  **/
-    // Keep reading from HC-06 and send to Arduino Serial Monitor
-    if (BTserial.available())
-    {  
-        Serial.write(BTserial.read());
+    String output = "";
+    String tokenizer = "@";
+    int chk = DHT.read11(DHT11_PIN);
+    if(DHT.temperature != -999.00){
+          
+      //Serial.print("{ Temperature = ") ;
+      //Serial.print(DHT.temperature);
+       //Serial.print("}");
     }
+    if(DHT.humidity != -999.00){
+      
+     // Serial.print("{ Humidity = ");
+     // Serial.print(DHT.humidity);
+     // Serial.print("} ");
+    }
+  
+    // Keep reading from HC-06 and send to Arduino Serial Monitor
+        if (BTserial.available())
+        {  
+          
+          Serial.write(BTserial.read());
+        }
  
     // Keep reading from Arduino Serial Monitor and send to HC-06
          //dummy data
           //BTserial.write("@");
-         int bytesSent=BTserial.write("@27.00;51.25;10.00@");     
-         Serial.println("Bytes: ");
-        // Serial.print( bytesSent);
-         delay(10);
+          output.concat(tokenizer);
+          if (DHT.temperature != -999.00 || DHT.humidity != -999.00){
+                
+              if(DHT.temperature != -999.00){
+                  output.concat(DHT.temperature);         
+                  output.concat(";");  
+              }
+              if(DHT.humidity != -999.00){            
+                output.concat(DHT.humidity);        
+                output.concat(";");
+              }
+              output.concat("0.00@");
+          
+              Serial.println(output);
+              BTserial.write(output.c_str());
+             //BTserial.write("@10.00;20.00;30.00@");     
+            // Serial.print( bytesSent);
+             //BTserial.write("@100.25;100.00;100.00@");
+          }
+          delay(10);
     if (Serial.available())
     {
         //BTserial.write(Serial.read());
