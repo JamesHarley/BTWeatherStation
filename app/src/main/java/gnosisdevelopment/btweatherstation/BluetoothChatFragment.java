@@ -61,7 +61,7 @@ public class BluetoothChatFragment extends Fragment {
     private ListView mConversationView;
     private EditText mOutEditText;
     private Button mSendButton;
-
+    private MainActivity mainActivity;
     private String buildOutput ="";
 
     /**
@@ -310,14 +310,16 @@ public class BluetoothChatFragment extends Fragment {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    String tokenfield = token(readMessage);
+                    //send it to the tokenizer to be processed
+                    token(readMessage);
+                    /**String tokenfield = token(readMessage);
 
 
                     //String readMessage = new String(read_byte,0,msg.arg1);
                     if(!(tokenfield.equals("")))
                         mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + tokenfield);
-
                     //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + read_byte);
+                     */
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -407,7 +409,7 @@ public class BluetoothChatFragment extends Fragment {
         return false;
     }
 
-    public String token(String input) {
+    public void token(String input) {
         String output ="";
         String start = "@";
         String end = "#";
@@ -439,11 +441,12 @@ public class BluetoothChatFragment extends Fragment {
                         //Log.d("apples","Found # end");
 
                         int l = buildOutput.length();
-                        Log.d("apples","length: " +String.valueOf(l));
-                        if(buildOutput.length() == 21){
+                        //Log.d("apples","length: " +String.valueOf(l));
+                        if(buildOutput.length() == 17){
                             output=buildOutput;
 
-                            Log.d ("BTWeather", java.util.Arrays.toString(output.split(";")));
+                            String [] a =output.split(";");
+                            ((MainActivity) getActivity()).gaugeUpdater(a);
 
                             //create object and send to mainactivity
                         }
@@ -457,7 +460,6 @@ public class BluetoothChatFragment extends Fragment {
 
         }
 
-        return output;
 
     }
 

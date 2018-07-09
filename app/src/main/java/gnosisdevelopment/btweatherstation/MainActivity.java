@@ -246,5 +246,14 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+    public void gaugeUpdater(String [] gaugeValues){
+        temp = Double.valueOf(gaugeValues[0]);
+        setTemp();
+        humidity= Double.valueOf(gaugeValues[1]);
+        setHumidity();
+        wind = Double.valueOf(gaugeValues[2]);
+        setWind();
+    }
+
 }
 
