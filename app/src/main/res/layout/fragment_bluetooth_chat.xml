@@ -32,7 +32,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <EditText
+       <!-- <EditText
             android:id="@+id/edit_text_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
             android:id="@+id/button_send"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/send" />
+            android:text="@string/send" />-->
     </LinearLayout>
 
 </LinearLayout>

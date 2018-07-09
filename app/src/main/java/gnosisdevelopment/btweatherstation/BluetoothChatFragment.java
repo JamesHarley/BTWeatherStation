@@ -43,7 +43,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 /**
  * This fragment controls Bluetooth to communicate with other devices.
  */
@@ -149,8 +150,9 @@ public class BluetoothChatFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         mConversationView = (ListView) view.findViewById(R.id.in);
-        mOutEditText = (EditText) view.findViewById(R.id.edit_text_out);
+       /** mOutEditText = (EditText) view.findViewById(R.id.edit_text_out);
         mSendButton = (Button) view.findViewById(R.id.button_send);
+        **/
     }
 
     /**
@@ -165,26 +167,26 @@ public class BluetoothChatFragment extends Fragment {
         mConversationView.setAdapter(mConversationArrayAdapter);
 
         // Initialize the compose field with a listener for the return key
-        mOutEditText.setOnEditorActionListener(mWriteListener);
+        //mOutEditText.setOnEditorActionListener(mWriteListener);
 
         // Initialize the send button with a listener that for click events
-        mSendButton.setOnClickListener(new View.OnClickListener() {
+        /**mSendButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Send a message using content of the edit text widget
                 View view = getView();
                 if (null != view) {
                     TextView textView = (TextView) view.findViewById(R.id.edit_text_out);
                     String message = textView.getText().toString();
-                    sendMessage(message);
+                    //sendMessage(message);
                 }
             }
-        });
+        });*/
 
         // Initialize the BluetoothChatService to perform bluetooth connections
         mChatService = new BluetoothChatService(getActivity(), mHandler);
 
         // Initialize the buffer for outgoing messages
-        mOutStringBuffer = new StringBuffer("");
+       // mOutStringBuffer = new StringBuffer("");
     }
 
     /**
@@ -203,7 +205,7 @@ public class BluetoothChatFragment extends Fragment {
      * Sends a message.
      *
      * @param message A string of text to send.
-     */
+
     private void sendMessage(String message) {
         // Check that we're actually connected before trying anything
         if (mChatService.getState() != BluetoothChatService.STATE_CONNECTED) {
@@ -221,22 +223,22 @@ public class BluetoothChatFragment extends Fragment {
             mOutStringBuffer.setLength(0);
             mOutEditText.setText(mOutStringBuffer);
         }
-    }
+    }*/
 
     /**
      * The action listener for the EditText widget, to listen for the return key
-     */
+
     private TextView.OnEditorActionListener mWriteListener
             = new TextView.OnEditorActionListener() {
         public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
             // If the action is a key-up event on the return key, send the message
             if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
                 String message = view.getText().toString();
-                sendMessage(message);
+                //sendMessage(message);
             }
             return true;
         }
-    };
+    };*/
 
     /**
      * Updates the status on the action bar.
@@ -305,8 +307,8 @@ public class BluetoothChatFragment extends Fragment {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-
-                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    String tokenfied = token(readMessage);
+                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -394,6 +396,16 @@ public class BluetoothChatFragment extends Fragment {
 
         }
         return false;
+    }
+
+    public String token(String input) {
+        Pattern pattern = Pattern.compile("([A-Z][^\\##]*[\\.!?])");
+        Matcher matcher = pattern.matcher(input);
+        String output ="";
+        for (int i = 1; matcher.find(); i++)
+            output= output + matcher.group();
+
+        return output;
     }
 
 }
