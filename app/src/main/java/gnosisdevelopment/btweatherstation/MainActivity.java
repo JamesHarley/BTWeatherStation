@@ -50,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
     private Double humidity = 50.10;
     private Double wind = 15.5;
 
+    private GraphView graphTemp;
+    private GraphView graphHumidity;
+    private GraphView graphWind;
+
+    private LineGraphSeries tempSeries;
+    private LineGraphSeries windSeries;
+    private LineGraphSeries humiditySeries;
+
     private LayoutInflater inflater;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -91,9 +99,7 @@ public class MainActivity extends AppCompatActivity {
             transaction.commit();
         }
 
-        GraphView graphTemp = (GraphView) findViewById(R.id.graphTemp);
-        GraphView graphHumidity = (GraphView) findViewById(R.id.graphHumidity);
-        GraphView graphWind = (GraphView) findViewById(R.id.graphWind);
+
 
     }
 
@@ -102,17 +108,21 @@ public class MainActivity extends AppCompatActivity {
     protected void setTemp() {
         if (celsius == true) {
             tempText.setText(String.valueOf(temp) + DEGREE);
+            graphUpdater(graphTemp, temp, tempSeries);
         } else {
             tempText.setText(String.valueOf(cToF(temp)) + DEGREE);
+            graphUpdater(graphTemp, cToF(temp),tempSeries);
         }
     }
 
     protected void setHumidity() {
         humidityText.setText(String.valueOf(humidity) + "%");
+        graphUpdater(graphHumidity, humidity,humiditySeries);
     }
 
     protected void setWind() {
         windText.setText(String.valueOf(wind));
+        graphUpdater(graphWind, wind,windSeries);
     }
 
     // convert C to F
@@ -128,7 +138,9 @@ public class MainActivity extends AppCompatActivity {
 
             weatherView = findViewById(R.id.container);
             weatherView.addView(tempLayout);
-
+            graphTemp = (GraphView) findViewById(R.id.graphTemp);
+            tempSeries = new LineGraphSeries<>();
+            graphTemp.addSeries(tempSeries);
             tempText = (TextView) findViewById(R.id.temp);
         }
         if (humidityState == true) {
@@ -137,7 +149,9 @@ public class MainActivity extends AppCompatActivity {
 
             weatherView = findViewById(R.id.container);
             weatherView.addView(humidityLayout);
-
+            graphHumidity = (GraphView) findViewById(R.id.graphHumidity);
+            humiditySeries = new LineGraphSeries<>();
+            graphHumidity.addSeries(humiditySeries);
             humidityText = (TextView) findViewById(R.id.humidity);
         }
         if (windState == true) {
@@ -146,7 +160,9 @@ public class MainActivity extends AppCompatActivity {
 
             weatherView = findViewById(R.id.container);
             weatherView.addView(windLayout);
-
+            graphWind = (GraphView) findViewById(R.id.graphWind);
+            windSeries = new LineGraphSeries<>();
+            graphWind.addSeries(windSeries);
             windText = (TextView) findViewById(R.id.wind);
         }
         if (temp != null && tempText != null) {
@@ -271,17 +287,15 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    public void graphUpdater(GraphView graph, double data){
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
-                new DataPoint(data, getCurrentTime()),
-
-        });
-        graph.addSeries(series);
+    public void graphUpdater(GraphView graph, double data, LineGraphSeries series){
+        series.appendData(new DataPoint( getCurrentTime(), data), true, 40);
+        LineGraphSeries<DataPoint> seriesA = series;
+        graph.addSeries(seriesA);
     }
 
     public int getCurrentTime() {
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat mdformat = new SimpleDateFormat("HH");
+        SimpleDateFormat mdformat = new SimpleDateFormat("SS");
         String strDate = mdformat.format(calendar.getTime());
         return Integer.parseInt(strDate);
     }
