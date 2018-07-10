@@ -12,10 +12,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
-            android:layout_marginTop="175dp"
+            android:layout_marginTop="150dp"
             android:layout_marginLeft="25dp"
             android:textSize="60sp" />
-
         <TextView
             android:id="@+id/humidityTitle"
             android:layout_width="wrap_content"
@@ -25,7 +24,13 @@
             android:text="@string/title_humidity"
             android:layout_marginLeft="35dp"
             android:textSize="20sp" />
-
+        <com.jjoe64.graphview.GraphView
+            android:layout_toRightOf="@id/humidity"
+            android:layout_marginTop="150dp"
+            android:layout_marginLeft="15dp"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:id="@+id/graphHumidity" />
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

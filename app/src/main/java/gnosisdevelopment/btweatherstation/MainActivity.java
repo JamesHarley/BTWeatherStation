@@ -1,6 +1,6 @@
 package gnosisdevelopment.btweatherstation;
 
-import android.content.Intent;
+import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -16,11 +16,14 @@ import android.widget.RadioButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
+import java.util.Calendar;
 
 
 public class MainActivity extends AppCompatActivity {
-    private Intent weatherPanelIntent;
-    private TextView mTextMessage;
     private TextView tempText;
     private TextView humidityText;
     private TextView windText;
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean tempState = true;
     private boolean humidityState = true;
     private boolean windState = true;
-    private boolean celsius = true;
+    private boolean celsius = false;
     private RadioButton radioF;
     private RadioButton radioC;
 
@@ -55,17 +58,14 @@ public class MainActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    mTextMessage.setText(R.string.title_home);
                     weatherPanelInflator();
                     controlPanelDeflator();
                     return true;
                 case R.id.navigation_dashboard:
-                    mTextMessage.setText(R.string.title_dashboard);
                     weatherPanelDeflator();
                     controlPanelInflator();
                     return true;
                 case R.id.navigation_notifications:
-                    mTextMessage.setText(R.string.title_notifications);
                     weatherPanelDeflator();
                     controlPanelDeflator();
                     return true;
@@ -81,10 +81,8 @@ public class MainActivity extends AppCompatActivity {
         //Child layout
         inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
         weatherPanelInflator();
-        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        weatherPanelIntent = new Intent(this, WeatherPanel.class);
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -92,7 +90,14 @@ public class MainActivity extends AppCompatActivity {
             transaction.replace(R.id.sample_content_fragment, fragment);
             transaction.commit();
         }
+
+        GraphView graphTemp = (GraphView) findViewById(R.id.graphTemp);
+        GraphView graphHumidity = (GraphView) findViewById(R.id.graphHumidity);
+        GraphView graphWind = (GraphView) findViewById(R.id.graphWind);
+
     }
+
+
 
     protected void setTemp() {
         if (celsius == true) {
@@ -265,6 +270,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+    public void graphUpdater(GraphView graph, double data){
+        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(new DataPoint[] {
+                new DataPoint(data, getCurrentTime()),
+
+        });
+        graph.addSeries(series);
+    }
+
+    public int getCurrentTime() {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat mdformat = new SimpleDateFormat("HH");
+        String strDate = mdformat.format(calendar.getTime());
+        return Integer.parseInt(strDate);
     }
 
 }
