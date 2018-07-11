@@ -155,6 +155,7 @@ public class BluetoothChatFragment extends Fragment {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //send it to the tokenizer to be processed
+
                     tokenizer(readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
@@ -218,6 +219,9 @@ public class BluetoothChatFragment extends Fragment {
                 .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+        try{
+            ((MainActivity) getActivity()).btDeviceSave(device.getAddress());
+        }catch(Exception e){}
         // Attempt to connect to the device
         mChatService.connect(device, secure);
     }

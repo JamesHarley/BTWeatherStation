@@ -1,5 +1,8 @@
 package gnosisdevelopment.btweatherstation;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
@@ -18,6 +21,7 @@ import android.widget.RadioButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.idescout.sql.SqlScoutServer;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
@@ -61,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private GraphView graphTemp;
     private GraphView graphHumidity;
     private GraphView graphWind;
-
+    private SQLiteDatabase db;
     private LineGraphSeries tempSeries;
     private LineGraphSeries windSeries;
     private LineGraphSeries humiditySeries;
@@ -69,8 +73,9 @@ public class MainActivity extends AppCompatActivity {
     private final static int INTERVAL = 1000 * 60 * 2; //2 minutes
     private Handler mHandlerClock;
     private final static int graphColor = Color.parseColor("#6a0c05");
-
+    private DBHelper mydb ;
     private LayoutInflater inflater;
+    private SqlScoutServer sqlScoutServer;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -97,6 +102,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sqlScoutServer = SqlScoutServer.create(this, getPackageName());
         setContentView(R.layout.activity_main);
         //Child layout
         inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -113,10 +119,17 @@ public class MainActivity extends AppCompatActivity {
 
 
          mHandlerClock = new Handler();
+        //mydb.deletePrefs(2);
 
-
-
-
+         mydb = new DBHelper(this);
+        ;
+         if(mydb.isEmpty()==true){
+                 mydb.insertPrefs(tempState,humidityState,windState,"empty");
+             //mydb.updateContact(1,tempState,humidityState,windState,"empty");
+         }
+         else {
+             pullFromdb();
+         }
 
     }
 
@@ -139,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void setWind() {
         windText.setText(String.valueOf(wind));
-        graphUpdater(graphWind, wind,windSeries);
+       // graphUpdater(graphWind, wind,windSeries);
     }
 
     // convert C to F
@@ -150,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
     protected void weatherPanelInflator() {
         weatherPanelDeflator();
         updateGraph();
+        pullFromdb();
         try{
             startRepeatingTask();
         }catch (Exception e){
@@ -241,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isChecked == true) {
                     tempState = true;
                 }
+                mydb.updateTempState(1, tempState);
             }
         });
         humidSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -253,6 +268,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isChecked == true) {
                     humidityState = true;
                 }
+                mydb.updateHumidState(1,humidityState);
             }
         });
         windSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -265,6 +281,7 @@ public class MainActivity extends AppCompatActivity {
                 if (isChecked == true) {
                     windState = true;
                 }
+                mydb.updateWindState(1,windState);
             }
         });
         radioView = findViewById(R.id.radio_fahrenheit);
@@ -338,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
 
         // set date label formatter
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()));
-        graph.getGridLabelRenderer().setNumHorizontalLabels(2);
+        //graph.getGridLabelRenderer().setNumHorizontalLabels(2);
         // legend
         // styling grid/labels
         graph.getGridLabelRenderer().setGridColor(graphColor);
@@ -399,5 +416,22 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void btDeviceSave(String mac){
+        mydb.updateBT(1, mac);
+    }
+    public void pullFromdb(){
+
+        try {
+
+            Cursor values = mydb.getData(0);
+            tempState = values.getInt(2) > 0;
+            Log.d("BTWeather tempstate", String.valueOf(values.getInt(2)));
+            humidityState = values.getInt(3) > 0;
+            Log.d("BTWeather humidstate", String.valueOf(values.getInt(2)));
+            windState = values.getInt(4) > 0;
+            Log.d("BTWeather windstate", String.valueOf(values.getInt(2)));
+    }
+        catch (Exception e ){Log.d("BTWeather - DBMain" , String.valueOf(e));}
+    }
 }
 
