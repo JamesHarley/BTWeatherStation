@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private DBHelper mydb ;
     private LayoutInflater inflater;
     private SqlScoutServer sqlScoutServer;
+    Bundle extras;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -130,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
          else {
              pullFromdb();
          }
-
+        extras = getIntent().getExtras();
     }
 
 
@@ -420,16 +421,25 @@ public class MainActivity extends AppCompatActivity {
         mydb.updateBT(1, mac);
     }
     public void pullFromdb(){
-
+        Log.d("BTWeather pullfromdb", "pull");
         try {
 
-            Cursor values = mydb.getData(0);
-            tempState = values.getInt(2) > 0;
-            Log.d("BTWeather tempstate", String.valueOf(values.getInt(2)));
-            humidityState = values.getInt(3) > 0;
-            Log.d("BTWeather humidstate", String.valueOf(values.getInt(2)));
-            windState = values.getInt(4) > 0;
-            Log.d("BTWeather windstate", String.valueOf(values.getInt(2)));
+                int Value = 1;
+            Cursor values = mydb.getData(Value);
+
+            if(Value>0) {
+                tempState = values.getInt(values.getColumnIndex(DBHelper.PREFS_COLUMN_TEMPSTATE)) > 0;
+
+                Log.d("BTWeather tempstate", String.valueOf(values.getInt(2)));
+                humidityState = values.getInt(values.getColumnIndex(DBHelper.PREFS_COLUMN_HUMIDSTATE)) > 0;
+                Log.d("BTWeather humidstate", String.valueOf(values.getInt(2)));
+                windState = values.getInt(values.getColumnIndex(DBHelper.PREFS_COLUMN_WINDSTATE)) > 0;
+                Log.d("BTWeather windstate", String.valueOf(values.getInt(2)));
+            }else{
+                Log.d("BTWeather pullfromdb", "value lessthan 0");
+            }
+
+            humidityState = mydb.getHumidState();
     }
         catch (Exception e ){Log.d("BTWeather - DBMain" , String.valueOf(e));}
     }

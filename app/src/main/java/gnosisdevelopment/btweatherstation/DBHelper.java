@@ -126,8 +126,9 @@ public class DBHelper extends SQLiteOpenHelper {
     }
     public boolean getHumidState(){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor b =  db.rawQuery( "select humidstate from prefs where id=0", null );
-       return Boolean.parseBoolean(b.getColumnName(1));
+        Cursor res =  db.rawQuery( "select * from prefs", null );
+       return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_HUMIDSTATE))>0;
+
     }
     public boolean updateWindState(Integer id, boolean windstate){
         SQLiteDatabase db = this.getWritableDatabase();
