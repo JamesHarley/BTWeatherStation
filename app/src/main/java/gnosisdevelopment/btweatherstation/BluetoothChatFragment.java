@@ -282,7 +282,12 @@ public class BluetoothChatFragment extends Fragment {
                             output=buildOutput;
 
                             String [] a =output.split(";");
-                            ((MainActivity) getActivity()).gaugeUpdater(a);
+                            try {
+                                ((MainActivity) getActivity()).gaugeUpdater(a);
+                            }
+                            catch (Exception e){
+
+                            }
 
                             //create object and send to mainactivity
                         }

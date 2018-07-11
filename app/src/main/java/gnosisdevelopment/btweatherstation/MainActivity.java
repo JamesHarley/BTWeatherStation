@@ -1,7 +1,9 @@
 package gnosisdevelopment.btweatherstation;
 
+import android.graphics.Color;
 import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
@@ -17,10 +19,16 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import static java.security.AccessController.getContext;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -57,6 +65,10 @@ public class MainActivity extends AppCompatActivity {
     private LineGraphSeries tempSeries;
     private LineGraphSeries windSeries;
     private LineGraphSeries humiditySeries;
+    private SimpleDateFormat graphTimer;
+    private final static int INTERVAL = 1000 * 60 * 2; //2 minutes
+    private Handler mHandlerClock;
+    private final static int graphColor = Color.parseColor("#6a0c05");
 
     private LayoutInflater inflater;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -100,6 +112,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+         mHandlerClock = new Handler();
+
+
+
+
 
     }
 
@@ -108,16 +125,16 @@ public class MainActivity extends AppCompatActivity {
     protected void setTemp() {
         if (celsius == true) {
             tempText.setText(String.valueOf(temp) + DEGREE);
-            graphUpdater(graphTemp, temp, tempSeries);
+           graphUpdater(graphTemp, temp, tempSeries);
         } else {
             tempText.setText(String.valueOf(cToF(temp)) + DEGREE);
-            graphUpdater(graphTemp, cToF(temp),tempSeries);
+           graphUpdater(graphTemp, cToF(temp),tempSeries);
         }
     }
 
     protected void setHumidity() {
         humidityText.setText(String.valueOf(humidity) + "%");
-        graphUpdater(graphHumidity, humidity,humiditySeries);
+       graphUpdater(graphHumidity, humidity,humiditySeries);
     }
 
     protected void setWind() {
@@ -132,6 +149,12 @@ public class MainActivity extends AppCompatActivity {
 
     protected void weatherPanelInflator() {
         weatherPanelDeflator();
+        updateGraph();
+        try{
+            startRepeatingTask();
+        }catch (Exception e){
+            Log.d("BTWeather-Exception-startRepeatingTask()", String.valueOf(e));
+        }
         if (tempState == true) {
             tempLayout = inflater.inflate(R.layout.weather_temp,
                     (ViewGroup) findViewById(R.id.weatherPanelTemp));
@@ -141,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
             graphTemp = (GraphView) findViewById(R.id.graphTemp);
             tempSeries = new LineGraphSeries<>();
             graphTemp.addSeries(tempSeries);
+            graphInit(graphTemp, tempSeries);
             tempText = (TextView) findViewById(R.id.temp);
         }
         if (humidityState == true) {
@@ -152,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
             graphHumidity = (GraphView) findViewById(R.id.graphHumidity);
             humiditySeries = new LineGraphSeries<>();
             graphHumidity.addSeries(humiditySeries);
+            graphInit(graphHumidity, humiditySeries);
             humidityText = (TextView) findViewById(R.id.humidity);
         }
         if (windState == true) {
@@ -163,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
             graphWind = (GraphView) findViewById(R.id.graphWind);
             windSeries = new LineGraphSeries<>();
             graphWind.addSeries(windSeries);
+            graphInit(graphWind, windSeries);
             windText = (TextView) findViewById(R.id.wind);
         }
         if (temp != null && tempText != null) {
@@ -177,6 +203,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void weatherPanelDeflator() {
+        try{
+            stopRepeatingTask();
+        }catch (Exception e){
+            Log.d("BTWeather-Exception-stoprepeatingTask()", String.valueOf(e));
+        }
         if (tempLayout != null) weatherView.removeView(tempLayout);
         if (humidityLayout != null) weatherView.removeView(humidityLayout);
         if (windLayout != null) weatherView.removeView(windLayout);
@@ -288,16 +319,84 @@ public class MainActivity extends AppCompatActivity {
 
     }
     public void graphUpdater(GraphView graph, double data, LineGraphSeries series){
-        series.appendData(new DataPoint( getCurrentTime(), data), true, 40);
-        LineGraphSeries<DataPoint> seriesA = series;
-        graph.addSeries(seriesA);
+        try {
+            series.appendData(new DataPoint(getCurrentTime(), data), true, 40);
+            LineGraphSeries<DataPoint> seriesA = series;
+            graph.addSeries(seriesA);
+
+        }
+        catch (Exception e){
+
+        }
+    }
+    public void graphInit(GraphView graph, LineGraphSeries series){
+        series.setDrawBackground(true);
+        series.setColor(Color.parseColor("#8d1007"));
+        series.setBackgroundColor(graphColor);
+        series.setDataPointsRadius(8);
+        series.setThickness(5);
+
+        // set date label formatter
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()));
+        graph.getGridLabelRenderer().setNumHorizontalLabels(2);
+        // legend
+        // styling grid/labels
+        graph.getGridLabelRenderer().setGridColor(graphColor);
+        graph.getGridLabelRenderer().setHighlightZeroLines(false);
+        graph.getGridLabelRenderer().setHorizontalLabelsColor(graphColor);
+        graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
+
+        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL);
+        graph.getGridLabelRenderer().reloadStyles();
+
+
+        // styling viewport
+        //graph.getViewport().setBackgroundColor(Color.argb(255, 222, 222, 222));
+        graph.getViewport().setDrawBorder(false);
+        graph.getViewport().setBorderColor(graphColor);
     }
 
-    public int getCurrentTime() {
+    public java.util.Date  getCurrentTime() {
+        //String mytime = (DateFormat.format("dd-MM-yyyy hh:mm:ss", ).toString());
         Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat mdformat = new SimpleDateFormat("SS");
-        String strDate = mdformat.format(calendar.getTime());
-        return Integer.parseInt(strDate);
+        Date d1 = calendar.getTime();
+
+        return d1;
+    }
+
+
+    public Runnable mHandlerTask1 = new Runnable()
+    {
+        @Override
+        public void run() {
+            updateGraph();
+            mHandlerClock.postDelayed(mHandlerTask1, INTERVAL);
+        }
+    };
+
+    void startRepeatingTask()
+    {
+        mHandlerTask1.run();
+    }
+
+    void stopRepeatingTask()
+    {
+        mHandlerClock.removeCallbacks(mHandlerTask1);
+    }
+    public void updateGraph(){
+        if(tempState==true){
+            if (celsius == true) {
+                 graphUpdater(graphTemp, temp, tempSeries);
+            } else {
+                 graphUpdater(graphTemp, cToF(temp),tempSeries);
+            }
+        }
+        if(humidityState == true)
+            graphUpdater(graphHumidity, humidity,humiditySeries);
+        if(windState)
+            graphUpdater(graphWind, wind,windSeries);
+
+
     }
 
 }
