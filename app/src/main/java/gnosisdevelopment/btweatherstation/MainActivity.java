@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private DBHelper mydb ;
     private LayoutInflater inflater;
     private SqlScoutServer sqlScoutServer;
-    Bundle extras;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -125,13 +125,13 @@ public class MainActivity extends AppCompatActivity {
          mydb = new DBHelper(this);
         ;
          if(mydb.isEmpty()==true){
-                 mydb.insertPrefs(tempState,humidityState,windState,"empty");
+                 mydb.insertPrefs(tempState,humidityState,windState,"empty", celsius);
+                 Log.d("BTWeather - isEmpty()", "insertpref");
              //mydb.updateContact(1,tempState,humidityState,windState,"empty");
          }
          else {
              pullFromdb();
          }
-        extras = getIntent().getExtras();
     }
 
 
@@ -164,6 +164,9 @@ public class MainActivity extends AppCompatActivity {
     protected void weatherPanelInflator() {
         weatherPanelDeflator();
         updateGraph();
+       //
+        //
+        //
         pullFromdb();
         try{
             startRepeatingTask();
@@ -307,13 +310,13 @@ public class MainActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.radio_celsius:
                 if (checked)
-                    // Pirates are the best
                     celsius = true;
+                    mydb.updateCelsius(1,true);
                 break;
             case R.id.radio_fahrenheit:
                 if (checked)
-                    // Ninjas rule
                     celsius = false;
+                    mydb.updateCelsius(1,false);
                 break;
         }
     }
@@ -422,26 +425,28 @@ public class MainActivity extends AppCompatActivity {
     }
     public void pullFromdb(){
         Log.d("BTWeather pullfromdb", "pull");
-        try {
+        mydb = new DBHelper(this);
 
-                int Value = 1;
-            Cursor values = mydb.getData(Value);
-
-            if(Value>0) {
-                tempState = values.getInt(values.getColumnIndex(DBHelper.PREFS_COLUMN_TEMPSTATE)) > 0;
-
-                Log.d("BTWeather tempstate", String.valueOf(values.getInt(2)));
-                humidityState = values.getInt(values.getColumnIndex(DBHelper.PREFS_COLUMN_HUMIDSTATE)) > 0;
-                Log.d("BTWeather humidstate", String.valueOf(values.getInt(2)));
-                windState = values.getInt(values.getColumnIndex(DBHelper.PREFS_COLUMN_WINDSTATE)) > 0;
-                Log.d("BTWeather windstate", String.valueOf(values.getInt(2)));
-            }else{
-                Log.d("BTWeather pullfromdb", "value lessthan 0");
-            }
-
-            humidityState = mydb.getHumidState();
+        if( mydb.getHumidState() == 0){
+            humidityState = false;
+        }else
+            humidityState = true;
+        if( mydb.getTempState() == 0){
+            tempState = false;
+        }else
+            tempState = true;
+        if( mydb.getWindState() == 0){
+            windState = false;
+        }else
+        windState = true;
+        if( mydb.getCelsius() == 0){
+            celsius = false;
+        }else
+            celsius = true;
     }
-        catch (Exception e ){Log.d("BTWeather - DBMain" , String.valueOf(e));}
+    public String getBT(){
+        mydb = new DBHelper(this);
+        return mydb.getBTDevice();
     }
 }
 

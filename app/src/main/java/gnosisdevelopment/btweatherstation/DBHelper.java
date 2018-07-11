@@ -13,13 +13,14 @@ import android.util.Log;
 
 public class DBHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "BTWeatherStationDB.db";
+    public static final String DATABASE_NAME = "BTWeather.db";
     public static final String PREFS_TABLE_NAME = "prefs";
     public static final String PREFS_COLUMN_ID = "id";
     public static final String PREFS_COLUMN_TEMPSTATE = "tempstate";
     public static final String PREFS_COLUMN_HUMIDSTATE = "humidstate";
     public static final String PREFS_COLUMN_WINDSTATE = "windstate";
     public static final String PREFS_COLUMN_BTDEVICE = "btdevice";
+    public static final String PREFS_COLUMN_CELSIUS = "celsius";
     private HashMap hp;
 
     public DBHelper(Context context) {
@@ -34,7 +35,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d("BTWeather - DB", "create db");
         db.execSQL(
                 "create table prefs " +
-                        "(id integer primary key, tempstate boolean,humidstate boolean, windstate boolean,btdevice text)"
+                        "(id integer primary key, tempstate boolean,humidstate boolean, windstate boolean,btdevice text, celsius boolean)"
         );
     }
 
@@ -45,13 +46,14 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertPrefs (Boolean tempstate,Boolean humidstate, Boolean windstate, String btdevice) {
+    public boolean insertPrefs (Boolean tempstate,Boolean humidstate, Boolean windstate, String btdevice, Boolean celsius) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("tempstate", tempstate);
         contentValues.put("humidstate", humidstate);
         contentValues.put("windstate", windstate);
         contentValues.put("btdevice", btdevice);
+        contentValues.put("celsius", celsius);
         db.insert("prefs", null, contentValues);
         Log.d("BTWeather - DB", "insert db");
         return true;
@@ -69,13 +71,14 @@ public class DBHelper extends SQLiteOpenHelper {
         return numRows;
     }
 
-    public boolean updateContact (Integer id, Boolean tempstate,Boolean humidstate, Boolean windstate, String btdevice) {
+    public boolean updateContact (Integer id, Boolean tempstate,Boolean humidstate, Boolean windstate, String btdevice, Boolean celsius) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("tempstate", tempstate);
         contentValues.put("humidstate", humidstate);
         contentValues.put("windstate", windstate);
         contentValues.put("btdevice", btdevice);
+        contentValues.put("celsius", celsius);
         db.update("prefs", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
         return true;
     }
@@ -124,12 +127,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d("BTWeather - DB", "update humid state");
         return true;
     }
-    public boolean getHumidState(){
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor res =  db.rawQuery( "select * from prefs", null );
-       return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_HUMIDSTATE))>0;
 
-    }
     public boolean updateWindState(Integer id, boolean windstate){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -144,5 +142,59 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("btdevice", btdevice);
         db.update("prefs", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
         return true;
+    }
+    public boolean updateCelsius(Integer id, boolean celsius){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("celsius", celsius);
+        db.update("prefs", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
+        Log.d("BTWeather - DB", "update celsius");
+        return true;
+    }
+
+    public int getHumidState(){
+        try{
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor res =  db.rawQuery( "select * from prefs ",null );
+            res.moveToFirst();
+            return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_HUMIDSTATE));}
+        catch (Exception e ){Log.d("BTWeather - getHumidState", String.valueOf(e));}
+        return 1;
+    }
+    public int getTempState(){
+        try{
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor res =  db.rawQuery( "select * from prefs ",null );
+            res.moveToFirst();
+            return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_TEMPSTATE));}
+        catch (Exception e ){Log.d("BTWeather - getTempState", String.valueOf(e));}
+        return 1;
+    }
+    public int getWindState(){
+        try{
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor res =  db.rawQuery( "select * from prefs ",null );
+            res.moveToFirst();
+            return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_WINDSTATE));}
+        catch (Exception e ){Log.d("BTWeather - getWindState", String.valueOf(e));}
+        return 1;
+    }
+    public String getBTDevice(){
+        try{
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor res =  db.rawQuery( "select * from prefs ",null );
+            res.moveToFirst();
+            return res.getString(res.getColumnIndex(DBHelper.PREFS_COLUMN_BTDEVICE));}
+        catch (Exception e ){Log.d("BTWeather - getBTDevice", String.valueOf(e));}
+        return "";
+    }
+    public int getCelsius(){
+        try{
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor res =  db.rawQuery( "select * from prefs ",null );
+            res.moveToFirst();
+            return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_CELSIUS));}
+        catch (Exception e ){Log.d("BTWeather - getCelsius", String.valueOf(e));}
+        return 1;
     }
 }
