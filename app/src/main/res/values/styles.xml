@@ -12,6 +12,11 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+    <style name="AppTheme.Buttons">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:textColor">#fff</item>
+    </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 

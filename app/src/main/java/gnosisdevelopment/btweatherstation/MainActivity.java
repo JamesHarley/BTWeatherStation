@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     private View windLayout;
     private View humidityLayout;
     private View controlLayout;
+    private View notificationsLayout;
+
     private View radioView;
     private Switch tempSw;
     private Switch humidSw;
@@ -91,19 +93,33 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     weatherPanelInflator();
                     controlPanelDeflator();
+                    notificationPanelDeflator();
                     return true;
                 case R.id.navigation_dashboard:
                     weatherPanelDeflator();
                     controlPanelInflator();
+                    notificationPanelDeflator();
                     return true;
                 case R.id.navigation_notifications:
                     weatherPanelDeflator();
                     controlPanelDeflator();
+                    notificationPanelInflater();
                     return true;
             }
             return false;
         }
     };
+
+    private void notificationPanelDeflator() {
+        if (notificationsLayout != null) weatherView.removeView(notificationsLayout);
+    }
+    private void notificationPanelInflater(){
+        notificationsLayout = inflater.inflate(R.layout.notifications_panel,
+                (ViewGroup) findViewById(R.id.notifications_panel));
+
+        weatherView = findViewById(R.id.container);
+        weatherView.addView(notificationsLayout);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
