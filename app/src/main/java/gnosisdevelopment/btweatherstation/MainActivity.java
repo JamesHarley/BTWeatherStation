@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -65,11 +66,11 @@ public class MainActivity extends AppCompatActivity {
     private GraphView graphTemp;
     private GraphView graphHumidity;
     private GraphView graphWind;
+
     private SQLiteDatabase db;
     private LineGraphSeries tempSeries;
     private LineGraphSeries windSeries;
     private LineGraphSeries humiditySeries;
-    private SimpleDateFormat graphTimer;
     private final static int INTERVAL = 1000 * 60 * 2; //2 minutes
     private Handler mHandlerClock;
     private final static int graphColor = Color.parseColor("#6a0c05");
@@ -132,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
          else {
              pullFromdb();
          }
+        DatabaseInitializer.populateAsync(SensorsDatabase.getSensorsDatabase(this));
     }
 
 
@@ -171,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         try{
             startRepeatingTask();
         }catch (Exception e){
-            Log.d("BTWeather-Exception-startRepeatingTask()", String.valueOf(e));
+            Log.d("BTWeather-error2", String.valueOf(e));
         }
         if (tempState == true) {
             tempLayout = inflater.inflate(R.layout.weather_temp,
@@ -224,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
         try{
             stopRepeatingTask();
         }catch (Exception e){
-            Log.d("BTWeather-Exception-stoprepeatingTask()", String.valueOf(e));
+            Log.d("BTWeather-error1", String.valueOf(e));
         }
         if (tempLayout != null) weatherView.removeView(tempLayout);
         if (humidityLayout != null) weatherView.removeView(humidityLayout);
@@ -335,10 +337,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("BTWeather", e.toString());
                 }
             }
-
-
-
     }
+
     public void graphUpdater(GraphView graph, double data, LineGraphSeries series){
         try {
             series.appendData(new DataPoint(getCurrentTime(), data), true, 40);
@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
         graph.getGridLabelRenderer().setHorizontalLabelsColor(graphColor);
         graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
 
-        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.HORIZONTAL);
+        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
         graph.getGridLabelRenderer().reloadStyles();
 
 
@@ -444,9 +444,21 @@ public class MainActivity extends AppCompatActivity {
         }else
             celsius = true;
     }
-    public String getBT(){
+    public String getBT() {
         mydb = new DBHelper(this);
         return mydb.getBTDevice();
+    }
+    public String getTemp(){
+        return String.valueOf(temp);
+    }
+    public String getHumidity(){
+        return String.valueOf(humidity);
+    }
+    public String getWind(){
+        return String.valueOf(wind);
+    }
+    public String getDate(){
+        return String.valueOf(getCurrentTime());
     }
 }
 

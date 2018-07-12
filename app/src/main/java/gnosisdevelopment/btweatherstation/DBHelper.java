@@ -3,6 +3,8 @@ package gnosisdevelopment.btweatherstation;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
+
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -158,7 +160,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Cursor res =  db.rawQuery( "select * from prefs ",null );
             res.moveToFirst();
             return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_HUMIDSTATE));}
-        catch (Exception e ){Log.d("BTWeather - getHumidState", String.valueOf(e));}
+        catch (Exception e ){Log.d("BTWeather-getHumidState", String.valueOf(e));}
         return 1;
     }
     public int getTempState(){
@@ -167,7 +169,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Cursor res =  db.rawQuery( "select * from prefs ",null );
             res.moveToFirst();
             return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_TEMPSTATE));}
-        catch (Exception e ){Log.d("BTWeather - getTempState", String.valueOf(e));}
+        catch (Exception e ){Log.d("BTWeatherget-TempState", String.valueOf(e));}
         return 1;
     }
     public int getWindState(){
@@ -176,7 +178,7 @@ public class DBHelper extends SQLiteOpenHelper {
             Cursor res =  db.rawQuery( "select * from prefs ",null );
             res.moveToFirst();
             return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_WINDSTATE));}
-        catch (Exception e ){Log.d("BTWeather - getWindState", String.valueOf(e));}
+        catch (Exception e ){Log.d("BTWeatherget-WindState", String.valueOf(e));}
         return 1;
     }
     public String getBTDevice(){

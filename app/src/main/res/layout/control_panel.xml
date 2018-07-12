@@ -159,7 +159,6 @@
                     android:id="@+id/exportRadioGroup"
                     android:layout_marginLeft="100dp"
                     android:orientation="horizontal"
-                    android:outlineSpotShadowColor="@color/colorPrimary"
                     android:checkedButton="@id/radio_json"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
