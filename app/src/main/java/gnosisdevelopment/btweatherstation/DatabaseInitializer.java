@@ -30,7 +30,7 @@ public class DatabaseInitializer {
     }
 
     public static void populateSync(@NonNull final SensorsDatabase db) {
-        populateWithTestData(db);
+        populateWithData(db);
     }
 
 
@@ -76,7 +76,7 @@ public class DatabaseInitializer {
         @Override
         protected Void doInBackground(final Void... params) {
 
-            populateWithTestData(mDb);
+            populateWithData(mDb);
             return null;
         }
 
