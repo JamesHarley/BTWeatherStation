@@ -112,6 +112,7 @@ public class BluetoothChatFragment extends Fragment {
         super.onDestroy();
         if (mChatService != null) {
             mChatService.stop();
+            ((MainActivity) getActivity()).setBtConnectedState(false);
         }
     }
 
@@ -161,7 +162,7 @@ public class BluetoothChatFragment extends Fragment {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //send it to the tokenizer to be processed
-
+                    ((MainActivity) getActivity()).setBtConnectedState(true);
                     tokenizer(readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:

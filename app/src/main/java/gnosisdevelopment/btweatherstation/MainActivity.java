@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     private LayoutInflater inflater;
     private SqlScoutServer sqlScoutServer;
     private SensorsDatabase sDb;
+    private boolean btConnectedState = false;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -135,11 +136,18 @@ public class MainActivity extends AppCompatActivity {
          }
          mydb.close();
         sDb = SensorsDatabase.getSensorsDatabase(this);
-        setRepeatingAsyncTask();
+
+
     }
 
 
+    protected void setBtConnectedState(boolean b){
 
+        if(btConnectedState==false && b==true){
+            setRepeatingAsyncTask();
+            btConnectedState =true;
+        }
+    }
     protected void setTemp() {
         if (celsius == true) {
             tempText.setText(String.valueOf(temp) + DEGREE);
@@ -151,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void setHumidity() {
-        humidityText.setText(String.valueOf(humidity) + "%");
+        humidityText.setText(String.valueOf(humidity) + "");
        //graphUpdater(graphHumidity, humidity,humiditySeries);
     }
 
@@ -167,10 +175,6 @@ public class MainActivity extends AppCompatActivity {
 
     protected void weatherPanelInflator() {
         weatherPanelDeflator();
-
-       //
-        //
-        //
         pullFromdb();
 
         if (tempState == true) {
@@ -359,7 +363,7 @@ public class MainActivity extends AppCompatActivity {
         series.setThickness(5);
         // set date label formatter
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()));
-        //graph.getGridLabelRenderer().setNumHorizontalLabels(2);
+        graph.getGridLabelRenderer().setNumHorizontalLabels(3);
         // legend
         // styling grid/labels
         graph.getGridLabelRenderer().setGridColor(graphColor);
@@ -458,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
 
                             try{
+                                //todo pull from db instead
                                 updateGraph();
                                 DatabaseInitializer.populateAsync(sDb, String.valueOf(temp), String.valueOf(humidity),String.valueOf(wind), String.valueOf(getCurrentTime()));
                                 Log.d("BTWeather-storeAsync", "Store success");

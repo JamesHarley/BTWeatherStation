@@ -27,8 +27,8 @@
         <com.jjoe64.graphview.GraphView
             android:layout_toRightOf="@id/humidity"
             android:layout_marginTop="150dp"
-            android:layout_marginLeft="15dp"
-            android:layout_width="200dp"
+            android:layout_marginLeft="30dp"
+            android:layout_width="250dp"
             android:layout_height="100dp"
             android:id="@+id/graphHumidity" />
     </RelativeLayout>
