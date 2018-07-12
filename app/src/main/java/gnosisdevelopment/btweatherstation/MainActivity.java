@@ -123,9 +123,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-         //mHandlerClock = new Handler();
-        //mydb.deletePrefs(2);
-
          mydb = new DBHelper(this);
         ;
          if(mydb.isEmpty()==true){
@@ -146,16 +143,16 @@ public class MainActivity extends AppCompatActivity {
     protected void setTemp() {
         if (celsius == true) {
             tempText.setText(String.valueOf(temp) + DEGREE);
-           graphUpdater(graphTemp, temp, tempSeries);
+           //graphUpdater(graphTemp, temp, tempSeries);
         } else {
             tempText.setText(String.valueOf(cToF(temp)) + DEGREE);
-           graphUpdater(graphTemp, cToF(temp),tempSeries);
+           //graphUpdater(graphTemp, cToF(temp),tempSeries);
         }
     }
 
     protected void setHumidity() {
         humidityText.setText(String.valueOf(humidity) + "%");
-       graphUpdater(graphHumidity, humidity,humiditySeries);
+       //graphUpdater(graphHumidity, humidity,humiditySeries);
     }
 
     protected void setWind() {
@@ -170,7 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
     protected void weatherPanelInflator() {
         weatherPanelDeflator();
-        updateGraph();
+
        //
         //
         //
@@ -349,7 +346,6 @@ public class MainActivity extends AppCompatActivity {
             series.appendData(new DataPoint(getCurrentTime(), data), true, 40);
             LineGraphSeries<DataPoint> seriesA = series;
             graph.addSeries(seriesA);
-
         }
         catch (Exception e){
 
@@ -361,7 +357,6 @@ public class MainActivity extends AppCompatActivity {
         series.setBackgroundColor(graphColor);
         series.setDataPointsRadius(8);
         series.setThickness(5);
-
         // set date label formatter
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()));
         //graph.getGridLabelRenderer().setNumHorizontalLabels(2);
@@ -371,10 +366,8 @@ public class MainActivity extends AppCompatActivity {
         graph.getGridLabelRenderer().setHighlightZeroLines(false);
         graph.getGridLabelRenderer().setHorizontalLabelsColor(graphColor);
         graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
-
         graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
         graph.getGridLabelRenderer().reloadStyles();
-
 
         // styling viewport
         //graph.getViewport().setBackgroundColor(Color.argb(255, 222, 222, 222));
@@ -386,7 +379,6 @@ public class MainActivity extends AppCompatActivity {
         //String mytime = (DateFormat.format("dd-MM-yyyy hh:mm:ss", ).toString());
         Calendar calendar = Calendar.getInstance();
         Date d1 = calendar.getTime();
-
         return d1;
     }
 
@@ -405,7 +397,6 @@ public class MainActivity extends AppCompatActivity {
             graphUpdater(graphHumidity, humidity,humiditySeries);
         if(windState)
             graphUpdater(graphWind, wind,windSeries);
-
 
     }
 
@@ -467,7 +458,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
 
                             try{
-
+                                updateGraph();
                                 DatabaseInitializer.populateAsync(sDb, String.valueOf(temp), String.valueOf(humidity),String.valueOf(wind), String.valueOf(getCurrentTime()));
                                 Log.d("BTWeather-storeAsync", "Store success");
                             }catch (Exception e)
