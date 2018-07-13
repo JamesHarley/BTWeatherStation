@@ -33,7 +33,7 @@
                     android:padding="10dp"
                     android:textColor="#ffffff"
                     android:background="@color/colorPrimary"
-                    android:text="Connect Bluetooth Device" />
+                    android:text="@string/forgetBT" />
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/tempControl"
@@ -141,6 +141,7 @@
                     android:trackTint="@color/colorPrimaryDark"
                     />
             </RelativeLayout>
+            <!--
             <RelativeLayout
                 android:id="@+id/exportControl"
                 android:layout_below="@+id/windControl"
@@ -198,7 +199,7 @@
                     android:layout_below="@id/exportRadioGroup"
                     android:text="Export" />
 
-            </RelativeLayout>
+            </RelativeLayout>-->
         </RelativeLayout>
     </ScrollView>
 </android.support.constraint.ConstraintLayout>

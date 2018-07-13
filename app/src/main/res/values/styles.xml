@@ -13,9 +13,13 @@
         <item name="windowNoTitle">true</item>
     </style>
     <style name="AppTheme.Buttons">
-        <item name="android:background">@color/colorPrimary</item>
-        <item name="android:padding">10dp</item>
+        <item name="android:background">#6a0c05</item>
+        <item name="android:padding">1dp</item>
         <item name="android:textColor">#fff</item>
+        <item name="android:layout_marginLeft">20dp</item>
+    </style>
+    <style name="AppTheme.EditText">
+        <item name="colorControlNormal">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

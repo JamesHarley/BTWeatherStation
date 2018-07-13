@@ -4,13 +4,18 @@
     <string name="title_dashboard">Control Panel</string>
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_weather_panel">Weather Panel</string>
-
+    <string name="forgetBT">Forget Bluetooth</string>
     <!-- Weather -->
-    <string name="title_temp">Temperature</string>
-    <string name="title_humidity">Humidity</string>
+    <string name="title_temp">Temperature °</string>
+    <string name="title_humidity">Humidity %</string>
     <string name="title_wind">Wind - mph</string>
 
     <string name="notification">save</string>
+    <string name="between">Alert me when temps fall outside this range</string>
+    <string name="above"></string>
+    <string name="below"></string>
+    <string name="hint1">65.0</string>
+    <string name="hint2">75.0</string>
 
     <!--  Bluetooth -->
     <string name="send">Send</string>

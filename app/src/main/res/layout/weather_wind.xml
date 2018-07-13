@@ -1,37 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:id="@+id/weatherPanelWind"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/wind"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
+        <GridLayout
+            android:id="@+id/windGrid"
+            android:columnCount="2"
             android:layout_marginTop="280dp"
-            android:layout_marginLeft="25dp"
-            android:textSize="60sp" />
+            android:layout_marginLeft="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/wind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorPrimary"
+                android:layout_columnWeight=".5"
+                android:textSize="60sp" />
+            <com.jjoe64.graphview.GraphView
+                app:seriesColor="@color/colorPrimary"
+                android:layout_toRightOf="@id/wind"
+                android:paddingLeft="15dp"
+                android:layout_width="250dp"
+                android:layout_height="100dp"
+                android:layout_columnWeight="1.5"
+                android:id="@+id/graphWind" />
+        </GridLayout>
         <TextView
             android:id="@+id/windTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/colorPrimary"
             android:text="@string/title_wind"
-            android:layout_below="@+id/wind"
-            android:layout_marginLeft="40dp"
-            android:textSize="20sp" />
-        <com.jjoe64.graphview.GraphView
-            android:foregroundGravity="right"
-            android:layout_toRightOf="@id/wind"
-            android:layout_marginTop="280dp"
+            android:layout_below="@+id/windGrid"
             android:layout_marginLeft="30dp"
-            android:layout_width="250dp"
-            android:layout_height="100dp"
-            android:id="@+id/graphWind" />
+            android:textSize="20sp" />
+
+
     </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

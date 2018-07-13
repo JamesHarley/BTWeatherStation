@@ -44,4 +44,7 @@ dependencies {
 // Lifecycle components
     implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
+
+    //android-debug-database-tool
+    debugCompile 'com.amitshekhar.android:debug-db:1.0.0'
 }

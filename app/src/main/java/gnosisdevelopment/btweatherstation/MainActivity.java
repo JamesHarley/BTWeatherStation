@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
-import android.icu.text.SimpleDateFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -17,8 +16,10 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -29,11 +30,16 @@ import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.function.Consumer;
 
 import static java.security.AccessController.getContext;
 
@@ -62,10 +68,10 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton radioF;
     private RadioButton radioC;
 
-    final String DEGREE = "\u00b0";
-    private Double temp = 28.00;
-    private Double humidity = 50.10;
-    private Double wind = 15.5;
+
+    private Double temp = -99.99;
+    private Double humidity = -99.99;
+    private Double wind = -99.99;
 
     private GraphView graphTemp;
     private GraphView graphHumidity;
@@ -83,6 +89,12 @@ public class MainActivity extends AppCompatActivity {
     private SqlScoutServer sqlScoutServer;
     private SensorsDatabase sDb;
     private boolean btConnectedState = false;
+    private int timeInMilliseconds= 5000;
+    private Button forgetBT;
+
+
+    private TimerTask timerTask;
+
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -151,8 +163,8 @@ public class MainActivity extends AppCompatActivity {
              pullFromdb();
          }
          mydb.close();
-        sDb = SensorsDatabase.getSensorsDatabase(this);
-
+         sDb = SensorsDatabase.getSensorsDatabase(this);
+        getData();
 
     }
 
@@ -166,22 +178,34 @@ public class MainActivity extends AppCompatActivity {
     }
     protected void setTemp() {
         if (celsius == true) {
-            tempText.setText(String.valueOf(temp) + DEGREE);
-           //graphUpdater(graphTemp, temp, tempSeries);
+            if(temp != -99.99){
+                tempText.setText(String.valueOf(temp));
+            }else {
+                tempText.setText(" --.-- ");
+            }
         } else {
-            tempText.setText(String.valueOf(cToF(temp)) + DEGREE);
-           //graphUpdater(graphTemp, cToF(temp),tempSeries);
+            if(temp != -99.99){
+                tempText.setText(String.valueOf(cToF(temp)));
+            }else {
+                tempText.setText(" --.-- ");
+            }
         }
     }
 
     protected void setHumidity() {
-        humidityText.setText(String.valueOf(humidity) + "");
-       //graphUpdater(graphHumidity, humidity,humiditySeries);
+        if(humidity != -99.99){
+            humidityText.setText(String.valueOf(humidity) + "");
+        }else {
+            humidityText.setText(" --.-- ");
+        }
     }
 
     protected void setWind() {
-        windText.setText(String.valueOf(wind));
-       // graphUpdater(graphWind, wind,windSeries);
+        if(wind != -99.99){
+            windText.setText(String.valueOf(wind) + "");
+        }else {
+            windText.setText(" --.-- ");
+        }
     }
 
     // convert C to F
@@ -238,6 +262,8 @@ public class MainActivity extends AppCompatActivity {
         if (wind != null && windText != null) {
             setWind();
         }
+        //updateGraph();
+        getData();
     }
 
     protected void weatherPanelDeflator() {
@@ -312,6 +338,21 @@ public class MainActivity extends AppCompatActivity {
         }
         onRadioButtonClicked(radioView);
         mydb.close();
+        forgetBT = findViewById(R.id.btButton);
+        final ViewGroup layout = (ViewGroup) forgetBT.getParent();
+        if(!(getBT().matches("empty"))){
+            forgetBT.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    removeBtDevice();
+                    if(null!=layout){
+                        layout.removeView(forgetBT);
+                    }
+                }
+            });
+        }else
+            layout.removeView(forgetBT);
+
+
 
     }
 
@@ -371,6 +412,16 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
+    public void graphUpdater(GraphView graph, double data, LineGraphSeries series, Date date){
+        try {
+            series.appendData(new DataPoint(date, data), true, 40);
+            LineGraphSeries<DataPoint> seriesA = series;
+            graph.addSeries(seriesA);
+        }
+        catch (Exception e){
+
+        }
+    }
     public void graphInit(GraphView graph, LineGraphSeries series){
         series.setDrawBackground(true);
         series.setColor(Color.parseColor("#8d1007"));
@@ -406,6 +457,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void updateGraph(){
+        Log.d("BTWeather", "updateGraph()");
         if(tempState==true){
             if (celsius == true) {
                  graphUpdater(graphTemp, temp, tempSeries);
@@ -415,11 +467,30 @@ public class MainActivity extends AppCompatActivity {
         }
         if(humidityState == true)
             graphUpdater(graphHumidity, humidity,humiditySeries);
-        if(windState)
+        if(windState==true)
             graphUpdater(graphWind, wind,windSeries);
 
     }
+    public void updateGraph(double temp, double humidity, double wind, Date date){
+        Log.d("BTWeather", "updateGraph()");
+        if(tempState==true){
+            if (celsius == true) {
+                graphUpdater(graphTemp, temp, tempSeries,date);
+            } else {
+                graphUpdater(graphTemp, cToF(temp),tempSeries,date);
+            }
+        }
+        if(humidityState == true)
+            graphUpdater(graphHumidity, humidity,humiditySeries,date);
+        if(windState==true)
+            graphUpdater(graphWind, wind,windSeries,date);
 
+    }
+    public void removeBtDevice(){
+        mydb = new DBHelper(this);
+        mydb.updateBT(1, "empty");
+        mydb.close();
+    }
     public void btDeviceSave(String mac){
         mydb = new DBHelper(this);
         mydb.updateBT(1, mac);
@@ -471,30 +542,94 @@ public class MainActivity extends AppCompatActivity {
         final Handler handler = new Handler();
         Timer timer = new Timer();
 
-        TimerTask task = new TimerTask() {
+        timerTask = new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
                     public void run() {
 
-                            try{
-                                //todo pull from db instead
-                                updateGraph();
-                                DatabaseInitializer.populateAsync(sDb, String.valueOf(temp), String.valueOf(humidity),String.valueOf(wind), String.valueOf(getCurrentTime()));
+                        try {
+                            //todo pull from db instead
+                            //updateGraph();
+                            if(wind != -99.99 && temp != -99.99 & humidity!=-99.99) {
+                                DatabaseInitializer.populateAsync(sDb,
+                                        String.valueOf(temp),
+                                        String.valueOf(humidity),
+                                        String.valueOf(wind),
+                                        dbDate());
+
                                 Log.d("BTWeather-storeAsync", "Store success");
-                            }catch (Exception e)
-                            {
-                                //error handling code
-                                Log.d("BTWeather4", e.toString());
                             }
+                        } catch (Exception e) {
+                            //error handling code
+                            Log.d("BTWeather4", e.toString());
                         }
-                    });
+                    }
+                });
 
             }
         };
 
-        timer.schedule(task, 0, 60*1000);  // interval of one minute
+        timer.schedule(timerTask, 0, 60 * timeInMilliseconds);  // interval of one minute
 
+    }
+    public String dbDate(){
+        Date d = new Date();
+       return  DateFormat.format("MM-dd-yyyy hh:mm:ss",d).toString();
+    }
+    private Date getMeYesterday(){
+        return new Date(System.currentTimeMillis()-24*60*60*1000);
+    }
+    private Date getMeTomorrow(){
+        return new Date(System.currentTimeMillis()+24*60*60*1000);
+    }
+    private void getData(){
+
+        final Handler handler = new Handler();
+
+            handler.post(new Runnable() {
+                public void run() {
+                    handler.post(new Runnable() {
+                        public void run() {
+                            Date date1 = new Date();
+                            try {
+                                List<Sensors> sensorList = sDb.sensorsDao().findByDate(
+                                        DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeYesterday()).toString(),
+                                        DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeTomorrow()).toString());
+                                for (Sensors sensor : sensorList) {
+                                    double tmp = Double.valueOf(sensor.getmTemp());
+                                    double hmd = Double.valueOf(sensor.getmHumidity());
+                                    double wnd = Double.valueOf(sensor.getmWind());
+                                    String sdate = sensor.getmDate();
+                                    try {
+                                        date1 = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").parse(sdate);
+                                    } catch (ParseException e) {
+                                        Log.d("BTWeather-error6", String.valueOf(e));
+                                    }
+                                    try {
+                                        updateGraph(tmp, hmd, wnd, date1);
+
+                                    } catch (Exception e) {
+                                        Log.d("BTWeather-error7", String.valueOf(e));
+                                    }
+                                }
+                            } catch (Exception e) {
+                                Log.d("BTWeather-error8", String.valueOf(e));
+                            }
+                        }
+
+                        ;
+                    });
+                }
+            });
+    }
+    private void stopTimerTask(){
+        try{
+            timerTask.cancel();
+        }
+        catch (Exception e){
+            Log.d("BTWeather-error10", String.valueOf(e));
+        }
     }
 }
 
