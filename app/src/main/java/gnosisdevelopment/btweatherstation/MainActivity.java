@@ -1,6 +1,7 @@
 package gnosisdevelopment.btweatherstation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -13,6 +14,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,7 +94,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean btConnectedState = false;
     private int timeInMilliseconds= 5000;
     private Button forgetBT;
-
+    private  TextView bluetoothText;
+    BluetoothChatFragment frag;
+    private Button connectBT;
 
     private TimerTask timerTask;
 
@@ -160,13 +165,16 @@ public class MainActivity extends AppCompatActivity {
          if(mydb.isEmpty()==true){
                  mydb.insertPrefs(tempState,humidityState,windState,"empty", celsius);
                  Log.d("BTWeather - isEmpty()", "insertpref");
-             //mydb.updateContact(1,tempState,humidityState,windState,"empty");
+             mydb.close();
+
          }
          else {
              pullFromdb();
+             mydb.close();
+
          }
-        mydb.close();
-      //  getData();
+         weatherPanelInflator();
+        getData();
 
     }
 
@@ -218,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
     protected void weatherPanelInflator() {
         weatherPanelDeflator();
         pullFromdb();
-
+        getData();
         if (tempState == true) {
             tempLayout = inflater.inflate(R.layout.weather_temp,
                     (ViewGroup) findViewById(R.id.weatherPanelTemp));
@@ -340,7 +348,9 @@ public class MainActivity extends AppCompatActivity {
         }
         onRadioButtonClicked(radioView);
         mydb.close();
+
         forgetBT = findViewById(R.id.btButton);
+        bluetoothText = findViewById(R.id.btButtonText);
         final ViewGroup layout = (ViewGroup) forgetBT.getParent();
         if(!(getBT().matches("empty"))){
             forgetBT.setOnClickListener(new View.OnClickListener() {
@@ -351,9 +361,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             });
-        }else
+        }else {
             layout.removeView(forgetBT);
-
+            layout.removeView(bluetoothText);
+        }
 
 
     }
@@ -497,6 +508,7 @@ public class MainActivity extends AppCompatActivity {
         mydb = new DBHelper(this);
         mydb.updateBT(1, mac);
         mydb.close();
+        getData();
     }
     public void pullFromdb(){
         Log.d("BTWeather pullfromdb", "pull");

@@ -36,6 +36,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.LinkedList;
@@ -51,7 +52,7 @@ public class BluetoothChatFragment extends Fragment {
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
-
+    Button connectBT;
     //Used for tokenizer
     private String buildOutput ="";
 
@@ -85,6 +86,8 @@ public class BluetoothChatFragment extends Fragment {
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             activity.finish();
         }
+
+
 
     }
 
@@ -240,6 +243,7 @@ public class BluetoothChatFragment extends Fragment {
         inflater.inflate(R.menu.bluetooth_chat, menu);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -310,6 +314,11 @@ public class BluetoothChatFragment extends Fragment {
         }
 
 
+    }
+    public void connectBtButton(Intent serverIntent){
+
+        serverIntent = new Intent(getActivity(), DeviceListActivity.class);
+        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
     }
 
 }

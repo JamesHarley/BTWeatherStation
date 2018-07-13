@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">BT Weather Station</string>
+    <string name="app_name">ArduinoBT Weather Station</string>
     <string name="title_home">Weather</string>
     <string name="title_dashboard">Control Panel</string>
     <string name="title_notifications">Notifications</string>
