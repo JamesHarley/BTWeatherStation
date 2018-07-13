@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean tempState = true;
     private boolean humidityState = true;
-    private boolean windState = true;
+    private boolean windState = false;
     private boolean celsius = false;
     private RadioButton radioF;
     private RadioButton radioC;
@@ -105,23 +105,23 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.navigation_home:
                     weatherPanelInflator();
                     controlPanelDeflator();
-                    notificationPanelDeflator();
+                    //notificationPanelDeflator();
                     return true;
                 case R.id.navigation_dashboard:
                     weatherPanelDeflator();
                     controlPanelInflator();
-                    notificationPanelDeflator();
+                    //notificationPanelDeflator();
                     return true;
-                case R.id.navigation_notifications:
+               /** case R.id.navigation_notifications:
                     weatherPanelDeflator();
                     controlPanelDeflator();
                     notificationPanelInflater();
-                    return true;
+                    return true;**/
             }
             return false;
         }
     };
-
+/**
     private void notificationPanelDeflator() {
         if (notificationsLayout != null) weatherView.removeView(notificationsLayout);
     }
@@ -131,16 +131,19 @@ public class MainActivity extends AppCompatActivity {
 
         weatherView = findViewById(R.id.container);
         weatherView.addView(notificationsLayout);
-    }
+    }**/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sqlScoutServer = SqlScoutServer.create(this, getPackageName());
         setContentView(R.layout.activity_main);
+
+
+        sDb = SensorsDatabase.getSensorsDatabase(this);
         //Child layout
         inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
-        weatherPanelInflator();
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -162,9 +165,8 @@ public class MainActivity extends AppCompatActivity {
          else {
              pullFromdb();
          }
-         mydb.close();
-         sDb = SensorsDatabase.getSensorsDatabase(this);
-        getData();
+        mydb.close();
+      //  getData();
 
     }
 
@@ -584,7 +586,7 @@ public class MainActivity extends AppCompatActivity {
         return new Date(System.currentTimeMillis()+24*60*60*1000);
     }
     private void getData(){
-
+        sDb = SensorsDatabase.getSensorsDatabase(this);
         final Handler handler = new Handler();
 
             handler.post(new Runnable() {
