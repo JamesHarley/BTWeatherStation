@@ -45,6 +45,7 @@ import java.util.TimerTask;
 import java.util.function.Consumer;
 
 import static java.security.AccessController.getContext;
+import static java.util.Calendar.HOUR_OF_DAY;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -200,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
+//TODO Fix layout for graph spacing to match temp
     protected void setHumidity() {
         if(humidity != -99.99){
             humidityText.setText(String.valueOf(humidity) + "");
@@ -441,7 +442,9 @@ public class MainActivity extends AppCompatActivity {
         series.setDataPointsRadius(8);
         series.setThickness(5);
         // set date label formatter
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()));
+        java.text.DateFormat d = null;
+        d.getInstance();
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()) );
         graph.getGridLabelRenderer().setNumHorizontalLabels(3);
         // legend
         // styling grid/labels
@@ -563,7 +566,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
 
                         try{
-                            //todo pull from db instead
+                            
                             if(wind != -99.99 && temp != -99.99 & humidity!=-99.99) {
                                 DatabaseInitializer.populateAsync(sDb,
                                         String.valueOf(temp),
@@ -602,7 +605,7 @@ public class MainActivity extends AppCompatActivity {
         return new Date(System.currentTimeMillis()+24*60*60*1000);
     }
     private void getData(){
-        sDb = SensorsDatabase.getSensorsDatabase(this);
+        /**sDb = SensorsDatabase.getSensorsDatabase(this);
         final Handler handler2 = new Handler();
 
             handler2.post(new Runnable() {
@@ -639,8 +642,43 @@ public class MainActivity extends AppCompatActivity {
                         ;
                     });
                 }
-            });
+            });**/
+        GetData data = new GetData();
+        new Thread(data).start();
     }
+    class GetData implements Runnable{
+        public void run() {
+            sDb = SensorsDatabase.getSensorsDatabase(getApplicationContext());
+
+            Date date1 = new Date();
+            try {
+                List<Sensors> sensorList = sDb.sensorsDao().findByDate(
+                        DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeYesterday()).toString(),
+                        DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeTomorrow()).toString());
+                for (Sensors sensor : sensorList) {
+                    double tmp = Double.valueOf(sensor.getmTemp());
+                    double hmd = Double.valueOf(sensor.getmHumidity());
+                    double wnd = Double.valueOf(sensor.getmWind());
+                    String sdate = sensor.getmDate();
+                    try {
+                        date1 = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").parse(sdate);
+                    } catch (ParseException e) {
+                        Log.d("BTWeather-error6", String.valueOf(e));
+                    }
+                    try {
+                        updateGraph(tmp, hmd, wnd, date1);
+
+                    } catch (Exception e) {
+                        Log.d("BTWeather-error7", String.valueOf(e));
+                    }
+                }
+            } catch (Exception e) {
+                Log.d("BTWeather-error8", String.valueOf(e));
+            }
+        }
+
+
+        }
 
 }
 
