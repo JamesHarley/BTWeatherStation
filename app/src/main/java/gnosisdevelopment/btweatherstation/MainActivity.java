@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean tempState = true;
     private boolean humidityState = true;
-    private boolean windState = false;
+    private boolean windState = true;
     private boolean celsius = false;
     private RadioButton radioF;
     private RadioButton radioC;
@@ -98,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
     BluetoothChatFragment frag;
     private Button connectBT;
 
-    private TimerTask timerTask;
 
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -551,20 +550,20 @@ public class MainActivity extends AppCompatActivity {
         return String.valueOf(getCurrentTime());
     }
 
+
     private void setRepeatingAsyncTask() {
 
         final Handler handler = new Handler();
         Timer timer = new Timer();
 
-        timerTask = new TimerTask() {
+        TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 handler.post(new Runnable() {
                     public void run() {
 
-                        try {
+                        try{
                             //todo pull from db instead
-                            //updateGraph();
                             if(wind != -99.99 && temp != -99.99 & humidity!=-99.99) {
                                 DatabaseInitializer.populateAsync(sDb,
                                         String.valueOf(temp),
@@ -584,7 +583,12 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        timer.schedule(timerTask, 0, 60 * timeInMilliseconds);  // interval of one minute
+        try{
+                timer.schedule(task, 0, 60 * timeInMilliseconds);
+            Log.d("BTWeather-storeAsync", "TimerStart");
+        }catch (Exception e) {
+            Log.d("BTWeather-error11", e.toString());
+        }
 
     }
     public String dbDate(){
@@ -599,11 +603,11 @@ public class MainActivity extends AppCompatActivity {
     }
     private void getData(){
         sDb = SensorsDatabase.getSensorsDatabase(this);
-        final Handler handler = new Handler();
+        final Handler handler2 = new Handler();
 
-            handler.post(new Runnable() {
+            handler2.post(new Runnable() {
                 public void run() {
-                    handler.post(new Runnable() {
+                    handler2.post(new Runnable() {
                         public void run() {
                             Date date1 = new Date();
                             try {
@@ -637,13 +641,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
     }
-    private void stopTimerTask(){
-        try{
-            timerTask.cancel();
-        }
-        catch (Exception e){
-            Log.d("BTWeather-error10", String.valueOf(e));
-        }
-    }
+
 }
 
