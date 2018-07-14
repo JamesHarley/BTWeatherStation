@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     private SqlScoutServer sqlScoutServer;
     private SensorsDatabase sDb;
     private boolean btConnectedState = false;
-    private int timeInMilliseconds= 5000;
+    private int timeInMilliseconds= 1000;
     private Button forgetBT;
     private  TextView bluetoothText;
     BluetoothChatFragment frag;
