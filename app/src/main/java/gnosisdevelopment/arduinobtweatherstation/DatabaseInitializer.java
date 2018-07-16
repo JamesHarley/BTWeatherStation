@@ -1,7 +1,6 @@
-package gnosisdevelopment.btweatherstation;
+package gnosisdevelopment.arduinobtweatherstation;
 
 
-import android.app.PendingIntent;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;

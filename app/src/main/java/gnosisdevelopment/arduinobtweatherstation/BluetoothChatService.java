@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package gnosisdevelopment.btweatherstation;
+package gnosisdevelopment.arduinobtweatherstation;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package gnosisdevelopment.btweatherstation;
+package gnosisdevelopment.arduinobtweatherstation;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -34,12 +34,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.LinkedList;
 
 
 /**

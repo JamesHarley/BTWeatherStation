@@ -1,10 +1,8 @@
-package gnosisdevelopment.btweatherstation;
+package gnosisdevelopment.arduinobtweatherstation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;

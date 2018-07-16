@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package gnosisdevelopment.btweatherstation;
+package gnosisdevelopment.arduinobtweatherstation;
 
 /**
  * Defines several constants used between {@link BluetoothChatService} and the UI.

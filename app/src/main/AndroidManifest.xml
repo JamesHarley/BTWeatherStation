@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="gnosisdevelopment.btweatherstation">
+    package="gnosisdevelopment.arduinobtweatherstation">
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="gnosisdevelopment.arduinobtweatherstation.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,18 +23,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".DeviceListActivity"
+            android:name="gnosisdevelopment.arduinobtweatherstation.DeviceListActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="@string/select_device"
             android:theme="@android:style/Theme.Holo.Dialog" />
         <activity
-            android:name=".About"
+            android:name="gnosisdevelopment.arduinobtweatherstation.About"
             android:label="@string/title_activity_about"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName="gnosisdevelopment.arduinobtweatherstation.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="gnosisdevelopment.btweatherstation.MainActivity" />
+                android:value="gnosisdevelopment.arduinobtweatherstation.MainActivity" />
         </activity>    </application>
 
 </manifest>

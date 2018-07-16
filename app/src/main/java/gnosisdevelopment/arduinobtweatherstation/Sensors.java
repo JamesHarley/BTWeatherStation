@@ -1,4 +1,4 @@
-package gnosisdevelopment.btweatherstation;
+package gnosisdevelopment.arduinobtweatherstation;
 
 
 import android.arch.persistence.room.ColumnInfo;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package gnosisdevelopment.btweatherstation;
+package gnosisdevelopment.arduinobtweatherstation;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -35,6 +35,8 @@ import android.widget.TextView;
 
 
 import java.util.Set;
+
+
 
 /**
  * This Activity appears as a dialog. It lists any paired devices and
