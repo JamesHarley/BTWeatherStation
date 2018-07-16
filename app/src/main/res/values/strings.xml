@@ -5,6 +5,7 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_weather_panel">Weather Panel</string>
     <string name="forgetBT">Forget Bluetooth</string>
+    <string name="title_activity_about">About ArduinoBT Weather Station</string>
     <!-- Weather -->
     <string name="title_temp">Temperature °</string>
     <string name="title_humidity">Humidity %</string>

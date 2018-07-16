@@ -5,13 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:id="@+id/weatherPanelWind"
+        android:layout_marginBottom="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <GridLayout
             android:id="@+id/windGrid"
             android:columnCount="2"
             android:layout_marginTop="280dp"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginBottom="-20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
@@ -20,7 +22,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
                 android:layout_columnWeight=".5"
-                android:textSize="60sp" />
+                android:textSize="50sp" />
             <com.jjoe64.graphview.GraphView
                 app:seriesColor="@color/colorPrimary"
                 android:layout_toRightOf="@id/wind"
@@ -37,7 +39,7 @@
             android:textColor="@color/colorPrimary"
             android:text="@string/title_wind"
             android:layout_below="@+id/windGrid"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="5dp"
             android:textSize="20sp" />
 
 

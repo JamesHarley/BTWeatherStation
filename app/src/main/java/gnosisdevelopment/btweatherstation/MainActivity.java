@@ -35,17 +35,13 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.function.Consumer;
 
-import static java.security.AccessController.getContext;
-import static java.util.Calendar.HOUR_OF_DAY;
+import static java.util.Calendar.SHORT;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -98,8 +94,8 @@ public class MainActivity extends AppCompatActivity {
     private  TextView bluetoothText;
     BluetoothChatFragment frag;
     private Button connectBT;
-
-
+    private Button aboutBt;
+    private Intent aboutIntent;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -143,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         sqlScoutServer = SqlScoutServer.create(this, getPackageName());
         setContentView(R.layout.activity_main);
-
+        aboutIntent = new Intent(this, About.class);
 
         sDb = SensorsDatabase.getSensorsDatabase(this);
         //Child layout
@@ -365,8 +361,12 @@ public class MainActivity extends AppCompatActivity {
             layout.removeView(forgetBT);
             layout.removeView(bluetoothText);
         }
-
-
+        aboutBt = findViewById(R.id.aboutButton);
+        aboutBt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(aboutIntent);
+            }
+        });
     }
 
     protected void controlPanelDeflator() {
@@ -443,9 +443,10 @@ public class MainActivity extends AppCompatActivity {
         series.setThickness(5);
         // set date label formatter
         java.text.DateFormat d = null;
-        d.getInstance();
+        d.getDateInstance(SHORT);
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()) );
         graph.getGridLabelRenderer().setNumHorizontalLabels(3);
+        graph.getGridLabelRenderer().setHumanRounding(true);
         // legend
         // styling grid/labels
         graph.getGridLabelRenderer().setGridColor(graphColor);
@@ -469,23 +470,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
-    public void updateGraph(){
-        Log.d("BTWeather", "updateGraph()");
-        if(tempState==true){
-            if (celsius == true) {
-                 graphUpdater(graphTemp, temp, tempSeries);
-            } else {
-                 graphUpdater(graphTemp, cToF(temp),tempSeries);
-            }
-        }
-        if(humidityState == true)
-            graphUpdater(graphHumidity, humidity,humiditySeries);
-        if(windState==true)
-            graphUpdater(graphWind, wind,windSeries);
-
-    }
     public void updateGraph(double temp, double humidity, double wind, Date date){
         Log.d("BTWeather", "updateGraph()");
         if(tempState==true){
@@ -598,87 +582,56 @@ public class MainActivity extends AppCompatActivity {
         Date d = new Date();
        return  DateFormat.format("MM-dd-yyyy hh:mm:ss",d).toString();
     }
-    private Date getMeYesterday(){
+    public static Date getMeYesterday(){
         return new Date(System.currentTimeMillis()-24*60*60*1000);
     }
-    private Date getMeTomorrow(){
+    public static Date getMeTomorrow(){
         return new Date(System.currentTimeMillis()+24*60*60*1000);
     }
     private void getData(){
-        /**sDb = SensorsDatabase.getSensorsDatabase(this);
+        sDb = SensorsDatabase.getSensorsDatabase(this);
         final Handler handler2 = new Handler();
+            try{
+                handler2.post(new Runnable() {
+                    public void run() {
+                        handler2.post(new Runnable() {
+                            public void run() {
+                                Date date1 = new Date();
+                                try {
+                                    List<Sensors> sensorList = sDb.sensorsDao().findByDate(
+                                            DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeYesterday()).toString(),
+                                            DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeTomorrow()).toString());
+                                    for (Sensors sensor : sensorList) {
+                                        double tmp = Double.valueOf(sensor.getmTemp());
+                                        double hmd = Double.valueOf(sensor.getmHumidity());
+                                        double wnd = Double.valueOf(sensor.getmWind());
+                                        String sdate = sensor.getmDate();
+                                        try {
+                                            date1 = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").parse(sdate);
+                                        } catch (ParseException e) {
+                                            Log.d("BTWeather-error6", String.valueOf(e));
+                                        }
+                                        try {
+                                            updateGraph(tmp, hmd, wnd, date1);
 
-            handler2.post(new Runnable() {
-                public void run() {
-                    handler2.post(new Runnable() {
-                        public void run() {
-                            Date date1 = new Date();
-                            try {
-                                List<Sensors> sensorList = sDb.sensorsDao().findByDate(
-                                        DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeYesterday()).toString(),
-                                        DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeTomorrow()).toString());
-                                for (Sensors sensor : sensorList) {
-                                    double tmp = Double.valueOf(sensor.getmTemp());
-                                    double hmd = Double.valueOf(sensor.getmHumidity());
-                                    double wnd = Double.valueOf(sensor.getmWind());
-                                    String sdate = sensor.getmDate();
-                                    try {
-                                        date1 = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").parse(sdate);
-                                    } catch (ParseException e) {
-                                        Log.d("BTWeather-error6", String.valueOf(e));
+                                        } catch (Exception e) {
+                                            Log.d("BTWeather-error7", String.valueOf(e));
+                                        }
                                     }
-                                    try {
-                                        updateGraph(tmp, hmd, wnd, date1);
-
-                                    } catch (Exception e) {
-                                        Log.d("BTWeather-error7", String.valueOf(e));
-                                    }
+                                } catch (Exception e) {
+                                    Log.d("BTWeather-error8", String.valueOf(e));
                                 }
-                            } catch (Exception e) {
-                                Log.d("BTWeather-error8", String.valueOf(e));
                             }
-                        }
 
-                        ;
-                    });
-                }
-            });**/
-        GetData data = new GetData();
-        new Thread(data).start();
-    }
-    class GetData implements Runnable{
-        public void run() {
-            sDb = SensorsDatabase.getSensorsDatabase(getApplicationContext());
-
-            Date date1 = new Date();
-            try {
-                List<Sensors> sensorList = sDb.sensorsDao().findByDate(
-                        DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeYesterday()).toString(),
-                        DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeTomorrow()).toString());
-                for (Sensors sensor : sensorList) {
-                    double tmp = Double.valueOf(sensor.getmTemp());
-                    double hmd = Double.valueOf(sensor.getmHumidity());
-                    double wnd = Double.valueOf(sensor.getmWind());
-                    String sdate = sensor.getmDate();
-                    try {
-                        date1 = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").parse(sdate);
-                    } catch (ParseException e) {
-                        Log.d("BTWeather-error6", String.valueOf(e));
+                            ;
+                        });
                     }
-                    try {
-                        updateGraph(tmp, hmd, wnd, date1);
-
-                    } catch (Exception e) {
-                        Log.d("BTWeather-error7", String.valueOf(e));
-                    }
-                }
-            } catch (Exception e) {
-                Log.d("BTWeather-error8", String.valueOf(e));
+                });
+            }catch (Exception e){
+                Log.d("BTWeather-error12", String.valueOf(e));
             }
-        }
 
-
-        }
+    }
 
 }
 

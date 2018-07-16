@@ -78,9 +78,5 @@ void loop()
              //BTserial.write("@100.25;100.00;100.00@");
           }
           delay(10);
-    if (Serial.available())
-    {
-        //BTserial.write(Serial.read());
-    }
     
 }
