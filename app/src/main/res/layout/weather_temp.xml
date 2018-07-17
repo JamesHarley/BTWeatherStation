@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/tempRow"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <RelativeLayout
-        android:id="@+id/weatherPanelTemp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+
         <GridLayout
             android:id="@+id/tempGrid"
             android:columnCount="2"
@@ -20,15 +18,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
-                android:layout_columnWeight=".5"
+                android:layout_marginRight="20dp"
+                android:layout_gravity="left"
                 android:textSize="50sp" />
             <com.jjoe64.graphview.GraphView
                 app:seriesColor="@color/colorPrimary"
-                android:layout_toRightOf="@id/temp"
-                android:paddingLeft="15dp"
-                android:layout_width="250dp"
+                android:layout_gravity="right"
+                android:layout_width="wrap_content"
                 android:layout_height="100dp"
-                android:layout_columnWeight="1.5"
                 android:id="@+id/graphTemp" />
         </GridLayout>
         <TextView
@@ -43,4 +40,3 @@
 
     </RelativeLayout>
 
-</android.support.constraint.ConstraintLayout>

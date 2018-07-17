@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 
+import com.jjoe64.graphview.GraphView;
+
 import java.util.List;
 
 public class DatabaseInitializer {
@@ -80,4 +82,5 @@ public class DatabaseInitializer {
         }
 
     }
+
 }
