@@ -1,29 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/controlPanel"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:layout_centerHorizontal="true"
+    android:layout_centerInParent="true"
+    android:layout_gravity="center_horizontal">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent">
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="30dp">
+            android:layout_centerHorizontal="true"
+            android:gravity="center_horizontal">
 
             <RelativeLayout
                 android:id="@+id/bluetoothControl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="false"
-                android:layout_marginTop="20dp">
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp">
 
                 <TextView
                     android:id="@+id/btButtonText"
@@ -36,7 +38,7 @@
                     android:id="@+id/btButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="150dp"
+                    android:layout_toRightOf="@id/btButtonText"
                     android:background="@color/colorPrimary"
                     android:padding="10dp"
                     android:text="@string/forgetBT"
@@ -49,25 +51,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/bluetoothControl"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp">
 
                 <TextView
+                    android:id="@+id/templabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Temperature: "
                     android:textSize="20sp" />
 
                 <Switch
-
                     android:id="@+id/tempSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="150dp"
+                    android:layout_toRightOf="@id/templabel"
                     android:drawablePadding="10dp"
                     android:includeFontPadding="true"
                     android:paddingLeft="5dp"
-                    android:scaleX="1.2"
-                    android:scaleY="1.2"
                     android:showText="true"
                     android:switchTextAppearance="@style/SwitchTextAppearance"
                     android:thumbTint="@color/colorPrimary"
@@ -75,9 +76,10 @@
 
                 <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@id/radio"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="220dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_toRightOf="@+id/tempSwitch"
                     android:orientation="horizontal">
 
                     <RadioButton
@@ -103,6 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tempControl"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp">
 
                 <TextView
@@ -125,7 +128,7 @@
                     android:switchTextAppearance="@style/SwitchTextAppearance"
                     android:thumbTint="@color/colorPrimary"
                     android:trackTint="@color/colorPrimaryDark" />
-                />
+
             </RelativeLayout>
 
             <RelativeLayout
@@ -133,6 +136,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/humidControl"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp">
 
                 <TextView
@@ -157,24 +161,27 @@
                     android:thumbTint="@color/colorPrimary"
                     android:trackTint="@color/colorPrimaryDark" />
             </RelativeLayout>
-        <RelativeLayout
-            android:id="@+id/exportControl"
-            android:layout_below="@+id/windControl"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="false"
-            android:layout_marginTop="20dp">
-           <Button
-               android:id="@+id/aboutButton"
-               android:layout_width="215dp"
-               android:layout_centerHorizontal="true"
-               android:layout_height="wrap_content"
-               android:padding="10dp"
-               android:textColor="#ffffff"
-               android:background="@color/colorPrimary"
-               android:layout_marginTop="10dp"
-               android:text="About this app"/>
-        </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/exportControl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/windControl"
+                android:layout_centerHorizontal="true"
+
+                android:layout_centerInParent="false"
+                android:layout_marginTop="20dp">
+
+                <Button
+                    android:id="@+id/aboutButton"
+                    android:layout_width="215dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@color/colorPrimary"
+                    android:padding="10dp"
+                    android:text="About this app"
+                    android:textColor="#ffffff" />
+            </RelativeLayout>
             <!--
             <RelativeLayout
                 android:id="@+id/exportControl"
@@ -236,4 +243,4 @@
             </RelativeLayout>-->
         </RelativeLayout>
     </ScrollView>
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>
