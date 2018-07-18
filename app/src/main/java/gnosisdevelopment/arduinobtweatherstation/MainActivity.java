@@ -531,7 +531,7 @@ public class MainActivity extends AppCompatActivity {
         return new Date(System.currentTimeMillis()-2*60*60*1000);
     }
     public static Date getMeTomorrow(){
-        return new Date(System.currentTimeMillis());
+        return new Date(System.currentTimeMillis()+1*60*60*1000);
     }
     private void getData(){
         sDb = SensorsDatabase.getSensorsDatabase(this);
@@ -570,11 +570,13 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
 
-                    LineGraphSeries<DataPoint> seriesA = series;
-                    seriesA.appendData(new DataPoint(date, data), true, 10);
+                    //LineGraphSeries<DataPoint> seriesA = series;
+                    Log.d("BTWeather-append", date.toString());
+                    Log.d("BTWeather-append", date.toString());
+                    series.appendData(new DataPoint(date, data), true, 10);
                     //L
-                    //graph.addSeries(series);
-                    graph.addSeries(seriesA);
+                    graph.addSeries(series);
+                    //graph.addSeries(seriesA);
 
 
                 }
@@ -594,7 +596,7 @@ public class MainActivity extends AppCompatActivity {
         // set date label formatter
 
         graph.getGridLabelRenderer().setNumHorizontalLabels(3);
-        graph.getGridLabelRenderer().setHumanRounding(false);
+        graph.getGridLabelRenderer().setHumanRounding(true);
         // legend
         // styling grid/labels
         graph.getGridLabelRenderer().setGridColor(graphColor);
@@ -605,12 +607,11 @@ public class MainActivity extends AppCompatActivity {
         graph.getGridLabelRenderer().reloadStyles();
         java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(getApplicationContext());
         graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext(),dateTimeFormatter));
+        //graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
         // styling viewport
         //graph.getViewport().setBackgroundColor(Color.argb(255, 222, 222, 222));
         graph.getViewport().setDrawBorder(false);
-        graph.getViewport().setXAxisBoundsManual(true);
-        graph.getViewport().setMinX(3);
-        graph.getViewport().setMaxX(3);
+        graph.getViewport().setXAxisBoundsManual(false);
 
         graph.getViewport().setBorderColor(graphColor);
 
