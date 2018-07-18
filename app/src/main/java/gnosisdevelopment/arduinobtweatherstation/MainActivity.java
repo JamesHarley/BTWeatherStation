@@ -25,14 +25,11 @@ import android.widget.TextView;
 import com.idescout.sql.SqlScoutServer;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
-import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.text.FieldPosition;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,9 +37,6 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-
-import static java.util.Calendar.SHORT;
-import static java.util.Calendar.SHORT_FORMAT;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -93,7 +87,6 @@ public class MainActivity extends AppCompatActivity {
     private int timeInMilliseconds= 30000;
     private Button forgetBT;
     private  TextView bluetoothText;
-    BluetoothChatFragment frag;
     private Button connectBT;
     private Button aboutBt;
     private Intent aboutIntent;

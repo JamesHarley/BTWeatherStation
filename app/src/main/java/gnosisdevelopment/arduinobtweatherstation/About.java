@@ -56,7 +56,7 @@ public class About extends AppCompatActivity {
                 "\t\tInterval control for sensor storing. <br />\n" +
                 "\t\tWill be adding a full page graph (day/week/month graph view), support for smaller screens (for now horizontal landscape is best on a small screen). <br />\n" +
                 "\t\tExport for database of sensor readings. <br /><br />\n" +
-                "\t\tDatabase can be reached at from device at: <a href=\" http://localhost:8080\">access db http://localhost:8080)</a><br /><br /> or by visiting android device ip at <a href=\"http://"+ getDeviceIpAddress()+":8080\">http://"+ getDeviceIpAddress()+":8080</a> on a locally connected computer</p>\n" +
+                "\t\tDatabase can be reached from device at: <a href=\" http://localhost:8080\">access db http://localhost:8080)</a><br /><br /> or by visiting android device ip at <a href=\"http://"+ getDeviceIpAddress()+":8080\">http://"+ getDeviceIpAddress()+":8080</a> on a locally connected computer</p>\n" +
                 "\t\t</p>\n" +
                 "\t\t<p>\n" +
                 "\t\t\n" +
@@ -79,7 +79,7 @@ public class About extends AppCompatActivity {
                 "\t\t\t\t<li>Anemometer -- I included the code to allow for a wind sensor  that I'll be adding later</li>\n" +
                 "\t\t\t</p>\n" +
                 "\t\t\t\n" +
-                "\t\t<p>Contact us with any comments and suggestions. Please submit and bugs, errors, or crashes to gnosisdevelop@gmail.com</p>\n" +
+                "\t\t<p>Contact us with any comments and suggestions. Please submit any bugs, errors, or crashes to gnosisdevelop@gmail.com</p>\n" +
                 "\t\t<div class=\"gnos\"><a href=\"https://github.com/JamesHarley/BTWeatherStation/\">Github repo</a> - <a href=\"http://gnosisdevelopment.com\"> Developed by James Harley</a> </div> \n" +
                 "\t\n" +
                 "\t</div>\n" +
@@ -88,7 +88,6 @@ public class About extends AppCompatActivity {
 
         aboutWebView.getSettings().setLoadsImagesAutomatically(true);
         aboutWebView.getSettings().setJavaScriptEnabled(true);
-        aboutWebView.getSettings().setBuiltInZoomControls(true);
         aboutWebView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
         aboutWebView.loadData(summary, "text/html", null);
 
