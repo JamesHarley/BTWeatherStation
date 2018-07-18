@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     private SqlScoutServer sqlScoutServer;
     private SensorsDatabase sDb;
     private boolean btConnectedState = false;
-    private int timeInMilliseconds= 5000;
+    private int timeInMilliseconds= 30000;
     private Button forgetBT;
     private  TextView bluetoothText;
     BluetoothChatFragment frag;
@@ -531,7 +531,7 @@ public class MainActivity extends AppCompatActivity {
         return new Date(System.currentTimeMillis()-2*60*60*1000);
     }
     public static Date getMeTomorrow(){
-        return new Date(System.currentTimeMillis()+1*60*60*1000);
+        return new Date(System.currentTimeMillis()+60*1000);
     }
     private void getData(){
         sDb = SensorsDatabase.getSensorsDatabase(this);
@@ -574,7 +574,6 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("BTWeather-append", date.toString());
                     Log.d("BTWeather-append", date.toString());
                     series.appendData(new DataPoint(date, data), true, 10);
-                    //L
                     graph.addSeries(series);
                     //graph.addSeries(seriesA);
 
@@ -611,8 +610,6 @@ public class MainActivity extends AppCompatActivity {
         // styling viewport
         //graph.getViewport().setBackgroundColor(Color.argb(255, 222, 222, 222));
         graph.getViewport().setDrawBorder(false);
-        graph.getViewport().setXAxisBoundsManual(false);
-
         graph.getViewport().setBorderColor(graphColor);
 
 
@@ -632,10 +629,8 @@ public class MainActivity extends AppCompatActivity {
         if(tempState==true){
             if (celsius == true) {
                 graphUpdater(graphTemp, temp, tempSeries,date);
-
             } else {
                 graphUpdater(graphTemp, cToF(temp),tempSeries,date);
-
             }
         }
         if(humidityState == true)

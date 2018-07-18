@@ -23,8 +23,11 @@
                 android:textSize="50sp" />
             <com.jjoe64.graphview.GraphView
                 app:seriesColor="@color/colorPrimary"
-                android:layout_gravity="right"
+                android:paddingLeft="15dp"
                 android:layout_width="250dp"
+                app:layout_constraintWidth_default="wrap"
+                app:layout_constraintStart_toEndOf="@id/temp"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_height="100dp"
                 android:id="@+id/graphTemp" />
         </GridLayout>
@@ -38,5 +41,5 @@
             android:layout_marginLeft="5dp"
             android:textSize="20sp" />
 
-    </RelativeLayout>
+</RelativeLayout>
 

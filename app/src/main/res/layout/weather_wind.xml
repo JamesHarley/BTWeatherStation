@@ -8,31 +8,34 @@
         android:layout_marginBottom="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <GridLayout
+        <android.support.constraint.ConstraintLayout
             android:id="@+id/windGrid"
-            android:columnCount="2"
             android:layout_marginTop="280dp"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="-20dp"
+            app:layout_constraintWidth_default="wrap"
+            app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/wind"
+                app:layout_constrainedWidth="true"
                 android:layout_width="wrap_content"
+                app:layout_constraintWidth_default="wrap"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
                 android:layout_marginRight="20dp"
-                android:layout_gravity="left"
                 android:textSize="50sp" />
             <com.jjoe64.graphview.GraphView
                 app:seriesColor="@color/colorPrimary"
-                android:layout_toRightOf="@id/wind"
                 android:paddingLeft="15dp"
                 android:layout_width="250dp"
-                android:layout_gravity="right"
+                app:layout_constraintWidth_default="wrap"
+                app:layout_constraintStart_toEndOf="@id/wind"
+                app:layout_constraintEnd_toEndOf="parent"
                 android:layout_height="100dp"
                 android:id="@+id/graphWind" />
-        </GridLayout>
+        </android.support.constraint.ConstraintLayout>
         <TextView
             android:id="@+id/windTitle"
             android:layout_width="wrap_content"
@@ -42,8 +45,5 @@
             android:layout_below="@+id/windGrid"
             android:layout_marginLeft="5dp"
             android:textSize="20sp" />
-
-
     </RelativeLayout>
-
 </android.support.constraint.ConstraintLayout>
