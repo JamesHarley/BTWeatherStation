@@ -25,11 +25,14 @@ import android.widget.TextView;
 import com.idescout.sql.SqlScoutServer;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.Viewport;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.text.FieldPosition;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -39,6 +42,7 @@ import java.util.TimerTask;
 
 
 import static java.util.Calendar.SHORT;
+import static java.util.Calendar.SHORT_FORMAT;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -86,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
     private SqlScoutServer sqlScoutServer;
     private SensorsDatabase sDb;
     private boolean btConnectedState = false;
-    private int timeInMilliseconds= 1000;
+    private int timeInMilliseconds= 5000;
     private Button forgetBT;
     private  TextView bluetoothText;
     BluetoothChatFragment frag;
@@ -524,7 +528,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public static Date getMeYesterday(){
         //return new Date(System.currentTimeMillis()-24*60*60*1000);
-        return new Date(System.currentTimeMillis()-24*60*60*1000);
+        return new Date(System.currentTimeMillis()-2*60*60*1000);
     }
     public static Date getMeTomorrow(){
         return new Date(System.currentTimeMillis());
@@ -560,14 +564,24 @@ public class MainActivity extends AppCompatActivity {
             }
 
     }
-    public void graphUpdater(GraphView graph, double data, LineGraphSeries series, Date date){
+    public void graphUpdater(final GraphView graph, final double data, final LineGraphSeries series, final Date date){
         try {
-            series.appendData(new DataPoint(date, data), true, 10);
-            LineGraphSeries<DataPoint> seriesA = series;
-            graph.addSeries(seriesA);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    LineGraphSeries<DataPoint> seriesA = series;
+                    seriesA.appendData(new DataPoint(date, data), true, 10);
+                    //L
+                    //graph.addSeries(series);
+                    graph.addSeries(seriesA);
+
+
+                }
+            });
         }
         catch (Exception e){
-
+            Log.d("BTWeather-error14", String.valueOf(e));
         }
     }
     public void graphInit(GraphView graph, LineGraphSeries series){
@@ -578,11 +592,9 @@ public class MainActivity extends AppCompatActivity {
         series.setDataPointsRadius(8);
         series.setThickness(5);
         // set date label formatter
-        java.text.DateFormat d = null;
-        d.getDateInstance(SHORT);
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext()) );
+
         graph.getGridLabelRenderer().setNumHorizontalLabels(3);
-        graph.getGridLabelRenderer().setHumanRounding(true);
+        graph.getGridLabelRenderer().setHumanRounding(false);
         // legend
         // styling grid/labels
         graph.getGridLabelRenderer().setGridColor(graphColor);
@@ -591,11 +603,18 @@ public class MainActivity extends AppCompatActivity {
         graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
         graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
         graph.getGridLabelRenderer().reloadStyles();
-
+        java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(getApplicationContext());
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext(),dateTimeFormatter));
         // styling viewport
         //graph.getViewport().setBackgroundColor(Color.argb(255, 222, 222, 222));
         graph.getViewport().setDrawBorder(false);
+        graph.getViewport().setXAxisBoundsManual(true);
+        graph.getViewport().setMinX(3);
+        graph.getViewport().setMaxX(3);
+
         graph.getViewport().setBorderColor(graphColor);
+
+
     }
 
     public java.util.Date  getCurrentTime() {
@@ -608,11 +627,14 @@ public class MainActivity extends AppCompatActivity {
 
     public void updateGraph(double temp, double humidity, double wind, Date date){
         Log.d("BTWeather", "updateGraph()");
+
         if(tempState==true){
             if (celsius == true) {
                 graphUpdater(graphTemp, temp, tempSeries,date);
+
             } else {
                 graphUpdater(graphTemp, cToF(temp),tempSeries,date);
+
             }
         }
         if(humidityState == true)
