@@ -213,6 +213,9 @@ public class MainActivity extends AppCompatActivity {
 
     protected void setWind() {
         if(wind != -99.99){
+            if(wind==0){
+                windText.setText("00.0");
+            }else
             windText.setText(String.valueOf(wind) + "");
         }else {
             windText.setText(" --.-- ");
@@ -422,11 +425,11 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     mydb.updateInterval(1, timeInMilliseconds);
                     Toast.makeText(MainActivity.this,
-                            "Database save interval set to  " + String.valueOf(timeInMilliseconds/1000),
-                            Toast.LENGTH_SHORT);
+                            "Database save interval set to  " + String.valueOf(timeInMilliseconds/1000) + " minutes",
+                            Toast.LENGTH_SHORT).show();
                     }catch (Exception e){
                     Toast.makeText(MainActivity.this,
-                            "Database save interval Failed - Report Bug  " + String.valueOf(e.toString()), Toast.LENGTH_LONG);
+                            "Database save interval Failed - Report Bug  " + String.valueOf(e.toString()), Toast.LENGTH_LONG).show();
                     Log.d("BTWeather-error16", e.toString());
                 }
             }
@@ -626,8 +629,8 @@ public class MainActivity extends AppCompatActivity {
         series.setDrawBackground(true);
         series.setColor(Color.parseColor("#8d1007"));
         series.setBackgroundColor(graphColor);
-        series.setDataPointsRadius(8);
-        series.setThickness(5);
+        series.setDataPointsRadius(4);
+        series.setThickness(2);
         // set date label formatter
 
         graph.getGridLabelRenderer().setNumHorizontalLabels(3);

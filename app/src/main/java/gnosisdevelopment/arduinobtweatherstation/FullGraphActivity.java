@@ -51,7 +51,6 @@ public class FullGraphActivity extends AppCompatActivity {
             return false;
         }
     };
-//TODO Set Hourly as default load
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -21,16 +21,18 @@
                 android:id="@+id/wind"
                 app:layout_constrainedWidth="true"
                 android:layout_width="wrap_content"
-                app:layout_constraintWidth_default="wrap"
                 android:layout_height="wrap_content"
                 android:textColor="@color/colorPrimary"
+                app:layout_constraintWidth_default="wrap"
                 android:layout_marginRight="20dp"
+                android:layout_gravity="left"
                 android:textSize="50sp" />
+
             <com.jjoe64.graphview.GraphView
                 app:seriesColor="@color/colorPrimary"
                 android:paddingLeft="15dp"
-                android:layout_width="250dp"
-                app:layout_constraintWidth_default="wrap"
+                android:layout_width="wrap_content"
+                app:layout_constrainedWidth="true"
                 app:layout_constraintStart_toEndOf="@id/wind"
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_height="100dp"

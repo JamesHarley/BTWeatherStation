@@ -147,7 +147,7 @@ public class BluetoothChatFragment extends Fragment {
         // Initialize the BluetoothChatService to perform bluetooth connections
         mChatService = new BluetoothChatService(getActivity(), mHandler);
     }
-
+    //TODO add method to try reconnection after 1 failed/disconnected event
     /**
      * The Handler that gets information back from the BluetoothChatService
      */
@@ -189,8 +189,7 @@ public class BluetoothChatFragment extends Fragment {
             }
         }
     };
-    //TODO save previously connected device into DB to automatically connect
-    //TODO Add forget device
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
