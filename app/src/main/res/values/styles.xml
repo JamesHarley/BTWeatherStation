@@ -13,12 +13,14 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="AppTheme.Buttons">
         <item name="android:background">#6a0c05</item>
         <item name="android:padding">1dp</item>
         <item name="android:textColor">#fff</item>
         <item name="android:layout_marginLeft">20dp</item>
     </style>
+
     <style name="AppTheme.EditText">
         <item name="colorControlNormal">@color/colorPrimary</item>
     </style>
@@ -26,9 +28,12 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
     <style name="SwitchTextAppearance" parent="@android:style/TextAppearance.Holo.Small">
         <item name="android:textColor">@color/switch_text_color</item>
-]    </style>
+        ]
+    </style>
+
     <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
         <item name="android:windowDisablePreview">true</item>
         <item name="overlapAnchor">false</item>

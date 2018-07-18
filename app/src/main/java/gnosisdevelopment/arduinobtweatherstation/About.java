@@ -31,6 +31,7 @@ public class About extends AppCompatActivity {
         setSupportActionBar(toolbar);
         WebView aboutWebView = (WebView) findViewById(R.id.aboutWebView);
         aboutWebView.setWebViewClient(new About.MyBrowser());
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String summary = "<html>\n" +
                 "<head>\n" +

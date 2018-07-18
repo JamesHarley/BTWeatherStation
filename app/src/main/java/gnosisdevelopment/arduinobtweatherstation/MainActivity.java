@@ -18,14 +18,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.idescout.sql.SqlScoutServer;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
 import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
+import com.jjoe64.graphview.helper.GraphViewXML;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
@@ -73,12 +77,11 @@ public class MainActivity extends AppCompatActivity {
     private GraphView graphWind;
     private final static int graphColor = Color.parseColor("#6a0c05");
 
-    private SQLiteDatabase db;
     private LineGraphSeries tempSeries;
     private LineGraphSeries windSeries;
     private LineGraphSeries humiditySeries;
     private final static int INTERVAL = 1000 * 60 * 2; //2 minutes
-    private Handler mHandlerClock;
+
     private DBHelper mydb ;
     private LayoutInflater inflater;
     private SqlScoutServer sqlScoutServer;
@@ -87,11 +90,10 @@ public class MainActivity extends AppCompatActivity {
     private int timeInMilliseconds= 30000;
     private Button forgetBT;
     private  TextView bluetoothText;
-    private Button connectBT;
     private Button aboutBt;
     private Intent aboutIntent;
     GrapherUtils graphUtil;
-
+    EditText et;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -117,7 +119,9 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
-/**
+    private Intent fullGraphIntent;
+
+    /**
     private void notificationPanelDeflator() {
         if (notificationsLayout != null) weatherView.removeView(notificationsLayout);
     }
@@ -135,6 +139,8 @@ public class MainActivity extends AppCompatActivity {
         sqlScoutServer = SqlScoutServer.create(this, getPackageName());
         setContentView(R.layout.activity_main);
         aboutIntent = new Intent(this, About.class);
+        fullGraphIntent = new Intent(this, FullGraphActivity.class);
+
 
         sDb = SensorsDatabase.getSensorsDatabase(this);
         //Child layout
@@ -154,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
          mydb = new DBHelper(this);
         ;
          if(mydb.isEmpty()==true){
-                 mydb.insertPrefs(tempState,humidityState,windState,"empty", celsius);
+                 mydb.insertPrefs(tempState,humidityState,windState,"empty", celsius, timeInMilliseconds);
                  Log.d("BTWeather - isEmpty()", "insertpref");
              mydb.close();
 
@@ -212,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
     }
     // convert C to F
     protected Double cToF(Double cTemp) {
-        return (temp * 9 / 5.0) + 32;
+        return (cTemp * 9 / 5.0) + 32;
     }
 
     public void gaugeUpdater(String [] gaugeValues){
@@ -291,6 +297,13 @@ public class MainActivity extends AppCompatActivity {
         }
         //updateGraph();
         getData();
+        View graphArea =findViewById(R.id.graphTemp);
+        graphArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(fullGraphIntent);
+            }
+        });
     }
 
     protected void weatherPanelDeflator() {
@@ -390,8 +403,33 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(aboutIntent);
             }
         });
-    }
 
+        et = findViewById(R.id.selectInterval);
+        et.setText(String.valueOf(timeInMilliseconds/1000));
+        Button saveBt = findViewById(R.id.saveIntervalButton);
+
+        saveBt.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                        mydb = new DBHelper(getApplicationContext());
+                    timeInMilliseconds = 1000 * Integer.valueOf(et.getText().toString());
+                    try{
+                        mydb.updateInterval(1,timeInMilliseconds);
+                    }catch (Exception e){
+                        Log.d("BTWeather-error16", e.toString());
+                    }
+                }
+            });
+
+
+    }
+    NumberPicker.OnValueChangeListener onValueChangeListener =
+            new 	NumberPicker.OnValueChangeListener(){
+                @Override
+                public void onValueChange(NumberPicker numberPicker, int i, int i1) {
+                    Toast.makeText(MainActivity.this,
+                            "selected number "+numberPicker.getValue(), Toast.LENGTH_SHORT);
+                }
+            };
     protected void controlPanelDeflator() {
         if (controlLayout != null) weatherView.removeView(controlLayout);
     }
@@ -447,6 +485,9 @@ public class MainActivity extends AppCompatActivity {
             celsius = false;
         }else
             celsius = true;
+        if(mydb.getInterval()!= -1){
+            timeInMilliseconds = mydb.getInterval();
+        }
         mydb.close();
     }
     public String getBT() {
@@ -469,6 +510,21 @@ public class MainActivity extends AppCompatActivity {
         return String.valueOf(getCurrentTime());
     }
 
+    public boolean isTempState() {
+        return tempState;
+    }
+
+    public boolean isHumidityState() {
+        return humidityState;
+    }
+
+    public boolean isWindState() {
+        return windState;
+    }
+    public boolean isCelsius() {
+        return celsius;
+    }
+
 
     private void setRepeatingAsyncTask() {
         try{
@@ -484,7 +540,7 @@ public class MainActivity extends AppCompatActivity {
 
                             try{
                                 //TODO When states are false will not store
-                                if(wind != -99.99 && temp != -99.99 & humidity!=-99.99) {
+                                if(wind != -99.99 && temp != -99.99 & humidity!= -99.99) {
                                     DatabaseInitializer.populateAsync(sDb,
                                             String.valueOf(temp),
                                             String.valueOf(humidity),
@@ -517,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
     }
     public String dbDate(){
         Date d = new Date();
-       return  DateFormat.format("MM-dd-yyyy hh:mm:ss",d).toString();
+       return  DateFormat.format("MM-dd-yyyy HH:mm:ss",d).toString();
     }
     public static Date getMeYesterday(){
         //return new Date(System.currentTimeMillis()-24*60*60*1000);
@@ -526,6 +582,7 @@ public class MainActivity extends AppCompatActivity {
     public static Date getMeTomorrow(){
         return new Date(System.currentTimeMillis()+60*1000);
     }
+
     private void getData(){
         sDb = SensorsDatabase.getSensorsDatabase(this);
         final Handler handler2 = new Handler();
@@ -537,8 +594,8 @@ public class MainActivity extends AppCompatActivity {
                                 Date date1 = new Date();
                                  try {
                                      List<Sensors> sensorList = sDb.sensorsDao().findByDate(
-                                             DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeYesterday()).toString(),
-                                             DateFormat.format("MM-dd-yyyy hh:mm:ss", getMeTomorrow()).toString());
+                                             DateFormat.format("MM-dd-yyyy HH:mm:ss", getMeYesterday()).toString(),
+                                             DateFormat.format("MM-dd-yyyy HH:mm:ss", getMeTomorrow()).toString());
 
                                      for (Sensors sensor : sensorList) {
                                          new UpdateGraph().doInBackground(sensor);
@@ -557,27 +614,8 @@ public class MainActivity extends AppCompatActivity {
             }
 
     }
-    public void graphUpdater(final GraphView graph, final double data, final LineGraphSeries series, final Date date){
-        try {
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-
-                    //LineGraphSeries<DataPoint> seriesA = series;
-                    Log.d("BTWeather-append", date.toString());
-                    Log.d("BTWeather-append", date.toString());
-                    series.appendData(new DataPoint(date, data), true, 10);
-                    graph.addSeries(series);
-                    //graph.addSeries(seriesA);
 
 
-                }
-            });
-        }
-        catch (Exception e){
-            Log.d("BTWeather-error14", String.valueOf(e));
-        }
-    }
     public void graphInit(GraphView graph, LineGraphSeries series){
 
         series.setDrawBackground(true);
@@ -609,20 +647,40 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public java.util.Date  getCurrentTime() {
-        //String mytime = (DateFormat.format("dd-MM-yyyy hh:mm:ss", ).toString());
+        //String mytime = (DateFormat.format("dd-MM-yyyy HH:mm:ss", ).toString());
         Calendar calendar = Calendar.getInstance();
         Date d1 = calendar.getTime();
         return d1;
     }
 
+    public void graphUpdater(final GraphView graph, final double data, final LineGraphSeries series, final Date date){
+        try {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
 
+                    Log.d("BTWeather-append", date.toString() + " - " +String.valueOf(data));
+                    series.appendData(new DataPoint(date, data), true, 10);
+                    graph.addSeries(series);
+                    //graph.addSeries(seriesA);
+
+
+                }
+            });
+        }
+        catch (Exception e){
+            Log.d("BTWeather-error14", String.valueOf(e));
+        }
+    }
     public void updateGraph(double temp, double humidity, double wind, Date date){
         Log.d("BTWeather", "updateGraph()");
+
 
         if(tempState==true){
             if (celsius == true) {
                 graphUpdater(graphTemp, temp, tempSeries,date);
             } else {
+                Log.d("BTWeather-updateCtf", String.valueOf(temp));
                 graphUpdater(graphTemp, cToF(temp),tempSeries,date);
             }
         }
@@ -641,7 +699,7 @@ public class MainActivity extends AppCompatActivity {
                     double wnd = Double.valueOf(sensor.getmWind());
                     String sdate = sensor.getmDate();
                     try {
-                        date1 = new SimpleDateFormat("MM-dd-yyyy hh:mm:ss").parse(sdate);
+                        date1 = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(sdate);
                     } catch (ParseException e) {
                         Log.d("BTWeather-error6", String.valueOf(e));
                     }

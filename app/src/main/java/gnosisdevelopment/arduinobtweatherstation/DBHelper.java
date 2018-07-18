@@ -21,6 +21,8 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String PREFS_COLUMN_WINDSTATE = "windstate";
     public static final String PREFS_COLUMN_BTDEVICE = "btdevice";
     public static final String PREFS_COLUMN_CELSIUS = "celsius";
+
+    public static final String PREFS_COLUMN_UPDATE_INTERVAL = "interval";
     private HashMap hp;
 
     public DBHelper(Context context) {
@@ -35,7 +37,7 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d("BTWeather - DB", "create db");
         db.execSQL(
                 "create table prefs " +
-                        "(id integer primary key, tempstate boolean,humidstate boolean, windstate boolean,btdevice text, celsius boolean)"
+                        "(id integer primary key, tempstate boolean,humidstate boolean, windstate boolean,btdevice text, celsius boolean,interval integer)"
         );
     }
 
@@ -46,7 +48,7 @@ public class DBHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public boolean insertPrefs (Boolean tempstate,Boolean humidstate, Boolean windstate, String btdevice, Boolean celsius) {
+    public boolean insertPrefs (Boolean tempstate,Boolean humidstate, Boolean windstate, String btdevice, Boolean celsius, int interval) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("tempstate", tempstate);
@@ -54,6 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("windstate", windstate);
         contentValues.put("btdevice", btdevice);
         contentValues.put("celsius", celsius);
+        contentValues.put("interval", interval);
         db.insert("prefs", null, contentValues);
         Log.d("BTWeather - DB", "insert db");
         return true;
@@ -71,7 +74,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return numRows;
     }
 
-    public boolean updateContact (Integer id, Boolean tempstate,Boolean humidstate, Boolean windstate, String btdevice, Boolean celsius) {
+    public boolean updateContact (Integer id, Boolean tempstate,Boolean humidstate, Boolean windstate, String btdevice, Boolean celsius, int interval) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("tempstate", tempstate);
@@ -79,6 +82,7 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("windstate", windstate);
         contentValues.put("btdevice", btdevice);
         contentValues.put("celsius", celsius);
+        contentValues.put("interval", interval);
         db.update("prefs", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
         return true;
     }
@@ -151,6 +155,14 @@ public class DBHelper extends SQLiteOpenHelper {
         Log.d("BTWeather - DB", "update celsius");
         return true;
     }
+    public boolean updateInterval(Integer id, int interval){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("interval", interval);
+        db.update("prefs", contentValues, "id = ? ", new String[] { Integer.toString(id) } );
+        Log.d("BTWeather - DB", "update interval");
+        return true;
+    }
 
     public int getHumidState(){
         try{
@@ -196,5 +208,14 @@ public class DBHelper extends SQLiteOpenHelper {
             return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_CELSIUS));}
         catch (Exception e ){Log.d("BTWeather - getCelsius", String.valueOf(e));}
         return 1;
+    }
+    public int getInterval(){
+        try{
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor res =  db.rawQuery( "select * from prefs ",null );
+            res.moveToFirst();
+            return res.getInt(res.getColumnIndex(DBHelper.PREFS_COLUMN_UPDATE_INTERVAL));}
+        catch (Exception e ){Log.d("BTWeatherget-interval", String.valueOf(e));}
+        return -1;
     }
 }

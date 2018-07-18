@@ -5,6 +5,7 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_weather_panel">Weather Panel</string>
     <string name="forgetBT">Forget Bluetooth</string>
+    <string name="intervalText">Minute interval save data to database:</string>
     <string name="title_activity_about">About ArduinoBT Weather Station</string>
     <!-- Weather -->
     <string name="title_temp">Temperature °</string>
@@ -38,4 +39,11 @@
     <!-- Options Menu -->
     <string name="insecure_connect">Connect device</string>
     <string name="discoverable">Make discoverable</string>
+    <string name="title_activity_graph">Graph</string>
+
+    <!-- Graph menu -->
+    <string name="graph_hour">Hourly</string>
+    <string name="graph_day">Days</string>
+    <string name="graph_week">Weeks</string>
+    <string name="title_activity_full_graph">Graph</string>
 </resources>
