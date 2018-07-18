@@ -389,7 +389,7 @@ public class MainActivity extends AppCompatActivity {
         }else {
             layout.removeView(forgetBT);
             layout.removeView(bluetoothText);
-            controlPanelInflator();
+
         }
         aboutBt = findViewById(R.id.aboutButton);
         aboutBt.setOnClickListener(new View.OnClickListener() {

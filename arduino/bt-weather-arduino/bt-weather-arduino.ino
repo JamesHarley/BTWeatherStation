@@ -1,10 +1,5 @@
-// Basic Bluetooth sketch HC-06_01
-// Connect the Hc-06 module and communicate using the serial monitor
-//
-// The HC-06 defaults to AT mode when first powered on.
-// The default baud rate is 9600
-// The Hc-06 requires all AT commands to be in uppercase. NL+CR should not be added to the command string
-//
+// Gnosis Development Arduino Bluetooth adapter paired with DHT11 Humidity/Temperature Sensor
+// Part of Android project ArduinoBT Weather Station
 #include <dht.h>
 
 dht DHT;
@@ -35,18 +30,7 @@ void loop()
     String output = "";
     String tokenizer = "@";
     int chk = DHT.read11(DHT11_PIN);
-    if(DHT.temperature != -999.00){
-          
-      //Serial.print("{ Temperature = ") ;
-      //Serial.print(DHT.temperature);
-       //Serial.print("}");
-    }
-    if(DHT.humidity != -999.00){
-      
-     // Serial.print("{ Humidity = ");
-     // Serial.print(DHT.humidity);
-     // Serial.print("} ");
-    }
+   
   
     // Keep reading from HC-06 and send to Arduino Serial Monitor
         if (BTserial.available())
@@ -73,8 +57,6 @@ void loop()
           
               Serial.println(output);
               BTserial.write(output.c_str());
-             //BTserial.write("@10.00;20.00;30.00@");     
-            // Serial.print( bytesSent);
              //BTserial.write("@100.25;100.00;100.00@");
           }
           delay(10);

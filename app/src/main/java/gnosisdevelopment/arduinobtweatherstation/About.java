@@ -1,10 +1,24 @@
 package gnosisdevelopment.arduinobtweatherstation;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 
 
 public class About extends AppCompatActivity {
@@ -13,7 +27,8 @@ public class About extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         WebView aboutWebView = (WebView) findViewById(R.id.aboutWebView);
         aboutWebView.setWebViewClient(new About.MyBrowser());
 
@@ -35,25 +50,25 @@ public class About extends AppCompatActivity {
                 "\n" +
                 "\t<div class=\"main\">\n" +
                 "\t\t<h1>ArduinoBT Weather Station</h1>\n" +
-                "\t\t<p> Version 1.0-Alpha</p>\n" +
-                "\t\t<p> Pre release for testing. Current versions graph is very limited. Sensor readings are stored in database once per minute after the device connects to bluetooth and receives properly formated input. </p>\n" +
+                "\t\t<p> Version " + BuildConfig.VERSION_NAME+"."+BuildConfig.VERSION_CODE+" </p>\n" +
+                "\t\t<p> Pre release for testing. Current versions graph is very limited. Sensor readings are stored in database once per 30 minutes after the device connects to bluetooth and receives properly formatted input. </p>\n" +
                 "\t\t<p> Next Release:<br />\n" +
                 "\t\tInterval control for sensor storing. <br />\n" +
-                "\t\tWill be adding a full page graph (day/week/month grapgh view), support for smaller screens (for now horizontal landscape is best on a small screen). <br />\n" +
+                "\t\tWill be adding a full page graph (day/week/month graph view), support for smaller screens (for now horizontal landscape is best on a small screen). <br />\n" +
                 "\t\tExport for database of sensor readings. <br /><br />\n" +
-                "\t\tDatabase can be reached at from device at: <a href=\" http://localhost:8080\">access db http://localhost:8080)</a><br /><br /> or by http://android:ip:8080 on a locally connected computer</p>\n" +
+                "\t\tDatabase can be reached at from device at: <a href=\" http://localhost:8080\">access db http://localhost:8080)</a><br /><br /> or by visiting android device ip at <a href=\"http://"+ getDeviceIpAddress()+":8080\">http://"+ getDeviceIpAddress()+":8080</a> on a locally connected computer</p>\n" +
                 "\t\t</p>\n" +
                 "\t\t<p>\n" +
                 "\t\t\n" +
                 "\t\t<p>\n" +
-                "\t\t\tThis app requires arduino with a bluetooth adapter and a temperature, humidity, and wind (anemometer) sensor. Sketch:  <a href=\"https://github.com/JamesHarley/BTWeatherStation/blob/master/arduino/bt-weather-arduino/bt-weather-arduino.ino\">bt-weather-arduino.ino</a>\n" +
+                "\t\t\tThis app requires Arduino with a bluetooth adapter and a temperature, humidity, and wind (anemometer) sensor. Sketch:  <a href=\"https://github.com/JamesHarley/BTWeatherStation/blob/master/arduino/bt-weather-arduino/bt-weather-arduino.ino\">bt-weather-arduino.ino</a>\n" +
                 "\t\t\t\n" +
                 "\t\t\t\n" +
                 "\t\t\t\n" +
                 "\t\t</p>\n" +
                 "\t\t\n" +
                 "\t\t<p>OR </p>\n" +
-                "\t\t<p>a compatiable setup that sends formatted output through the bluetooth adapater serial in the format <i>@10.00;20.00;30.00@</i> </p>\n" +
+                "\t\t<p>a compatible setup that sends formatted output through the bluetooth adapter serial in the format <i>@10.00;20.00;30.00@</i> </p>\n" +
                 "\t\t\n" +
                 "\t\t<p>\n" +
                 "\t\t\t\tParts used: \n" +
@@ -108,4 +123,56 @@ public class About extends AppCompatActivity {
 
     }
 
+    @NonNull
+    private String getDeviceIpAddress() {
+        String actualConnectedToNetwork = null;
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connManager != null) {
+            NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+            if (mWifi.isConnected()) {
+                actualConnectedToNetwork = getWifiIp();
+            }
+        }
+        if (TextUtils.isEmpty(actualConnectedToNetwork)) {
+            actualConnectedToNetwork = getNetworkInterfaceIpAddress();
+        }
+        if (TextUtils.isEmpty(actualConnectedToNetwork)) {
+            actualConnectedToNetwork = "127.0.0.1";
+        }
+        return actualConnectedToNetwork;
+    }
+
+    @Nullable
+    private String getWifiIp() {
+        final WifiManager mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (mWifiManager != null && mWifiManager.isWifiEnabled()) {
+            int ip = mWifiManager.getConnectionInfo().getIpAddress();
+            return (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "."
+                    + ((ip >> 24) & 0xFF);
+        }
+        return null;
+    }
+
+
+    @Nullable
+    public String getNetworkInterfaceIpAddress() {
+        try {
+            for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                NetworkInterface networkInterface = en.nextElement();
+                for (Enumeration<InetAddress> enumIpAddr = networkInterface.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                    InetAddress inetAddress = enumIpAddr.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                        String host = inetAddress.getHostAddress();
+                        if (!TextUtils.isEmpty(host)) {
+                            return host;
+                        }
+                    }
+                }
+
+            }
+        } catch (Exception ex) {
+            Log.e("IP Address", "getLocalIpAddress", ex);
+        }
+        return null;
+    }
 }
