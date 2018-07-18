@@ -1,5 +1,6 @@
 package gnosisdevelopment.arduinobtweatherstation;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -410,26 +412,29 @@ public class MainActivity extends AppCompatActivity {
 
         saveBt.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                        mydb = new DBHelper(getApplicationContext());
-                    timeInMilliseconds = 1000 * Integer.valueOf(et.getText().toString());
-                    try{
-                        mydb.updateInterval(1,timeInMilliseconds);
-                    }catch (Exception e){
-                        Log.d("BTWeather-error16", e.toString());
-                    }
+                mydb = new DBHelper(getApplicationContext());
+                timeInMilliseconds = 1000 * Integer.valueOf(et.getText().toString());
+                InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                if (imm.isActive()){
+                    // Hide keyboard
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                 }
+                try {
+                    mydb.updateInterval(1, timeInMilliseconds);
+                    Toast.makeText(MainActivity.this,
+                            "Database save interval set to  " + String.valueOf(timeInMilliseconds/1000),
+                            Toast.LENGTH_SHORT);
+                    }catch (Exception e){
+                    Toast.makeText(MainActivity.this,
+                            "Database save interval Failed - Report Bug  " + String.valueOf(e.toString()), Toast.LENGTH_LONG);
+                    Log.d("BTWeather-error16", e.toString());
+                }
+            }
             });
 
 
     }
-    NumberPicker.OnValueChangeListener onValueChangeListener =
-            new 	NumberPicker.OnValueChangeListener(){
-                @Override
-                public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-                    Toast.makeText(MainActivity.this,
-                            "selected number "+numberPicker.getValue(), Toast.LENGTH_SHORT);
-                }
-            };
+
     protected void controlPanelDeflator() {
         if (controlLayout != null) weatherView.removeView(controlLayout);
     }

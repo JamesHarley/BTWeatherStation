@@ -62,7 +62,8 @@ public class FullGraphActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         mainActivity = new MainActivity() ;
         graph = (GraphView) findViewById(R.id.fullGraph);
-
+        // Setting the very 1st item as home screen.
+        navigation.setSelectedItemId(R.id.graph_hour);
     }
     public void grapher(GraphView graph, LineGraphSeries series){
         series.setDrawBackground(true);
@@ -82,7 +83,6 @@ public class FullGraphActivity extends AppCompatActivity {
         graph.getGridLabelRenderer().setLabelFormatter(
                 new DateAsXAxisLabelFormatter(graph.getContext(),
                         dateTimeFormatter));
-
     }
 
     public LineGraphSeries seriesBuilder(List<Sensors> sensorsList){
@@ -125,7 +125,7 @@ public class FullGraphActivity extends AppCompatActivity {
     //Database
     public static Date getMeYesterday(){
         //return new Date(System.currentTimeMillis()-24*60*60*1000);
-        return new Date(System.currentTimeMillis()-2*60*60*1000);
+        return new Date(System.currentTimeMillis()-24*60*60*1000);
     }
     public static Date getMeTomorrow(){
         return new Date(System.currentTimeMillis());
