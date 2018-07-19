@@ -254,7 +254,6 @@ public class MainActivity extends AppCompatActivity {
     protected void weatherPanelInflator() {
         weatherPanelDeflator();
         pullFromdb();
-        getData();
         if (tempState == true) {
             tempLayout = inflater.inflate(R.layout.weather_temp,
                     (ViewGroup) findViewById(R.id.weatherPanelTemp));
@@ -300,7 +299,6 @@ public class MainActivity extends AppCompatActivity {
         if (wind != null && windText != null) {
             setWind();
         }
-        //updateGraph();
         getData();
         View graphArea =findViewById(R.id.graphTemp);
         graphArea.setOnClickListener(new View.OnClickListener() {
@@ -628,7 +626,7 @@ public class MainActivity extends AppCompatActivity {
     public void graphInit(GraphView graph, LineGraphSeries series){
 
         series.setDrawBackground(true);
-        series.setColor(Color.parseColor("#8d1007"));
+        //series.setColor(Color.parseColor("#8d1007"));
         series.setBackgroundColor(graphColor);
         series.setDataPointsRadius(4);
         series.setThickness(2);
@@ -661,7 +659,7 @@ public class MainActivity extends AppCompatActivity {
         Date d1 = calendar.getTime();
         return d1;
     }
-
+    //TODO Still catching x-values out of order (Running Twice)
     public void graphUpdater(final GraphView graph, final double data, final LineGraphSeries series, final Date date){
         try {
             runOnUiThread(new Runnable() {
@@ -683,7 +681,6 @@ public class MainActivity extends AppCompatActivity {
     }
     public void updateGraph(double temp, double humidity, double wind, Date date){
         Log.d("BTWeather", "updateGraph()");
-
 
         if(tempState==true){
             if (celsius == true) {

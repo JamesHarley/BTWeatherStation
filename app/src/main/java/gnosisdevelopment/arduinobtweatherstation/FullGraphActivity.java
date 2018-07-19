@@ -64,6 +64,7 @@ public class FullGraphActivity extends AppCompatActivity {
         // Setting the very 1st item as home screen.
         navigation.setSelectedItemId(R.id.graph_hour);
     }
+    //TODO X-axis not advancing
     public void grapher(GraphView graph, LineGraphSeries[] seriesArray){
         LineGraphSeries series = new LineGraphSeries();
         for(int i = 0; i<seriesArray.length; i++){
@@ -80,8 +81,8 @@ public class FullGraphActivity extends AppCompatActivity {
                 series.setBackgroundColor(Color.parseColor("#551a8b"));
             }
             if(i == 2) {
-                series.setColor(Color.parseColor("#00F00F"));
-                series.setBackgroundColor(Color.parseColor("#00F00F"));
+                series.setColor(Color.parseColor("#FF0008F0"));
+                series.setBackgroundColor(Color.parseColor("#FF0008F0"));
             }
             series.setDataPointsRadius(2);
             series.setThickness(2);
@@ -96,6 +97,7 @@ public class FullGraphActivity extends AppCompatActivity {
         graph.getGridLabelRenderer().setHorizontalLabelsColor(graphColor);
         graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
         graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
+        graph.getViewport().setXAxisBoundsManual(false);
         maxYBound=maxYBound+10;
         graph.getViewport().setMaxY(maxYBound);
         graph.getViewport().setYAxisBoundsManual(true);

@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#6a0c05</color>
     <color name="colorAccent">#03b5ff</color>
     <color name="switch_text_color">#fff</color>
+    <color name="humidityColor">#551a8b</color>
+    <color name="windColor">#0008f0</color>
 </resources>
