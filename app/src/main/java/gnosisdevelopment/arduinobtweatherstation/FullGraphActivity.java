@@ -30,7 +30,7 @@ public class FullGraphActivity extends AppCompatActivity {
     private double maxYBound = 0;
     private double minYBound = 999;
     private int focus =0;
-
+    private int time = 0;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -39,6 +39,8 @@ public class FullGraphActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.graph_hour:
+                    maxYBound=0;
+                    time=1;
                     if(focus ==1 )
                         mTextMessage.setText(R.string.graph_hour_temp);
                     if(focus ==2 )
@@ -46,31 +48,38 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_hour_wind);
                     try{
-                        grapher(graph,seriesBuilder(getTempData()));
+                        grapher(graph,seriesBuilder(getTempData(getYesterday())));
                     }catch(Exception e){
                         Log.d("BTWeather-error15", e.toString());
                     }
                     return true;
                 case R.id.graph_day:
+                    maxYBound=0;
+                    time=2;
                     if(focus ==1 )
                         mTextMessage.setText(R.string.graph_day_temp);
                     if(focus ==2 )
                         mTextMessage.setText(R.string.graph_day_humid);
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_day_wind);
+                    grapher(graph,seriesBuilder(getTempData(getWeek())));
                     return true;
                 case R.id.graph_week:
+                    maxYBound=0;
+                    time=3;
                     if(focus ==1 )
                         mTextMessage.setText(R.string.graph_week_temp);
                     if(focus ==2 )
                         mTextMessage.setText(R.string.graph_week_humid);
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_week_wind);
+                    grapher(graph,seriesBuilder(getTempData(getMonth())));
                     return true;
             }
             return false;
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,37 +95,39 @@ public class FullGraphActivity extends AppCompatActivity {
         // Setting the very 1st item as home screen.
         navigation.setSelectedItemId(R.id.graph_hour);
 
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
     }
     //TODO X-axis not advancing
     //TODO Calculate horizontal axis based on interval or # of sensorslist
     public void grapher(GraphView graph, LineGraphSeries[] seriesArray){
         LineGraphSeries series = new LineGraphSeries();
-        /**
-        for(int i = 0; i<seriesArray.length; i++){
-            series = new LineGraphSeries();
-            series = seriesArray[i];
-            series.setDrawBackground(true);
+        if(focus==3){
+            for(int i = 0; i<seriesArray.length; i++){
+                series = new LineGraphSeries();
+                series = seriesArray[i];
+                series.setDrawBackground(true);
 
-            if(i == 0) {
-                series.setColor(Color.parseColor("#8d1007"));
-                series.setBackgroundColor(Color.parseColor("#8d1007"));
-            }
-            if(i == 1) {
-                series.setColor(Color.parseColor("#551a8b"));
-                series.setBackgroundColor(Color.parseColor("#551a8b"));
-            }
-            if(i == 2) {
-                series.setColor(Color.parseColor("#FF0008F0"));
-                series.setBackgroundColor(Color.parseColor("#FF0008F0"));
-            }
+                if(i == 0) {
+                    series.setColor(Color.parseColor("#8d1007"));
+                    series.setBackgroundColor(Color.parseColor("#8d1007"));
+                }
+                if(i == 1) {
+                    series.setColor(Color.parseColor("#551a8b"));
+                    series.setBackgroundColor(Color.parseColor("#551a8b"));
+                }
+                if(i == 2) {
+                    series.setColor(Color.parseColor("#FF0008F0"));
+                    series.setBackgroundColor(Color.parseColor("#FF0008F0"));
+                }
 
-            series.setDataPointsRadius(2);
-            series.setThickness(2);
+                series.setDataPointsRadius(2);
+                series.setThickness(2);
 
-            graph.addSeries(series);
-        }**/
+                graph.addSeries(series);
+            }
+        }
         if(focus == 1){
             series = seriesArray[0];
             series.setDrawBackground(true);
@@ -161,10 +172,14 @@ public class FullGraphActivity extends AppCompatActivity {
         graph.getGridLabelRenderer().setHumanRounding(true);
         graph.getGridLabelRenderer().reloadStyles();
         java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(getApplicationContext());
-
-        graph.getGridLabelRenderer().setLabelFormatter(
-                new DateAsXAxisLabelFormatter(graph.getContext(),
-                        dateTimeFormatter));
+        if(time==1) {
+            graph.getGridLabelRenderer().setLabelFormatter(
+                    new DateAsXAxisLabelFormatter(graph.getContext(),
+                            dateTimeFormatter));
+        }else{
+            graph.getGridLabelRenderer().setLabelFormatter(
+                    new DateAsXAxisLabelFormatter(graph.getContext()));
+        }
     }
 
     public LineGraphSeries[] seriesBuilder(List<Sensors> sensorsList){
@@ -262,22 +277,36 @@ public class FullGraphActivity extends AppCompatActivity {
     }
 
     //Database
-    public static Date getMeYesterday(){
+    public static String getYesterday(){
         //return new Date(System.currentTimeMillis()-24*60*60*1000);
-        return new Date(System.currentTimeMillis()-24*60*60*1000);
+       String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
+               new Date(System.currentTimeMillis()-24*60*60*1000)).toString();
+        return start;
+    }
+    public static String getWeek(){
+        //return new Date(System.currentTimeMillis()-24*60*60*1000);
+        String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
+                new Date(System.currentTimeMillis()-24*60*60*1000*7)).toString();
+        return start;
+    }
+    public static String getMonth(){
+        //return new Date(System.currentTimeMillis()-24*60*60*1000);
+        String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
+                new Date(System.currentTimeMillis()-24*60*60*1000*7*4)).toString();
+        return start;
     }
     public static Date getMeTomorrow(){
         return new Date(System.currentTimeMillis());
     }
 
 
-    private List<Sensors> getTempData(){
+    private List<Sensors> getTempData(String start){
         SensorsDatabase sDb = SensorsDatabase.getSensorsDatabase(this);
         List<Sensors> dataPoints = null;
         Date date1 = new Date();
         try {
              dataPoints = sDb.sensorsDao().findTempByDate(
-                    DateFormat.format("MM-dd-yyyy HH:mm:ss", getMeYesterday()).toString(),
+                    start,
                     DateFormat.format("MM-dd-yyyy HH:mm:ss", getMeTomorrow()).toString());
 
         } catch (Exception e) {

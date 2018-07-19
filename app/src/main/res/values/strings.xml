@@ -58,6 +58,6 @@
     <string name="graph_hour_wind">Wind Hourly</string>
     <string name="graph_day_wind">Wind Daily</string>
     <string name="graph_week_wind">Wind Weekly</string>
-    <string name="about">About app</string>
+    <string name="about">About</string>
 
 </resources>

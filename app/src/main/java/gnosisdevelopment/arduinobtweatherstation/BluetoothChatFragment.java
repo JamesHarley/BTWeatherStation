@@ -102,7 +102,7 @@ public class BluetoothChatFragment extends Fragment {
         } else if (mChatService == null) {
             setupChat();
             String bt = ((MainActivity) getActivity()).getBT();
-            if(!(bt.equals("")) && !(bt.equals("empty"))){
+            if(!(bt.equals("")) && !(bt.equals("empty") )){
                 connectDevice(bt,false);
             }
         }
@@ -264,7 +264,10 @@ public class BluetoothChatFragment extends Fragment {
                 startActivity(serverIntent);
                 return true;
             }
-
+            case R.id.home:{
+                getActivity().onBackPressed();
+                return true;
+            }
         }
         return false;
     }

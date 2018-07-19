@@ -95,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
     private Button aboutBt;
     private Intent aboutIntent;
     private Intent fullGraphIntent;
+    protected  Intent mainIntent;
+    private Activity mActivity;
+
     private int focus;
     GrapherUtils graphUtil;
     EditText et;
@@ -135,7 +138,14 @@ public class MainActivity extends AppCompatActivity {
         weatherView = findViewById(R.id.container);
         weatherView.addView(notificationsLayout);
     }**/
-
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+    }
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -144,6 +154,8 @@ public class MainActivity extends AppCompatActivity {
         aboutIntent = new Intent(this, About.class);
         fullGraphIntent = new Intent(this, FullGraphActivity.class);
 
+        mainIntent = new Intent(this, MainActivity.class);
+        mActivity = MainActivity.this;
 
         sDb = SensorsDatabase.getSensorsDatabase(this);
         //Child layout
@@ -187,6 +199,9 @@ public class MainActivity extends AppCompatActivity {
             btConnectedState =true;
         }
         System.out.println("btconnected " + btConnectedState);
+    }
+    protected boolean getBtConnectedState(){
+        return btConnectedState;
     }
     protected void setTemp() {
         if (celsius == true) {
@@ -404,31 +419,7 @@ public class MainActivity extends AppCompatActivity {
         }
         onRadioButtonClicked(radioView);
         mydb.close();
-        /**
-        forgetBT = findViewById(R.id.btButton);
-        bluetoothText = findViewById(R.id.btButtonText);
-        final ViewGroup layout = (ViewGroup) forgetBT.getParent();
-        if(!(getBT().matches("empty"))){
-            forgetBT.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    removeBtDevice();
-                    if(null!=layout){
-                        layout.removeView(forgetBT);
-                        layout.removeView(bluetoothText);
-                    }
-                }
-            });
-        }else {
-            layout.removeView(forgetBT);
-            layout.removeView(bluetoothText);
 
-        }
-        aboutBt = findViewById(R.id.aboutButton);
-        aboutBt.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                startActivity(aboutIntent);
-            }
-        });**/
 
         et = findViewById(R.id.selectInterval);
         et.setText(String.valueOf(timeInMilliseconds/1000));
@@ -446,12 +437,14 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     mydb.updateInterval(1, timeInMilliseconds);
                     Toast.makeText(MainActivity.this,
-                            "Database save interval set to  " + String.valueOf(timeInMilliseconds/1000) + " minutes",
+                            "Database save interval set to  " +
+                                    String.valueOf(timeInMilliseconds/1000) + " minutes",
                             Toast.LENGTH_SHORT).show();
-                    startActivity(getIntent());
+                    mActivity.recreate();
                     }catch (Exception e){
                     Toast.makeText(MainActivity.this,
-                            "Database save interval Failed - Report Bug  " + String.valueOf(e.toString()), Toast.LENGTH_LONG).show();
+                            "Database save interval Failed - Report Bug  " +
+                                    String.valueOf(e.toString()), Toast.LENGTH_LONG).show();
                     Log.d("BTWeather-error16", e.toString());
                 }
             }
@@ -631,8 +624,10 @@ public class MainActivity extends AppCompatActivity {
                                 Date date1 = new Date();
                                  try {
                                      List<Sensors> sensorList = sDb.sensorsDao().findByDate(
-                                             DateFormat.format("MM-dd-yyyy HH:mm:ss", getMeYesterday()).toString(),
-                                             DateFormat.format("MM-dd-yyyy HH:mm:ss", getMeTomorrow()).toString());
+                                             DateFormat.format("MM-dd-yyyy HH:mm:ss",
+                                                     getMeYesterday()).toString(),
+                                             DateFormat.format("MM-dd-yyyy HH:mm:ss",
+                                                     getMeTomorrow()).toString());
 
                                      for (Sensors sensor : sensorList) {
                                          new UpdateGraph().doInBackground(sensor);
@@ -654,7 +649,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void graphInit(GraphView graph, LineGraphSeries series){
-
         series.setDrawBackground(true);
         //series.setColor(Color.parseColor("#8d1007"));
         series.setBackgroundColor(graphColor);
@@ -673,14 +667,14 @@ public class MainActivity extends AppCompatActivity {
         graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
         graph.getGridLabelRenderer().reloadStyles();
         java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(getApplicationContext());
-        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(graph.getContext(),dateTimeFormatter));
+        graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(
+                graph.getContext(),
+                dateTimeFormatter));
         //graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(this));
         // styling viewport
         //graph.getViewport().setBackgroundColor(Color.argb(255, 222, 222, 222));
         graph.getViewport().setDrawBorder(false);
         graph.getViewport().setBorderColor(graphColor);
-
-
     }
 
     public java.util.Date  getCurrentTime() {
@@ -748,6 +742,27 @@ public class MainActivity extends AppCompatActivity {
                 }
             return 1;
         }
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, MainActivity.class);
+        if(findViewById(R.id.controlPanel) != null){
+            if(findViewById(R.id.controlPanel).getVisibility() == View.VISIBLE){
+
+                mActivity.recreate();
+
+                return;
+            }else{
+                super.onBackPressed();
+                return;
+            }
+
+        }
+        else{
+
+            super.onBackPressed();
+        }
+
     }
 }
 

@@ -392,6 +392,7 @@ public class BluetoothChatService {
         private String mSocketType;
 
         public ConnectThread(BluetoothDevice device, boolean secure) {
+            SystemClock.sleep(1000);
             mmDevice = device;
             BluetoothSocket tmp = null;
             mSocketType = secure ? "Secure" : "Insecure";
