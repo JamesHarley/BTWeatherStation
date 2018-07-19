@@ -60,5 +60,5 @@ void loop()
              //BTserial.write("@100.25;100.00;100.00@");
           }
           delay(10);
-    
+     delay(500);
 }

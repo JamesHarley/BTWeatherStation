@@ -266,6 +266,14 @@ public class MainActivity extends AppCompatActivity {
             graphTemp.addSeries(tempSeries);
             graphInit(graphTemp, tempSeries);
             tempText = (TextView) findViewById(R.id.temp);
+            View graphAreaTemp =findViewById(R.id.graphTemp);
+            graphAreaTemp.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fullGraphIntent.putExtra("focus", 1);
+                    startActivity(fullGraphIntent);
+                }
+            });
         }
         if (humidityState == true) {
             humidityLayout = inflater.inflate(R.layout.weather_humidity,
@@ -278,6 +286,14 @@ public class MainActivity extends AppCompatActivity {
             graphHumidity.addSeries(humiditySeries);
             graphInit(graphHumidity, humiditySeries);
             humidityText = (TextView) findViewById(R.id.humidity);
+            View graphAreaHumid =findViewById(R.id.graphHumidity);
+            graphAreaHumid.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fullGraphIntent.putExtra("focus", 2);
+                    startActivity(fullGraphIntent);
+                }
+            });
         }
         if (windState == true) {
             windLayout = inflater.inflate(R.layout.weather_wind,
@@ -290,6 +306,16 @@ public class MainActivity extends AppCompatActivity {
             graphWind.addSeries(windSeries);
             graphInit(graphWind, windSeries);
             windText = (TextView) findViewById(R.id.wind);
+
+            View graphAreaWind =findViewById(R.id.graphWind);
+            graphAreaWind.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    fullGraphIntent.putExtra("focus", 3);
+                    startActivity(fullGraphIntent);
+                }
+            });
+
         }
         if (temp != null && tempText != null) {
             setTemp();
@@ -302,30 +328,8 @@ public class MainActivity extends AppCompatActivity {
         }
         getData();
         //Graph onclicklisteners
-        View graphAreaTemp =findViewById(R.id.graphTemp);
-        graphAreaTemp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fullGraphIntent.putExtra("focus", 1);
-                startActivity(fullGraphIntent);
-            }
-        });
-        View graphAreaHumid =findViewById(R.id.graphHumidity);
-        graphAreaHumid.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fullGraphIntent.putExtra("focus", 2);
-                startActivity(fullGraphIntent);
-            }
-        });
-        View graphAreaWind =findViewById(R.id.graphWind);
-        graphAreaWind.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fullGraphIntent.putExtra("focus", 3);
-                startActivity(fullGraphIntent);
-            }
-        });
+
+
     }
 
     protected void weatherPanelDeflator() {
@@ -400,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
         }
         onRadioButtonClicked(radioView);
         mydb.close();
-
+        /**
         forgetBT = findViewById(R.id.btButton);
         bluetoothText = findViewById(R.id.btButtonText);
         final ViewGroup layout = (ViewGroup) forgetBT.getParent();
@@ -418,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
             layout.removeView(forgetBT);
             layout.removeView(bluetoothText);
 
-        }
+        }**/
         aboutBt = findViewById(R.id.aboutButton);
         aboutBt.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -481,9 +485,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void removeBtDevice(){
-        mydb = new DBHelper(this);
-        mydb.updateBT(1, "empty");
-        mydb.close();
+        try{
+            mydb = new DBHelper(this);
+            mydb.updateBT(1, "empty");
+            mydb.close();
+            Toast.makeText(MainActivity.this,
+                    "Bluetooth Device Removed", Toast.LENGTH_LONG).show();
+        }catch(Exception e){
+            Log.d("BTWeather-error17", e.toString());
+        }
+
     }
     public void btDeviceSave(String mac){
         mydb = new DBHelper(this);

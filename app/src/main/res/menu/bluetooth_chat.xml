@@ -20,7 +20,9 @@
     <item
         android:id="@+id/insecure_connect_scan"
         android:title="@string/insecure_connect"/>
-
+    <item
+        android:id="@+id/btButton"
+        android:title="@string/forgetBT"/>
 
 
 </menu>

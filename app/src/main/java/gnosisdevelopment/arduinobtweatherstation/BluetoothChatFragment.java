@@ -254,6 +254,11 @@ public class BluetoothChatFragment extends Fragment {
                 startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
                 return true;
             }
+            case R.id.btButton: {
+                // Launch the DeviceListActivity to see devices and do scan
+                ((MainActivity) getActivity()).removeBtDevice();
+                return true;
+            }
 
         }
         return false;
