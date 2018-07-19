@@ -427,6 +427,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,
                             "Database save interval set to  " + String.valueOf(timeInMilliseconds/1000) + " minutes",
                             Toast.LENGTH_SHORT).show();
+                    startActivity(getIntent());
                     }catch (Exception e){
                     Toast.makeText(MainActivity.this,
                             "Database save interval Failed - Report Bug  " + String.valueOf(e.toString()), Toast.LENGTH_LONG).show();

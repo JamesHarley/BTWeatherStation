@@ -26,7 +26,7 @@ public class FullGraphActivity extends AppCompatActivity {
     private TextView mTextMessage;
     private final static int graphColor = Color.parseColor("#6a0c05");
     private MainActivity mainActivity;
-
+    private double maxYBound = 0;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -64,18 +64,41 @@ public class FullGraphActivity extends AppCompatActivity {
         // Setting the very 1st item as home screen.
         navigation.setSelectedItemId(R.id.graph_hour);
     }
-    public void grapher(GraphView graph, LineGraphSeries series){
-        series.setDrawBackground(true);
-        series.setColor(Color.parseColor("#8d1007"));
-        series.setBackgroundColor(graphColor);
-        series.setDataPointsRadius(8);
-        series.setThickness(5);
-        graph.addSeries(series);
+    public void grapher(GraphView graph, LineGraphSeries[] seriesArray){
+        LineGraphSeries series = new LineGraphSeries();
+        for(int i = 0; i<seriesArray.length; i++){
+            series = new LineGraphSeries();
+            series = seriesArray[i];
+            series.setDrawBackground(true);
+
+            if(i == 0) {
+                series.setColor(Color.parseColor("#8d1007"));
+                series.setBackgroundColor(Color.parseColor("#8d1007"));
+            }
+            if(i == 1) {
+                series.setColor(Color.parseColor("#551a8b"));
+                series.setBackgroundColor(Color.parseColor("#551a8b"));
+            }
+            if(i == 2) {
+                series.setColor(Color.parseColor("#00F00F"));
+                series.setBackgroundColor(Color.parseColor("#00F00F"));
+            }
+            series.setDataPointsRadius(2);
+            series.setThickness(2);
+
+            graph.addSeries(series);
+        }
+
+
+        //graph.addSeries(series);
         graph.getGridLabelRenderer().setGridColor(graphColor);
         graph.getGridLabelRenderer().setHighlightZeroLines(false);
         graph.getGridLabelRenderer().setHorizontalLabelsColor(graphColor);
         graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
         graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
+        maxYBound=maxYBound+10;
+        graph.getViewport().setMaxY(maxYBound);
+        graph.getViewport().setYAxisBoundsManual(true);
         graph.getGridLabelRenderer().reloadStyles();
         java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(getApplicationContext());
 
@@ -84,14 +107,18 @@ public class FullGraphActivity extends AppCompatActivity {
                         dateTimeFormatter));
     }
 
-    public LineGraphSeries seriesBuilder(List<Sensors> sensorsList){
+    public LineGraphSeries[] seriesBuilder(List<Sensors> sensorsList){
         DataPoint d = null;
+        LineGraphSeries[] seriesArray = new LineGraphSeries[3];
         DataPoint[] dataPoints = new DataPoint[sensorsList.size()];
+        DataPoint[] dataPointsH = new DataPoint[sensorsList.size()];
+        DataPoint[] dataPointsW = new DataPoint[sensorsList.size()];
 
         Date date1 = new Date();
         int i = 0;
         Log.d("BTWeather-seriesbuilder", " Length of sensorlist: " + String.valueOf(sensorsList.size()));
         for(Sensors sensor: sensorsList){
+            findMaxY(sensor);
             try {
 
                 date1 = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(sensor.getmDate());
@@ -101,10 +128,7 @@ public class FullGraphActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             if( mainActivity.isCelsius()){
-                d = new DataPoint(date1, Double.valueOf(
-
-                        sensor.getmTemp())
-                );
+                d = new DataPoint(date1, Double.valueOf(sensor.getmTemp()));
             }else{
                 double tmp = mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
 
@@ -113,12 +137,34 @@ public class FullGraphActivity extends AppCompatActivity {
             }
 
             dataPoints[i]= d;
+            d = new DataPoint(date1, Double.valueOf(sensor.getmHumidity()));
+            dataPointsH[i]=d;
+            d = new DataPoint(date1, Double.valueOf(sensor.getmWind()));
+            dataPointsW[i]=d;
+
             i++;
         }
-        LineGraphSeries<DataPoint> series = new LineGraphSeries<>(dataPoints);
-        return series;
+        seriesArray[0] = new LineGraphSeries<>(dataPoints);
+        seriesArray[1] = new LineGraphSeries<>(dataPointsH);
+        seriesArray[2] = new LineGraphSeries<>(dataPointsW);
+        return seriesArray;
     }
+    public void findMaxY (Sensors sensor){
 
+        if(Double.valueOf(sensor.getmHumidity())> maxYBound){
+            maxYBound = Double.valueOf(sensor.getmHumidity());
+        }
+        if(Double.valueOf(sensor.getmWind())> maxYBound){
+            maxYBound = Double.valueOf(sensor.getmHumidity());
+        }
+        if( mainActivity.isCelsius()) {
+            if (Double.valueOf(sensor.getmTemp()) > maxYBound) {
+                maxYBound = Double.valueOf(sensor.getmTemp());
+            }
+        }else if(mainActivity.cToF(Double.valueOf(sensor.getmTemp()))>maxYBound){
+            maxYBound=mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
+        }
+    }
 
 
     //Database
