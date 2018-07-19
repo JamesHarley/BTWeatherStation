@@ -94,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
     private  TextView bluetoothText;
     private Button aboutBt;
     private Intent aboutIntent;
+    private Intent fullGraphIntent;
+    private int focus;
     GrapherUtils graphUtil;
     EditText et;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -121,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     };
-    private Intent fullGraphIntent;
 
     /**
     private void notificationPanelDeflator() {
@@ -173,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
 
          }
          weatherPanelInflator();
-        getData();
+         getData();
          graphUtil= new GrapherUtils();
     }
 
@@ -300,10 +301,28 @@ public class MainActivity extends AppCompatActivity {
             setWind();
         }
         getData();
-        View graphArea =findViewById(R.id.graphTemp);
-        graphArea.setOnClickListener(new View.OnClickListener() {
+        //Graph onclicklisteners
+        View graphAreaTemp =findViewById(R.id.graphTemp);
+        graphAreaTemp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fullGraphIntent.putExtra("focus", 1);
+                startActivity(fullGraphIntent);
+            }
+        });
+        View graphAreaHumid =findViewById(R.id.graphHumidity);
+        graphAreaHumid.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fullGraphIntent.putExtra("focus", 2);
+                startActivity(fullGraphIntent);
+            }
+        });
+        View graphAreaWind =findViewById(R.id.graphWind);
+        graphAreaWind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fullGraphIntent.putExtra("focus", 3);
                 startActivity(fullGraphIntent);
             }
         });
