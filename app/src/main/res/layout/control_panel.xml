@@ -32,6 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Bluetooth: "
+                    android:padding="10dp"
                     android:textSize="20sp" />
 
                 <Button
@@ -39,10 +40,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/btButtonText"
-                    android:background="@color/colorPrimary"
                     android:padding="10dp"
-                    android:text="@string/forgetBT"
-                    android:textColor="#ffffff" />
+                    android:text="@string/forgetBT" />
 
             </RelativeLayout>
             <RelativeLayout
@@ -212,10 +211,8 @@
                     android:layout_width="215dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:background="@color/colorPrimary"
                     android:padding="10dp"
-                    android:text="About this app"
-                    android:textColor="#ffffff" />
+                    android:text="About this app" />
             </RelativeLayout>
             <!--
             <RelativeLayout
