@@ -94,6 +94,7 @@
                 app:layout_constraintLeft_toRightOf="@id/controlLabel">
 
                 <Switch
+
                     android:id="@+id/tempSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
