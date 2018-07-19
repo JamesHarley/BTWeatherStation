@@ -422,13 +422,13 @@ public class MainActivity extends AppCompatActivity {
             layout.removeView(forgetBT);
             layout.removeView(bluetoothText);
 
-        }**/
+        }
         aboutBt = findViewById(R.id.aboutButton);
         aboutBt.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(aboutIntent);
             }
-        });
+        });**/
 
         et = findViewById(R.id.selectInterval);
         et.setText(String.valueOf(timeInMilliseconds/1000));

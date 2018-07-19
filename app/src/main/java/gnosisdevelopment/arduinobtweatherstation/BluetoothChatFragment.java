@@ -259,6 +259,11 @@ public class BluetoothChatFragment extends Fragment {
                 ((MainActivity) getActivity()).removeBtDevice();
                 return true;
             }
+            case R.id.aboutButton:{
+                Intent serverIntent = new Intent(getActivity(), About.class);
+                startActivity(serverIntent);
+                return true;
+            }
 
         }
         return false;
