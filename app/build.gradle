@@ -6,7 +6,7 @@ android {
         applicationId "gnosisdevelopment.arduinobtweatherstation"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 3
+        versionCode 4
         versionName "Alpha 1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true

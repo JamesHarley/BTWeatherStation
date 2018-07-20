@@ -40,6 +40,7 @@ public class FullGraphActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.graph_hour:
                     maxYBound=0;
+                    minYBound = 999;
                     time=1;
                     if(focus ==1 )
                         mTextMessage.setText(R.string.graph_hour_temp);
@@ -55,6 +56,7 @@ public class FullGraphActivity extends AppCompatActivity {
                     return true;
                 case R.id.graph_day:
                     maxYBound=0;
+                     minYBound = 999;
                     time=2;
                     if(focus ==1 )
                         mTextMessage.setText(R.string.graph_day_temp);
@@ -66,6 +68,7 @@ public class FullGraphActivity extends AppCompatActivity {
                     return true;
                 case R.id.graph_week:
                     maxYBound=0;
+                    minYBound = 999;
                     time=3;
                     if(focus ==1 )
                         mTextMessage.setText(R.string.graph_week_temp);
