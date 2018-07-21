@@ -392,7 +392,8 @@ public class BluetoothChatService {
         private String mSocketType;
 
         public ConnectThread(BluetoothDevice device, boolean secure) {
-            SystemClock.sleep(1000);
+            //Needed for HC-06 bluetoothadapter to allow for reconnection or will be unable to connect
+            SystemClock.sleep(300);
             mmDevice = device;
             BluetoothSocket tmp = null;
             mSocketType = secure ? "Secure" : "Insecure";
