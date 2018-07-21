@@ -52,7 +52,7 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_hour_wind);
                     try{
-                        gu = new GraphUtility(focus,time,0,mainActivity );
+                        gu = new GraphUtility(focus,time,0,true,true,mainActivity );
                         gu.grapher(getApplicationContext(),graph,gu.seriesBuilder(gu.getTempData(gu.getYesterday())));
                     }catch(Exception e){
                         Log.d("BTWeather-error15", e.toString());
@@ -69,7 +69,7 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_day_wind);
                     try{
-                        gu = new GraphUtility(focus,time,0,mainActivity );
+                        gu = new GraphUtility(focus,time,0,true,true,mainActivity );
                         gu.grapher(getApplicationContext(),graph,gu.seriesBuilder(gu.getTempData(gu.getWeek())));
                     }catch(Exception e){
                         Log.d("BTWeather-error15", e.toString());
@@ -86,7 +86,7 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_week_wind);
                     try{
-                        gu = new GraphUtility(focus,time,0,mainActivity );
+                        gu = new GraphUtility(focus,time,0,true,true,mainActivity );
                         gu.grapher(getApplicationContext(),graph,gu.seriesBuilder(gu.getTempData(gu.getMonth())));
                     }catch(Exception e){
                         Log.d("BTWeather-error15", e.toString());

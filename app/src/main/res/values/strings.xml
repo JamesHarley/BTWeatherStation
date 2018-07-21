@@ -5,7 +5,8 @@
     <string name="title_notifications">Notifications</string>
     <string name="title_activity_weather_panel">Weather Panel</string>
     <string name="forgetBT">Forget Bluetooth</string>
-    <string name="intervalText">Minute interval save data to database:</string>
+    <string name="intervalText">Minutes to save data to database:</string>
+    <string name="exportTitle">Export the database to CSV File: </string>
     <string name="title_activity_about">About ArduinoBT Weather Station</string>
     <!-- Weather -->
     <string name="title_temp">Temperature °</string>

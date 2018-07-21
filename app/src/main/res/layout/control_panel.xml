@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="15dp"
-            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintHorizontal_bias=".8"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent">
 
@@ -72,7 +72,7 @@
                 android:layout_height="wrap_content"
 
                 android:layout_marginTop="20dp"
-                app:layout_constraintHorizontal_bias=".3"
+                app:layout_constraintHorizontal_bias=".25"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent">
 
@@ -183,6 +183,32 @@
 
 
             </android.support.constraint.ConstraintLayout>
+
+        </android.support.constraint.ConstraintLayout>
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/exportPanel"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            app:layout_constraintHorizontal_bias=".8"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/container2">
+            <TextView
+                android:id="@+id/exportTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/exportTitle"/>
+            <Button
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/exportTitle"
+                android:id="@+id/exportBt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Export DB" />
+
         </android.support.constraint.ConstraintLayout>
 
     </android.support.constraint.ConstraintLayout>

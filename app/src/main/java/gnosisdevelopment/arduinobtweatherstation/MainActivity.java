@@ -1,7 +1,9 @@
 package gnosisdevelopment.arduinobtweatherstation;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -9,7 +11,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -259,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
             weatherView.addView(tempLayout);
             graphTemp = (GraphView) findViewById(R.id.graphTemp);
             try {
-                GraphUtility gu = new GraphUtility(1,1,3, this);
+                GraphUtility gu = new GraphUtility(1,1,3,false,false, this);
                 gu.grapher( this,graphTemp, gu.seriesBuilder(
                         gu.getTempData(gu.getYesterday())));
             }catch(Exception e){
@@ -284,7 +288,7 @@ public class MainActivity extends AppCompatActivity {
             graphHumidity = (GraphView) findViewById(R.id.graphHumidity);
 
             try {
-                GraphUtility gu = new GraphUtility(2,1, 3,this);
+                GraphUtility gu = new GraphUtility(2,1, 3,false,false,this);
                 gu.grapher( this,graphHumidity,
                         gu.seriesBuilder(
                                 gu.getTempData(gu.getYesterday())));
@@ -311,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             try {
-                GraphUtility gu = new GraphUtility(3,1,3,this);
+                GraphUtility gu = new GraphUtility(3,1,3,false,false,this);
                 gu.grapher( this,graphWind,
                         gu.seriesBuilder(
                                 gu.getTempData(gu.getYesterday())));
@@ -446,10 +450,98 @@ public class MainActivity extends AppCompatActivity {
                 mydb.close();
             }
             });
+        Button exportbt = findViewById(R.id.exportBt);
+        exportbt.setOnClickListener((new View.OnClickListener() {
+            public void onClick(View v) {
+                // Here, thisActivity is the current activity
+                if (ContextCompat.checkSelfPermission(mActivity,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                        != PackageManager.PERMISSION_GRANTED) {
+
+                    // Permission is not granted
+                    // Should we show an explanation?
+                    if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                        // Show an explanation to the user *asynchronously* -- don't block
+                        // this thread waiting for the user's response! After the user
+                        // sees the explanation, try again to request the permission.
+                    } else {
+                        // No explanation needed; request the permission
+
+                        ActivityCompat.requestPermissions(mActivity,
+                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                        // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                        // app-defined int constant. The callback method gets the
+                        // result of the request.
+                    }
+                } else {
+                    // Permission has already been granted
+                    FileUtil fu = new FileUtil(getApplicationContext());
+                    try{
+                        if(fu.saveDB()) {
 
 
+                            Toast.makeText(MainActivity.this,
+                                    "Export file saved in Downloads/ArduinoBT-Weather",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
+                            Log.d("BTWeather-error26", "Export failed with false");
+                        }
+                    }catch(Exception e){
+                        Toast.makeText(MainActivity.this,
+                                "Database export Failed - Report Bug  " +
+                                        String.valueOf(e.toString()), Toast.LENGTH_LONG).show();
+                        Log.d("BTWeather-error26", e.toString());
+                    }
+                }
+
+
+
+
+            }
+        }));
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay! Do the
+                    // write-related task you need to do.
+                    FileUtil fu = new FileUtil(getApplicationContext());
+                    try{
+                        if(fu.saveDB()) {
 
+
+                            Toast.makeText(MainActivity.this,
+                                    "Export file saved in Downloads/ArduinoBT-Weather",
+                                    Toast.LENGTH_SHORT).show();
+                        }else{
+                            Log.d("BTWeather-error26", "Export failed with false");
+                        }
+                    }catch(Exception e){
+                        Toast.makeText(MainActivity.this,
+                                "Database export Failed - Report Bug  " +
+                                        String.valueOf(e.toString()), Toast.LENGTH_LONG).show();
+                        Log.d("BTWeather-error26", e.toString());
+                    }
+                } else {
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(MainActivity.this,
+                            "Permission was denied. Export needs permission to write to directory ",
+                            Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
     protected void controlPanelDeflator() {
         if (controlLayout != null) weatherView.removeView(controlLayout);
     }

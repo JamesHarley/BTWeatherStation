@@ -3,6 +3,7 @@ package gnosisdevelopment.arduinobtweatherstation;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Environment;
 import android.text.format.DateFormat;
 import android.util.Log;
 
@@ -12,6 +13,7 @@ import com.jjoe64.graphview.helper.DateAsXAxisLabelFormatter;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -30,13 +32,18 @@ public class GraphUtility {
     private double minYBound = 999;
     private int time = 0;
     private int labelCount = 0;
-    public GraphUtility(int focus, int time, int labelCount, MainActivity mainActivity) {
+    private boolean maxy = true;
+    private boolean miny = true;
+
+    public GraphUtility(int focus, int time, int labelCount,boolean maxy, boolean miny, MainActivity mainActivity) {
 
         this.focus = focus;
         this.time = time;
         this.labelCount = labelCount;
         context = mainActivity;
         this.mainActivity = mainActivity;
+        this.miny = miny;
+        this.maxy = maxy;
     }
 
 
@@ -98,19 +105,25 @@ public class GraphUtility {
             graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
             graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
 
-            graph.getViewport().setYAxisBoundsManual(true);
+
             //Add 5 percent for easier readability
-            maxYBound= maxYBound + (maxYBound *.05);
-            if(maxYBound ==0){
-                maxYBound=1;
+            if(maxy) {
+                graph.getViewport().setYAxisBoundsManual(true);
+                maxYBound= maxYBound + (maxYBound *.05);
+                if(maxYBound ==0){
+                    maxYBound=1;
+                }
+
+                graph.getViewport().setMaxY(maxYBound);
             }
-            graph.getViewport().setMaxY(maxYBound);
             //Minus 5 percent
-            minYBound = minYBound - (minYBound * .05);
+            if(miny) {
+                graph.getViewport().setYAxisBoundsManual(true);
+                minYBound = minYBound - (minYBound * .05);
 
-            Log.d("BTWeather-minYval", String.valueOf(minYBound) );
-            graph.getViewport().setMinY(minYBound);
-
+                Log.d("BTWeather-minYval", String.valueOf(minYBound));
+                graph.getViewport().setMinY(minYBound);
+            }
             if(labelCount > 0){
                 graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
             }
@@ -284,7 +297,7 @@ public class GraphUtility {
             Log.d("BTWeather-error8", String.valueOf(e));
         }
         return dataPoints;
+        }
 
-    }
 
 }
