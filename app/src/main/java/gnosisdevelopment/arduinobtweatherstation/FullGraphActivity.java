@@ -1,5 +1,6 @@
 package gnosisdevelopment.arduinobtweatherstation;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ public class FullGraphActivity extends AppCompatActivity {
     private double minYBound = 999;
     private int focus =0;
     private int time = 0;
+    GraphUtility gu;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -50,7 +52,8 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_hour_wind);
                     try{
-                        grapher(graph,seriesBuilder(getTempData(getYesterday())));
+                        gu = new GraphUtility(focus,time,0,mainActivity );
+                        gu.grapher(getApplicationContext(),graph,gu.seriesBuilder(gu.getTempData(gu.getYesterday())));
                     }catch(Exception e){
                         Log.d("BTWeather-error15", e.toString());
                     }
@@ -66,7 +69,8 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_day_wind);
                     try{
-                        grapher(graph,seriesBuilder(getTempData(getWeek())));
+                        gu = new GraphUtility(focus,time,0,mainActivity );
+                        gu.grapher(getApplicationContext(),graph,gu.seriesBuilder(gu.getTempData(gu.getWeek())));
                     }catch(Exception e){
                         Log.d("BTWeather-error15", e.toString());
                     }
@@ -82,7 +86,8 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_week_wind);
                     try{
-                        grapher(graph,seriesBuilder(getTempData(getMonth())));
+                        gu = new GraphUtility(focus,time,0,mainActivity );
+                        gu.grapher(getApplicationContext(),graph,gu.seriesBuilder(gu.getTempData(gu.getMonth())));
                     }catch(Exception e){
                         Log.d("BTWeather-error15", e.toString());
                     }
@@ -112,228 +117,4 @@ public class FullGraphActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
     }
-    //TODO X-axis not advancing
-    //TODO Calculate horizontal axis based on interval or # of sensorslist
-    public void grapher(GraphView graph, LineGraphSeries[] seriesArray){
-        LineGraphSeries series = new LineGraphSeries();
-        if(focus==4){
-            for(int i = 0; i<seriesArray.length; i++){
-                series = new LineGraphSeries();
-                series = seriesArray[i];
-                series.setDrawBackground(true);
-
-                if(i == 0) {
-                    series.setColor(Color.parseColor("#8d1007"));
-                    series.setBackgroundColor(Color.parseColor("#8d1007"));
-                }
-                if(i == 1) {
-                    series.setColor(Color.parseColor("#551a8b"));
-                    series.setBackgroundColor(Color.parseColor("#551a8b"));
-                }
-                if(i == 2) {
-                    series.setColor(Color.parseColor("#FF0008F0"));
-                    series.setBackgroundColor(Color.parseColor("#FF0008F0"));
-                }
-
-                series.setDataPointsRadius(2);
-                series.setThickness(2);
-
-                graph.addSeries(series);
-            }
-        }
-        if(focus == 1){
-            series = seriesArray[0];
-            series.setDrawBackground(true);
-            series.setColor(Color.parseColor("#8d1007"));
-            series.setBackgroundColor(Color.parseColor("#8d1007"));
-        }
-        if(focus == 2){
-            series = seriesArray[1];
-            series.setDrawBackground(true);
-            series.setColor(Color.parseColor("#8d1007"));
-            series.setBackgroundColor(Color.parseColor("#8d1007"));
-        }
-        if(focus == 3){
-            series = seriesArray[2];
-            series.setDrawBackground(true);
-            series.setColor(Color.parseColor("#8d1007"));
-            series.setBackgroundColor(Color.parseColor("#8d1007"));
-        }
-        series.setDataPointsRadius(2);
-        series.setThickness(2);
-
-        graph.addSeries(series);
-
-        //graph.addSeries(series);
-        graph.getGridLabelRenderer().setGridColor(graphColor);
-        graph.getGridLabelRenderer().setHighlightZeroLines(false);
-        graph.getGridLabelRenderer().setHorizontalLabelsColor(graphColor);
-        graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
-        graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
-        graph.getViewport().setXAxisBoundsManual(false);
-
-        graph.getViewport().setYAxisBoundsManual(true);
-        //Add 5 percent for easier readability
-        maxYBound= maxYBound + (maxYBound *.05);
-        if(maxYBound ==0){
-            maxYBound=1;
-        }
-        graph.getViewport().setMaxY(maxYBound);
-        //Minus 5 percent
-        minYBound = minYBound - (minYBound * .05);
-
-        Log.d("BTWeather-minYval", String.valueOf(minYBound) );
-        graph.getViewport().setMinY(minYBound);
-
-       //graph.getGridLabelRenderer().setNumHorizontalLabels(10);
-        graph.getGridLabelRenderer().setHumanRounding(true);
-        graph.getGridLabelRenderer().reloadStyles();
-        java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(getApplicationContext());
-        if(time==1) {
-            graph.getGridLabelRenderer().setLabelFormatter(
-                    new DateAsXAxisLabelFormatter(graph.getContext(),
-                            dateTimeFormatter));
-        }else{
-            graph.getGridLabelRenderer().setLabelFormatter(
-                    new DateAsXAxisLabelFormatter(graph.getContext()));
-        }
-    }
-
-    public LineGraphSeries[] seriesBuilder(List<Sensors> sensorsList){
-        DataPoint d = null;
-        LineGraphSeries[] seriesArray = new LineGraphSeries[3];
-        DataPoint[] dataPoints = new DataPoint[sensorsList.size()];
-        DataPoint[] dataPointsH = new DataPoint[sensorsList.size()];
-        DataPoint[] dataPointsW = new DataPoint[sensorsList.size()];
-
-        Date date1 = new Date();
-        int i = 0;
-        Log.d("BTWeather-seriesbuilder",
-                " Length of sensorlist: " + String.valueOf(sensorsList.size()));
-        for(Sensors sensor: sensorsList){
-            findMaxY(sensor);
-            findMinY(sensor);
-            try {
-
-                date1 = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(sensor.getmDate());
-
-                //Log.d("BTWeather-sensorlistFG",
-                      //  String.valueOf(date1)+" - " + String.valueOf(sensor.getmTemp()) );
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            if( mainActivity.isCelsius()){
-                d = new DataPoint(date1, Double.valueOf(sensor.getmTemp()));
-            }else{
-                double tmp = mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
-
-               // Log.d("BTWeather-seriesdump",String.valueOf(tmp));
-                d = new DataPoint(date1, tmp);
-            }
-
-            dataPoints[i]= d;
-            d = new DataPoint(date1, Double.valueOf(sensor.getmHumidity()));
-            dataPointsH[i]=d;
-            d = new DataPoint(date1, Double.valueOf(sensor.getmWind()));
-            dataPointsW[i]=d;
-
-            i++;
-        }
-        seriesArray[0] = new LineGraphSeries<>(dataPoints);
-        seriesArray[1] = new LineGraphSeries<>(dataPointsH);
-        seriesArray[2] = new LineGraphSeries<>(dataPointsW);
-        return seriesArray;
-    }
-    public void findMaxY (Sensors sensor){
-       //Focus passed from main activity on graph click
-        if(focus ==1){
-            if(  mainActivity.isCelsius()) {
-                if (Double.valueOf(sensor.getmTemp()) > maxYBound) {
-                    maxYBound = Double.valueOf(sensor.getmTemp());
-                }
-            }else if(mainActivity.cToF(Double.valueOf(sensor.getmTemp()))>maxYBound){
-                maxYBound=mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
-            }
-        }
-
-        else if(focus == 2){
-            if( Double.valueOf(sensor.getmHumidity())> maxYBound){
-                maxYBound = Double.valueOf(sensor.getmHumidity());
-            }
-        }
-
-        else if(focus == 3){
-            if(Double.valueOf(sensor.getmWind())> maxYBound){
-                maxYBound = Double.valueOf(sensor.getmWind());
-            }
-        }
-    }
-    public void findMinY (Sensors sensor){
-        //Focus passed from main activity on graph click
-        if(focus ==1){
-            if(  mainActivity.isCelsius()) {
-                if (Double.valueOf(sensor.getmTemp()) < minYBound) {
-                    minYBound = Double.valueOf(sensor.getmTemp());
-                }
-            }else if(mainActivity.cToF(Double.valueOf(sensor.getmTemp()))< minYBound){
-                minYBound=mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
-            }
-        }
-
-        else if(focus == 2){
-            if( Double.valueOf(sensor.getmHumidity())< minYBound){
-                minYBound = Double.valueOf(sensor.getmHumidity());
-            }
-        }
-
-        else if(focus == 3){
-            if(Double.valueOf(sensor.getmWind())< minYBound){
-                minYBound = Double.valueOf(sensor.getmWind());
-            }
-        }
-    }
-
-    //Database
-    public static String getYesterday(){
-        //return new Date(System.currentTimeMillis()-24*60*60*1000);
-        long  day = TimeUnit.DAYS.toMillis(1);
-       String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
-               new Date(System.currentTimeMillis() - day)).toString();
-        return start;
-    }
-    public static String getWeek(){
-        //return new Date(System.currentTimeMillis()-24*60*60*1000);
-        long  week = TimeUnit.DAYS.toMillis(7);
-        String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
-                new Date(System.currentTimeMillis() - week)).toString();
-        return start;
-    }
-    public static String getMonth(){
-        //return new Date(System.currentTimeMillis()-24*60*60*1000);
-        long  month = TimeUnit.DAYS.toMillis(30);
-        String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
-                new Date(System.currentTimeMillis() - month)).toString();
-        return start;
-    }
-    public static Date getMeTomorrow(){
-        return new Date(System.currentTimeMillis());
-    }
-
-
-    private List<Sensors> getTempData(String start){
-        SensorsDatabase sDb = SensorsDatabase.getSensorsDatabase(this);
-        List<Sensors> dataPoints = null;
-        Date date1 = new Date();
-        try {
-             dataPoints = sDb.sensorsDao().findTempByDate(
-                    start,
-                    DateFormat.format("MM-dd-yyyy HH:mm:ss", getMeTomorrow()).toString());
-
-        } catch (Exception e) {
-            Log.d("BTWeather-error8", String.valueOf(e));
-        }
-        return dataPoints;
-
-    }
-
 }
