@@ -148,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //setTheme(R.style.AppTheme);
+
         super.onCreate(savedInstanceState);
         sqlScoutServer = SqlScoutServer.create(this, getPackageName());
         setContentView(R.layout.activity_main);

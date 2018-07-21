@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class FullGraphActivity extends AppCompatActivity {
     GraphView graph;
@@ -64,7 +65,11 @@ public class FullGraphActivity extends AppCompatActivity {
                         mTextMessage.setText(R.string.graph_day_humid);
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_day_wind);
-                    grapher(graph,seriesBuilder(getTempData(getWeek())));
+                    try{
+                        grapher(graph,seriesBuilder(getTempData(getWeek())));
+                    }catch(Exception e){
+                        Log.d("BTWeather-error15", e.toString());
+                    }
                     return true;
                 case R.id.graph_week:
                     maxYBound=0;
@@ -76,7 +81,12 @@ public class FullGraphActivity extends AppCompatActivity {
                         mTextMessage.setText(R.string.graph_week_humid);
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_week_wind);
-                    grapher(graph,seriesBuilder(getTempData(getMonth())));
+                    try{
+                        grapher(graph,seriesBuilder(getTempData(getMonth())));
+                    }catch(Exception e){
+                        Log.d("BTWeather-error15", e.toString());
+                    }
+
                     return true;
             }
             return false;
@@ -106,7 +116,7 @@ public class FullGraphActivity extends AppCompatActivity {
     //TODO Calculate horizontal axis based on interval or # of sensorslist
     public void grapher(GraphView graph, LineGraphSeries[] seriesArray){
         LineGraphSeries series = new LineGraphSeries();
-        if(focus==3){
+        if(focus==4){
             for(int i = 0; i<seriesArray.length; i++){
                 series = new LineGraphSeries();
                 series = seriesArray[i];
@@ -165,9 +175,13 @@ public class FullGraphActivity extends AppCompatActivity {
         graph.getViewport().setYAxisBoundsManual(true);
         //Add 5 percent for easier readability
         maxYBound= maxYBound + (maxYBound *.05);
+        if(maxYBound ==0){
+            maxYBound=1;
+        }
         graph.getViewport().setMaxY(maxYBound);
         //Minus 5 percent
         minYBound = minYBound - (minYBound * .05);
+
         Log.d("BTWeather-minYval", String.valueOf(minYBound) );
         graph.getViewport().setMinY(minYBound);
 
@@ -203,8 +217,8 @@ public class FullGraphActivity extends AppCompatActivity {
 
                 date1 = new SimpleDateFormat("MM-dd-yyyy HH:mm:ss").parse(sensor.getmDate());
 
-                Log.d("BTWeather-sensorlistFG",
-                        String.valueOf(date1)+" - " + String.valueOf(sensor.getmTemp()) );
+                //Log.d("BTWeather-sensorlistFG",
+                      //  String.valueOf(date1)+" - " + String.valueOf(sensor.getmTemp()) );
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -213,7 +227,7 @@ public class FullGraphActivity extends AppCompatActivity {
             }else{
                 double tmp = mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
 
-                Log.d("BTWeather-seriesdump",String.valueOf(tmp));
+               // Log.d("BTWeather-seriesdump",String.valueOf(tmp));
                 d = new DataPoint(date1, tmp);
             }
 
@@ -282,20 +296,23 @@ public class FullGraphActivity extends AppCompatActivity {
     //Database
     public static String getYesterday(){
         //return new Date(System.currentTimeMillis()-24*60*60*1000);
+        long  day = TimeUnit.DAYS.toMillis(1);
        String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
-               new Date(System.currentTimeMillis()-24*60*60*1000)).toString();
+               new Date(System.currentTimeMillis() - day)).toString();
         return start;
     }
     public static String getWeek(){
         //return new Date(System.currentTimeMillis()-24*60*60*1000);
+        long  week = TimeUnit.DAYS.toMillis(7);
         String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
-                new Date(System.currentTimeMillis()-24*60*60*1000*7)).toString();
+                new Date(System.currentTimeMillis() - week)).toString();
         return start;
     }
     public static String getMonth(){
         //return new Date(System.currentTimeMillis()-24*60*60*1000);
+        long  month = TimeUnit.DAYS.toMillis(30);
         String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
-                new Date(System.currentTimeMillis()-24*60*60*1000*7*4)).toString();
+                new Date(System.currentTimeMillis() - month)).toString();
         return start;
     }
     public static Date getMeTomorrow(){
