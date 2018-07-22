@@ -102,27 +102,7 @@ public class About extends AppCompatActivity {
             return true;
         }
     }
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(this, MainActivity.class);
-        if(findViewById(R.id.aboutWebView) != null){
-            if(findViewById(R.id.aboutWebView).getVisibility() == View.VISIBLE){
 
-                startActivity(intent);
-
-                return;
-            }else{
-                super.onBackPressed();
-                return;
-            }
-
-        }
-        else{
-
-            super.onBackPressed();
-        }
-
-    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {

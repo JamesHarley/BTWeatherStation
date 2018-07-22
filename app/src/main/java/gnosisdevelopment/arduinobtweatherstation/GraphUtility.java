@@ -25,6 +25,7 @@ public class GraphUtility {
     public Activity activity;
     public MainActivity mainActivity;
     public Context context;
+    Constants constants;
 
 
     private final static int graphColor = Color.parseColor("#6a0c05");
@@ -34,8 +35,8 @@ public class GraphUtility {
     private int labelCount = 0;
     private boolean maxy = true;
     private boolean miny = true;
-
-    public GraphUtility(int focus, int time, int labelCount,boolean maxy, boolean miny, MainActivity mainActivity) {
+    private boolean celsius;
+    public GraphUtility(int focus, int time, int labelCount,boolean maxy, boolean miny, MainActivity mainActivity, boolean celsius) {
 
         this.focus = focus;
         this.time = time;
@@ -44,6 +45,15 @@ public class GraphUtility {
         this.mainActivity = mainActivity;
         this.miny = miny;
         this.maxy = maxy;
+        this.celsius = celsius;
+        /**
+        try{
+            celsius = mainActivity.isCelsius(mainActivity);
+
+        }catch(Exception e){
+            Log.d("BTWeather-GraphUtility", String.valueOf(e));
+        }
+        **/
     }
 
 
@@ -169,7 +179,7 @@ public class GraphUtility {
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
-                    if( mainActivity.isCelsius()){
+                    if( isCelsius()){
                         d = new DataPoint(date1, Double.valueOf(sensor.getmTemp()));
                     }else{
                         double tmp = mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
@@ -204,7 +214,7 @@ public class GraphUtility {
         try{
             //Focus passed from main activity on graph click
             if(focus ==1){
-                if(  mainActivity.isCelsius()) {
+                if(  isCelsius()) {
                     if (Double.valueOf(sensor.getmTemp()) > maxYBound) {
                         maxYBound = Double.valueOf(sensor.getmTemp());
                     }
@@ -232,7 +242,7 @@ public class GraphUtility {
         try{
             //Focus passed from main activity on graph click
             if(focus ==1){
-                if(  mainActivity.isCelsius()) {
+                if(  isCelsius()) {
                     if (Double.valueOf(sensor.getmTemp()) < minYBound) {
                         minYBound = Double.valueOf(sensor.getmTemp());
                     }
@@ -299,5 +309,7 @@ public class GraphUtility {
         return dataPoints;
         }
 
-
+    public boolean isCelsius() {
+        return celsius;
+    }
 }

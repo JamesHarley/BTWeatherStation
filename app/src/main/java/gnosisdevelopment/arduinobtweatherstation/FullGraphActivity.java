@@ -29,12 +29,10 @@ public class FullGraphActivity extends AppCompatActivity {
     private TextView mTextMessage;
     private final static int graphColor = Color.parseColor("#6a0c05");
     private MainActivity mainActivity;
-    private double maxYBound = 0;
-    private double minYBound = 999;
     private int focus =0;
     private int time = 0;
     GraphUtility gu;
-
+    private boolean celsius;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -42,8 +40,6 @@ public class FullGraphActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.graph_hour:
-                    maxYBound=0;
-                    minYBound = 999;
                     time=1;
                     if(focus ==1 )
                         mTextMessage.setText(R.string.graph_hour_temp);
@@ -52,15 +48,13 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_hour_wind);
                     try{
-                        gu = new GraphUtility(focus,time,0,true,true,mainActivity );
+                        gu = new GraphUtility(focus,time,0,true,true,mainActivity,celsius);
                         gu.grapher(getApplicationContext(),graph,gu.seriesBuilder(gu.getTempData(gu.getYesterday())));
                     }catch(Exception e){
                         Log.d("BTWeather-error15", e.toString());
                     }
                     return true;
                 case R.id.graph_day:
-                    maxYBound=0;
-                     minYBound = 999;
                     time=2;
                     if(focus ==1 )
                         mTextMessage.setText(R.string.graph_day_temp);
@@ -69,15 +63,13 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_day_wind);
                     try{
-                        gu = new GraphUtility(focus,time,0,true,true,mainActivity );
+                        gu = new GraphUtility(focus,time,0,true,true,mainActivity,celsius );
                         gu.grapher(getApplicationContext(),graph,gu.seriesBuilder(gu.getTempData(gu.getWeek())));
                     }catch(Exception e){
                         Log.d("BTWeather-error15", e.toString());
                     }
                     return true;
                 case R.id.graph_week:
-                    maxYBound=0;
-                    minYBound = 999;
                     time=3;
                     if(focus ==1 )
                         mTextMessage.setText(R.string.graph_week_temp);
@@ -86,7 +78,7 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus ==3 )
                         mTextMessage.setText(R.string.graph_week_wind);
                     try{
-                        gu = new GraphUtility(focus,time,0,true,true,mainActivity );
+                        gu = new GraphUtility(focus,time,0,true,true,mainActivity,celsius );
                         gu.grapher(getApplicationContext(),graph,gu.seriesBuilder(gu.getTempData(gu.getMonth())));
                     }catch(Exception e){
                         Log.d("BTWeather-error15", e.toString());
@@ -104,7 +96,7 @@ public class FullGraphActivity extends AppCompatActivity {
         setContentView(R.layout.activity_full_graph);
         Intent mIntent = getIntent();
         focus = mIntent.getIntExtra("focus", 0);
-
+        celsius = mIntent.getBooleanExtra("celsius", false);
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.graphMenu);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -117,4 +109,14 @@ public class FullGraphActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home){
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

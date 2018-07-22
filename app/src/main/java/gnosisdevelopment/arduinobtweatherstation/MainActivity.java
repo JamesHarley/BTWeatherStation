@@ -2,6 +2,7 @@ package gnosisdevelopment.arduinobtweatherstation;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -95,7 +96,6 @@ public class MainActivity extends AppCompatActivity {
     private Intent fullGraphIntent;
     protected  Intent mainIntent;
     private Activity mActivity;
-    private FullGraphActivity fullGraphActivity;
     private int focus;
     GrapherUtils graphUtil;
     EditText et;
@@ -138,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         aboutIntent = new Intent(this, About.class);
         fullGraphIntent = new Intent(this, FullGraphActivity.class);
-        fullGraphActivity = new FullGraphActivity();
         mainIntent = new Intent(this, MainActivity.class);
         mActivity = MainActivity.this;
 
@@ -159,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
          mydb = new DBHelper(this);
         ;
-         if(mydb.isEmpty()==true){
+         if(mydb.isEmpty()){
                  mydb.insertPrefs(tempState,humidityState,windState,"empty", celsius, timeInMilliseconds);
                  Log.d("BTWeather - isEmpty()", "insertpref");
              mydb.close();
@@ -178,7 +177,15 @@ public class MainActivity extends AppCompatActivity {
 
     protected void setBtConnectedState(boolean b){
 
-        if(btConnectedState==false && b==true){
+        if(!btConnectedState && b){
+            if(!windState)
+                wind = 0.0;
+
+            if(!humidityState)
+                humidity = 0.0;
+
+            if(!tempState)
+                temp = 0.0;
 
             setRepeatingAsyncTask();
             btConnectedState =true;
@@ -189,37 +196,43 @@ public class MainActivity extends AppCompatActivity {
         return btConnectedState;
     }
     protected void setTemp() {
-        if (celsius == true) {
-            if(temp != -99.99){
-                tempText.setText(String.valueOf(temp));
-            }else {
-                tempText.setText(" --.-- ");
-            }
-        } else {
-            if(temp != -99.99){
-                tempText.setText(String.valueOf(cToF(temp)));
-            }else {
-                tempText.setText(" --.-- ");
+        if(tempText != null) {
+            if (celsius) {
+                if (temp != -99.99) {
+                    tempText.setText(String.valueOf(temp));
+                } else {
+                    tempText.setText(" --.-- ");
+                }
+            } else {
+                if (temp != -99.99) {
+                    tempText.setText(String.valueOf(cToF(temp)));
+                } else {
+                    tempText.setText(" --.-- ");
+                }
             }
         }
     }
 //TODO Fix layout for graph spacing to match temp
     protected void setHumidity() {
-        if(humidity != -99.99){
-            humidityText.setText(String.valueOf(humidity) + "");
-        }else {
-            humidityText.setText(" --.-- ");
+        if(humidityText != null) {
+            if (humidity != -99.99) {
+                humidityText.setText(String.valueOf(humidity));
+            } else {
+                humidityText.setText(" --.-- ");
+            }
         }
     }
 
     protected void setWind() {
-        if(wind != -99.99){
-            if(wind==0){
-                windText.setText("00.0");
-            }else
-            windText.setText(String.valueOf(wind) + "");
-        }else {
-            windText.setText(" --.-- ");
+        if(windText!=null) {
+            if (wind != -99.99) {
+                if (wind == 0) {
+                    windText.setText("00.0");
+                } else
+                    windText.setText(String.valueOf(wind));
+            } else {
+                windText.setText(" --.-- ");
+            }
         }
     }
     // convert C to F
@@ -230,16 +243,16 @@ public class MainActivity extends AppCompatActivity {
     public void gaugeUpdater(String [] gaugeValues){
         if(gaugeValues[0]!=null && gaugeValues[1] !=null && gaugeValues[2]!=null)  {
             try {
-                if(tempState !=false){
+                if(tempState){
                     temp = Double.valueOf(gaugeValues[0]);
                     setTemp();
                 }
-                if(humidityState !=false){
+                if(humidityState){
                     humidity= Double.valueOf(gaugeValues[1]);
                     setHumidity();
                 }
 
-                if(windState !=false){
+                if(windState){
                     wind = Double.valueOf(gaugeValues[2]);
                     setWind();
                 }
@@ -263,7 +276,7 @@ public class MainActivity extends AppCompatActivity {
             weatherView.addView(tempLayout);
             graphTemp = (GraphView) findViewById(R.id.graphTemp);
             try {
-                GraphUtility gu = new GraphUtility(1,1,3,false,false, this);
+                GraphUtility gu = new GraphUtility(1,1,3,false,false, this,celsius);
                 gu.grapher( this,graphTemp, gu.seriesBuilder(
                         gu.getTempData(gu.getYesterday())));
             }catch(Exception e){
@@ -275,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     fullGraphIntent.putExtra("focus", 1);
+                    fullGraphIntent.putExtra("celsius", celsius);
                     startActivity(fullGraphIntent);
                 }
             });
@@ -288,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
             graphHumidity = (GraphView) findViewById(R.id.graphHumidity);
 
             try {
-                GraphUtility gu = new GraphUtility(2,1, 3,false,false,this);
+                GraphUtility gu = new GraphUtility(2,1, 3,false,false,this,celsius);
                 gu.grapher( this,graphHumidity,
                         gu.seriesBuilder(
                                 gu.getTempData(gu.getYesterday())));
@@ -301,6 +315,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     fullGraphIntent.putExtra("focus", 2);
+                    fullGraphIntent.putExtra("celsius", celsius);
                     startActivity(fullGraphIntent);
                 }
             });
@@ -315,7 +330,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             try {
-                GraphUtility gu = new GraphUtility(3,1,3,false,false,this);
+                GraphUtility gu = new GraphUtility(3,1,3,false,false,this,celsius);
                 gu.grapher( this,graphWind,
                         gu.seriesBuilder(
                                 gu.getTempData(gu.getYesterday())));
@@ -329,6 +344,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     fullGraphIntent.putExtra("focus", 3);
+                    fullGraphIntent.putExtra("celsius", celsius);
                     startActivity(fullGraphIntent);
                 }
             });
@@ -367,18 +383,18 @@ public class MainActivity extends AppCompatActivity {
         radioC = findViewById(R.id.radio_celsius);
         radioF = findViewById(R.id.radio_fahrenheit);
 
-        if (tempState == true) tempSw.setChecked(true);
-        if (humidityState == true) humidSw.setChecked(true);
-        if (windState == true) windSw.setChecked(true);
+        if (tempState) tempSw.setChecked(true);
+        if (humidityState) humidSw.setChecked(true);
+        if (windState) windSw.setChecked(true);
         mydb = new DBHelper(this);
         tempSw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // do something, the isChecked will be
                 // true if the switch is in the On position
-                if (isChecked == false) {
+                if (!isChecked) {
                     tempState = false;
                 }
-                if (isChecked == true) {
+                if (isChecked) {
                     tempState = true;
                 }
                 mydb.updateTempState(1, tempState);
@@ -388,10 +404,10 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // do something, the isChecked will be
                 // true if the switch is in the On position
-                if (isChecked == false) {
+                if (!isChecked ) {
                     humidityState = false;
                 }
-                if (isChecked == true) {
+                if (isChecked ) {
                     humidityState = true;
                 }
                 mydb.updateHumidState(1,humidityState);
@@ -401,22 +417,22 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // do something, the isChecked will be
                 // true if the switch is in the On position
-                if (isChecked == false) {
+                if (!isChecked) {
                     windState = false;
                 }
-                if (isChecked == true) {
+                if (isChecked ) {
                     windState = true;
                 }
                 mydb.updateWindState(1,windState);
             }
         });
-        radioView = findViewById(R.id.radio_fahrenheit);
-        if (celsius == true) {
+
+        if (celsius) {
             radioC.setChecked(true);
         } else {
             radioF.setChecked(true);
         }
-        onRadioButtonClicked(radioView);
+        //nRadioButtonClicked(radioView);
         mydb.close();
 
 
@@ -460,7 +476,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // Permission is not granted
                     // Should we show an explanation?
-                    if (ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
+                    if(ActivityCompat.shouldShowRequestPermissionRationale(mActivity,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                         // Show an explanation to the user *asynchronously* -- don't block
                         // this thread waiting for the user's response! After the user
@@ -535,7 +551,6 @@ public class MainActivity extends AppCompatActivity {
                             "Permission was denied. Export needs permission to write to directory ",
                             Toast.LENGTH_SHORT).show();
                 }
-                return;
             }
 
             // other 'case' lines to check for other
@@ -646,7 +661,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean isWindState() {
         return windState;
     }
-    public boolean isCelsius() {
+    public boolean isCelsius(Context C) {
+
         return celsius;
     }
 
@@ -673,6 +689,8 @@ public class MainActivity extends AppCompatActivity {
                                             dbDate());
 
                                     Log.d("BTWeather-storeAsync", "Store success");
+                                }else{
+                                    Log.d("BTWeather-storeAsync", "Store no-success");
                                 }
                             } catch (Exception e) {
                                 //error handling code
@@ -705,18 +723,12 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         if(findViewById(R.id.controlPanel) != null){
             if(findViewById(R.id.controlPanel).getVisibility() == View.VISIBLE){
-
-                mActivity.recreate();
-
-                return;
+                weatherPanelInflator();
             }else{
                 super.onBackPressed();
-                return;
             }
-
         }
         else{
-
             super.onBackPressed();
         }
 

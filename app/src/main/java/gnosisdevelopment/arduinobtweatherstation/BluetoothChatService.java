@@ -393,6 +393,7 @@ public class BluetoothChatService {
 
         public ConnectThread(BluetoothDevice device, boolean secure) {
             //Needed for HC-06 bluetoothadapter to allow for reconnection or will be unable to connect
+            //TODO create a field that can allow to adjust this time for different boards
             SystemClock.sleep(300);
             mmDevice = device;
             BluetoothSocket tmp = null;
