@@ -124,16 +124,20 @@ public class GraphUtility {
                     maxYBound=1;
                 }
 
-                graph.getViewport().setMaxY(maxYBound);
+               graph.getViewport().setMaxY(maxYBound);
             }
             //Minus 5 percent
-            if(miny) {
-                graph.getViewport().setYAxisBoundsManual(true);
-                minYBound = minYBound - (minYBound * .05);
+            if(minYBound !=0) {
+                if(miny) {
+                    graph.getViewport().setYAxisBoundsManual(true);
+                    minYBound = minYBound - (minYBound * .05);
 
-                Log.d("BTWeather-minYval", String.valueOf(minYBound));
-                graph.getViewport().setMinY(minYBound);
+                    Log.d("BTWeather-minYval", String.valueOf(minYBound));
+                    //TODO Empty sensors causes crash.
+                    graph.getViewport().setMinY(minYBound);
+                }
             }
+
             if(labelCount > 0){
                 graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
             }
@@ -166,6 +170,9 @@ public class GraphUtility {
             int i = 0;
             Log.d("BTWeather-seriesbuilder",
                     " Length of sensorlist: " + String.valueOf(sensorsList.size()));
+            if(sensorsList.size()==0){
+                minYBound = 0;
+            }
             try{
                 for(Sensors sensor: sensorsList){
                     findMaxY(sensor);
@@ -239,31 +246,31 @@ public class GraphUtility {
         }
     }
     public void findMinY (Sensors sensor){
-        try{
-            //Focus passed from main activity on graph click
-            if(focus ==1){
-                if(  isCelsius()) {
-                    if (Double.valueOf(sensor.getmTemp()) < minYBound) {
-                        minYBound = Double.valueOf(sensor.getmTemp());
+        if(sensor != null) {
+            try {
+                //Focus passed from main activity on graph click
+                if (focus == 1) {
+                    if (isCelsius()) {
+                        if (Double.valueOf(sensor.getmTemp()) < minYBound) {
+                            minYBound = Double.valueOf(sensor.getmTemp());
+                        }
+                    } else if (mainActivity.cToF(Double.valueOf(sensor.getmTemp())) < minYBound) {
+                        minYBound = mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
                     }
-                }else if(mainActivity.cToF(Double.valueOf(sensor.getmTemp()))< minYBound){
-                    minYBound=mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
+                } else if (focus == 2) {
+                    if (Double.valueOf(sensor.getmHumidity()) < minYBound) {
+                        minYBound = Double.valueOf(sensor.getmHumidity());
+                    }
+                } else if (focus == 3) {
+                    if (Double.valueOf(sensor.getmWind()) < minYBound) {
+                        minYBound = Double.valueOf(sensor.getmWind());
+                    }
                 }
+            } catch (Exception e) {
+                Log.d("BTWeather-error18", e.toString());
             }
-
-            else if(focus == 2){
-                if( Double.valueOf(sensor.getmHumidity())< minYBound){
-                    minYBound = Double.valueOf(sensor.getmHumidity());
-                }
-            }
-
-            else if(focus == 3){
-                if(Double.valueOf(sensor.getmWind())< minYBound){
-                    minYBound = Double.valueOf(sensor.getmWind());
-                }
-            }}
-        catch(Exception e){
-            Log.d("BTWeather-error18", e.toString());
+        }else{
+            minYBound=0;
         }
     }
 

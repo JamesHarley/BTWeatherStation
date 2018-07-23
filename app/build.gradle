@@ -49,4 +49,7 @@ dependencies {
 
     //android-debug-database-tool
     implementation 'com.amitshekhar.android:debug-db:1.0.0'
+
+    //Custome Gauge
+    implementation 'pl.pawelkleczkowski.customgauge:CustomGauge:1.0.3'
 }
