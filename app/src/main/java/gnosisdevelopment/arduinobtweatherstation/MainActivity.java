@@ -48,6 +48,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import pl.pawelkleczkowski.customgauge.CustomGauge;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -81,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
     private GraphView graphTemp;
     private GraphView graphHumidity;
     private GraphView graphWind;
+    private CustomGauge gauge1;
+
 
     private final static int INTERVAL = 1000 * 60 * 2; //2 minutes
 
@@ -97,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     protected  Intent mainIntent;
     private Activity mActivity;
     private int focus;
-    GrapherUtils graphUtil;
+   // GrapherUtils graphUtil;
     EditText et;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -171,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
          }
          weatherPanelInflator();
          //getData();
-         graphUtil= new GrapherUtils();
+         //graphUtil= new GrapherUtils();
     }
 
 
@@ -200,12 +203,14 @@ public class MainActivity extends AppCompatActivity {
             if (celsius) {
                 if (temp != -99.99) {
                     tempText.setText(String.valueOf(temp));
+                   // gauge1.setValue(temp.intValue());
                 } else {
                     tempText.setText(" --.-- ");
                 }
             } else {
                 if (temp != -99.99) {
                     tempText.setText(String.valueOf(cToF(temp)));
+                   // gauge1.setValue(cToF(temp).intValue());
                 } else {
                     tempText.setText(" --.-- ");
                 }
@@ -246,6 +251,7 @@ public class MainActivity extends AppCompatActivity {
                 if(tempState){
                     temp = Double.valueOf(gaugeValues[0]);
                     setTemp();
+
                 }
                 if(humidityState){
                     humidity= Double.valueOf(gaugeValues[1]);
@@ -292,6 +298,9 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(fullGraphIntent);
                 }
             });
+            //gauge1 = findViewById(R.id.gauge1);
+
+            //gauge1.setEndValue(100);
         }
         if (humidityState) {
             humidityLayout = inflater.inflate(R.layout.weather_humidity,
