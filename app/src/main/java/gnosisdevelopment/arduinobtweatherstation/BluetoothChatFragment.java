@@ -350,7 +350,8 @@ public class BluetoothChatFragment extends Fragment {
     private void setRepeatingAsyncTask() {
         try{
             reconnectTimerState = true;
-            final TimerTask task = new TimerTask() {
+            //TODO Timertask won't restart a second time after disconnect
+             TimerTask task = new TimerTask() {
 
                 @Override
                 public void run() {
@@ -360,6 +361,7 @@ public class BluetoothChatFragment extends Fragment {
                             Log.d(Constants.LOG_TAGBTCF,"reconnect timer run ");
                             if(((MainActivity) getActivity()).getBtConnectedState()){
                                 timer.cancel();
+                                Log.d(Constants.LOG_TAGBTCF,"reconnect timer stopped ");
                             }else {
                                 try {
                                     String bt = ((MainActivity) getActivity()).getBT();
@@ -371,6 +373,7 @@ public class BluetoothChatFragment extends Fragment {
                                         } else {
                                             //kill attempt
                                             timer.cancel();
+
                                         }
                                     }
                                 } catch (Exception e) {

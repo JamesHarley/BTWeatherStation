@@ -43,6 +43,8 @@ import com.jjoe64.graphview.helper.GraphViewXML;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import org.w3c.dom.Text;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -526,8 +528,26 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("BTWeather-error26", e.toString());
                     }
                 }
+                //TODO TEXT NOT UPDATING
+                if(getBtConnectedState()) {
 
-
+                    (mActivity).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView bluetoothStateText = findViewById(R.id.bluetootStateText);
+                            bluetoothStateText.setText("Bluetooth is connected");
+                        }
+                    });
+                }
+                else {
+                    (mActivity).runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TextView bluetoothStateText = findViewById(R.id.bluetootStateText);
+                            bluetoothStateText.setText("Bluetooth is disconnected");
+                        }
+                    });
+                }
 
 
             }
@@ -715,8 +735,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d("BTWeather4", e.toString());
                                 }
                             }else{
-                                Log.d(Constants.LOG_TAG,"BTdisconnected, try reconnect");
-                               Toast.makeText(MainActivity.this,"Bluetooth is disconnected, try reconnecting to device again ", Toast.LENGTH_SHORT).show();
+                                Log.d(Constants.LOG_TAG,"BTdisconnected");
 
                             }
                         }
