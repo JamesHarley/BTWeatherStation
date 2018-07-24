@@ -62,7 +62,7 @@ public class BluetoothChatService {
     private ConnectedThread mConnectedThread;
     private int mState;
     private int mNewState;
-
+    private MainActivity mainActivity = new MainActivity();
     // Constants that indicate the current connection state
     public static final int STATE_NONE = 0;       // we're doing nothing
     public static final int STATE_LISTEN = 1;     // now listening for incoming connections
@@ -81,6 +81,8 @@ public class BluetoothChatService {
         mNewState = mState;
         mHandler = handler;
     }
+
+
 
     /**
      * Update UI title according to the current state of the chat connection
@@ -265,6 +267,9 @@ public class BluetoothChatService {
         Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString(Constants.TOAST, "Unable to connect device");
+        mainActivity = new MainActivity();
+        mainActivity.getApplicationContext();
+        mainActivity.setBtConnectedState(false);
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 

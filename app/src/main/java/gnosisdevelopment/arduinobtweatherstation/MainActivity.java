@@ -2,6 +2,7 @@ package gnosisdevelopment.arduinobtweatherstation;
 
 import android.Manifest;
 import android.app.Activity;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -19,6 +20,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.format.DateFormat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -93,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
     private SensorsDatabase sDb;
     private boolean btConnectedState = false;
     private int timeInMilliseconds= 30000;
-
+    private BluetoothChatFragment fragment;
 
     private Intent aboutIntent;
     private Intent fullGraphIntent;
@@ -153,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            BluetoothChatFragment fragment = new BluetoothChatFragment();
+            fragment = new BluetoothChatFragment();
             transaction.replace(R.id.sample_content_fragment, fragment);
             transaction.commit();
         }
@@ -178,7 +181,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    protected void setBtConnectedState(boolean b){
+    public void setBtConnectedState(boolean b){
 
         if(!btConnectedState && b){
             if(!windState)
@@ -687,23 +690,37 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     handler.post(new Runnable() {
                         public void run() {
+                            if(btConnectedState) {
+                                try {
+                                    //TODO When states are false will not store
+                                    if (wind != -99.99 && temp != -99.99 & humidity != -99.99) {
+                                        DatabaseInitializer.populateAsync(sDb,
+                                                String.valueOf(temp),
+                                                String.valueOf(humidity),
+                                                String.valueOf(wind),
+                                                dbDate());
 
-                            try{
-                                //TODO When states are false will not store
-                                if(wind != -99.99 && temp != -99.99 & humidity!= -99.99) {
-                                    DatabaseInitializer.populateAsync(sDb,
-                                            String.valueOf(temp),
-                                            String.valueOf(humidity),
-                                            String.valueOf(wind),
-                                            dbDate());
-
-                                    Log.d("BTWeather-storeAsync", "Store success");
-                                }else{
-                                    Log.d("BTWeather-storeAsync", "Store no-success");
+                                        Log.d("BTWeather-storeAsync", "Store success");
+                                        Log.d(Constants.LOG_TAG, "Btconnected state:"+btConnectedState);
+                                    } else {
+                                        Log.d("BTWeather-storeAsync", "Store no-success");
+                                    }
+                                } catch (Exception e) {
+                                    //error handling code
+                                    Log.d("BTWeather4", e.toString());
                                 }
-                            } catch (Exception e) {
-                                //error handling code
-                                Log.d("BTWeather4", e.toString());
+                            }else{
+                                Log.d(Constants.LOG_TAG,"BTdisconnected, try reconnect");
+                                try {
+                                    String btdev = getBT();
+                                    if (!(btdev.equals("")) && !(btdev.equals("empty"))) {
+
+
+                                        fragment.onResume();
+                                    }
+                                }catch(Exception e){
+                                    Log.d("BTWeather-Error-27", String.valueOf(e));
+                                }
                             }
                         }
                     });

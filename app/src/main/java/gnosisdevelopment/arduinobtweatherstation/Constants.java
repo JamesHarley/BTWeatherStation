@@ -32,4 +32,5 @@ public interface Constants {
     public static final String DEVICE_NAME = "device_name";
     public static final String TOAST = "toast";
     public static final String LOG_TAG="BTWeather";
+    public static final String LOG_TAGBTCF="BTWeather-BTCF";
 }

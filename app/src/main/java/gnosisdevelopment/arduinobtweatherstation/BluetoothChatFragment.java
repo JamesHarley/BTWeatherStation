@@ -142,7 +142,7 @@ public class BluetoothChatFragment extends Fragment {
     /**
      * Set up the UI and background operations for chat.
      */
-    private void setupChat() {
+    public void setupChat() {
         Log.d(TAG, "setupChat()");
         // Initialize the BluetoothChatService to perform bluetooth connections
         mChatService = new BluetoothChatService(getActivity(), mHandler);
@@ -181,6 +181,7 @@ public class BluetoothChatFragment extends Fragment {
                     }
                     break;
                 case Constants.MESSAGE_TOAST:
+                    ((MainActivity) getActivity()).setBtConnectedState(false);
                     if (null != activity) {
                         Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
                                 Toast.LENGTH_SHORT).show();
@@ -233,7 +234,7 @@ public class BluetoothChatFragment extends Fragment {
         // Attempt to connect to the device
         mChatService.connect(device, secure);
     }
-    private void connectDevice(String mac, boolean secure){
+    public void connectDevice(String mac, boolean secure){
         BluetoothDevice device =  mBluetoothAdapter.getRemoteDevice(mac);
         mChatService.connect(device, secure);
     }
@@ -283,24 +284,24 @@ public class BluetoothChatFragment extends Fragment {
             //
             //if(t.equals(start)) {
             if(t == en) {
-                //Log.d("apples","Found @ start");
+                //Log.d(Constants.LOG_TAGBTCF,"Found @ start");
                 while(i<input.length()) {
 
                     t = input.charAt(i);
-                    //Log.d("apples","token: " + t);
+                    //Log.d(Constants.LOG_TAGBTCF,"token: " + t);
                     //if(!(t.equals(end))) {
                     if(t != en){
 
                         buildOutput = buildOutput + t;
-                        Log.d("apples", "buildoutput: " + buildOutput);
+                        //Log.d(Constants.LOG_TAGBTCF, "buildoutput: " + buildOutput);
                     }
                     //if(t.equals(end)){
                     i++;
                     if(t == en){
-                        Log.d("apples","Found # end");
+                        //Log.d(Constants.LOG_TAGBTCF,"Found # end");
 
                         int l = buildOutput.length();
-                        Log.d("apples","length: " +String.valueOf(l));
+                        //Log.d(Constants.LOG_TAGBTCF,"length: " +String.valueOf(l));
 
                         //Ignore incomplete buffer by checking length
                         if(buildOutput.length() > 13){
@@ -328,10 +329,9 @@ public class BluetoothChatFragment extends Fragment {
 
 
     }
-    public void connectBtButton(Intent serverIntent){
+    public void updateBTState(boolean state){
 
-        serverIntent = new Intent(getActivity(), DeviceListActivity.class);
-        startActivityForResult(serverIntent, REQUEST_CONNECT_DEVICE_INSECURE);
+        ((MainActivity) getActivity()).setBtConnectedState(state);
     }
 
 }
