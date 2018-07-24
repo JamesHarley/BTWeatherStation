@@ -50,6 +50,7 @@ public class BluetoothChatFragment extends Fragment {
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
+    private int reconnectAttempts = 0;
     Button connectBT;
     //Used for tokenizer
     private String buildOutput ="";
@@ -159,6 +160,7 @@ public class BluetoothChatFragment extends Fragment {
             switch (msg.what) {
 
                 case Constants.MESSAGE_READ:
+                    reconnectAttempts=0;
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
@@ -170,6 +172,7 @@ public class BluetoothChatFragment extends Fragment {
                     catch(Exception e){
                         Log.d("BTWeather-error5", String.valueOf(e));
                     }
+                    Log.d(Constants.LOG_TAG,"callTokenizer");
                     tokenizer(readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
@@ -181,7 +184,16 @@ public class BluetoothChatFragment extends Fragment {
                     }
                     break;
                 case Constants.MESSAGE_TOAST:
+
                     ((MainActivity) getActivity()).setBtConnectedState(false);
+                    String bt = ((MainActivity) getActivity()).getBT();
+                    if(!(bt.equals("")) && !(bt.equals("empty") )){
+                        if (reconnectAttempts <  10) {
+                            Log.d(Constants.LOG_TAG,"reconnect attempt: " + String.valueOf(reconnectAttempts));
+                            connectDevice(bt, false);
+                            reconnectAttempts++;
+                        }
+                    }
                     if (null != activity) {
                         Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
                                 Toast.LENGTH_SHORT).show();
@@ -237,6 +249,7 @@ public class BluetoothChatFragment extends Fragment {
     public void connectDevice(String mac, boolean secure){
         BluetoothDevice device =  mBluetoothAdapter.getRemoteDevice(mac);
         mChatService.connect(device, secure);
+
     }
 
     @Override

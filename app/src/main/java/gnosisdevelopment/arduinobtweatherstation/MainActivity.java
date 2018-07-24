@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private GraphView graphHumidity;
     private GraphView graphWind;
     private CustomGauge gauge1;
-
+    private boolean threadState =false;
 
     private final static int INTERVAL = 1000 * 60 * 2; //2 minutes
 
@@ -192,9 +192,12 @@ public class MainActivity extends AppCompatActivity {
 
             if(!tempState)
                 temp = 0.0;
-
-            setRepeatingAsyncTask();
+            if(!threadState) {
+                setRepeatingAsyncTask();
+            }
             btConnectedState =true;
+        }else{
+            btConnectedState=b;
         }
         System.out.println("btconnected " + btConnectedState);
     }
@@ -680,7 +683,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setRepeatingAsyncTask() {
+
         try{
+            threadState = true;
             sDb = SensorsDatabase.getSensorsDatabase(this);
             final Handler handler = new Handler();
             Timer timer = new Timer();
@@ -711,16 +716,9 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }else{
                                 Log.d(Constants.LOG_TAG,"BTdisconnected, try reconnect");
-                                try {
-                                    String btdev = getBT();
-                                    if (!(btdev.equals("")) && !(btdev.equals("empty"))) {
-
-
-                                        fragment.onResume();
-                                    }
-                                }catch(Exception e){
-                                    Log.d("BTWeather-Error-27", String.valueOf(e));
-                                }
+                                Toast.makeText(MainActivity.this,
+                                        "Bluetooth is disconnected, try reconnecting to device again ",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         }
                     });

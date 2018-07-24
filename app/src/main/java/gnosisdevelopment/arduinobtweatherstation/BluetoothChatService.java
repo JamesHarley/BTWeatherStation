@@ -267,9 +267,7 @@ public class BluetoothChatService {
         Message msg = mHandler.obtainMessage(Constants.MESSAGE_TOAST);
         Bundle bundle = new Bundle();
         bundle.putString(Constants.TOAST, "Unable to connect device");
-        mainActivity = new MainActivity();
-        mainActivity.getApplicationContext();
-        mainActivity.setBtConnectedState(false);
+
         msg.setData(bundle);
         mHandler.sendMessage(msg);
 
