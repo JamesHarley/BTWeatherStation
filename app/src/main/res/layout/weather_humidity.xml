@@ -47,7 +47,7 @@
             android:layout_below="@+id/humidityGrid"
             android:text="@string/title_humidity"
             android:layout_marginLeft="5dp"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
 

@@ -47,6 +47,6 @@
             android:text="@string/title_wind"
             android:layout_below="@+id/windGrid"
             android:layout_marginLeft="5dp"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

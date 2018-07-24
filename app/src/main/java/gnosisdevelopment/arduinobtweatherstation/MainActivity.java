@@ -97,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean btConnectedState = false;
     private int timeInMilliseconds= 30000;
     private BluetoothChatFragment fragment;
+    final Handler handler = new Handler();
 
     private Intent aboutIntent;
     private Intent fullGraphIntent;
@@ -288,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
             weatherView.addView(tempLayout);
             graphTemp = (GraphView) findViewById(R.id.graphTemp);
             try {
-                GraphUtility gu = new GraphUtility(1,1,3,false,false, this,celsius);
+                GraphUtility gu = new GraphUtility(1,1,3,true,true, this,celsius);
                 gu.grapher( this,graphTemp, gu.seriesBuilder(
                         gu.getTempData(gu.getYesterday())));
             }catch(Exception e){
@@ -317,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
             graphHumidity = (GraphView) findViewById(R.id.graphHumidity);
 
             try {
-                GraphUtility gu = new GraphUtility(2,1, 3,false,false,this,celsius);
+                GraphUtility gu = new GraphUtility(2,1, 3,true,true,this,celsius);
                 gu.grapher( this,graphHumidity,
                         gu.seriesBuilder(
                                 gu.getTempData(gu.getYesterday())));
@@ -345,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             try {
-                GraphUtility gu = new GraphUtility(3,1,3,false,false,this,celsius);
+                GraphUtility gu = new GraphUtility(3,1,3,true,true,this,celsius);
                 gu.grapher( this,graphWind,
                         gu.seriesBuilder(
                                 gu.getTempData(gu.getYesterday())));
@@ -687,7 +688,6 @@ public class MainActivity extends AppCompatActivity {
         try{
             threadState = true;
             sDb = SensorsDatabase.getSensorsDatabase(this);
-            final Handler handler = new Handler();
             Timer timer = new Timer();
 
             TimerTask task = new TimerTask() {
@@ -716,9 +716,8 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }else{
                                 Log.d(Constants.LOG_TAG,"BTdisconnected, try reconnect");
-                                Toast.makeText(MainActivity.this,
-                                        "Bluetooth is disconnected, try reconnecting to device again ",
-                                        Toast.LENGTH_SHORT).show();
+                               Toast.makeText(MainActivity.this,"Bluetooth is disconnected, try reconnecting to device again ", Toast.LENGTH_SHORT).show();
+
                             }
                         }
                     });

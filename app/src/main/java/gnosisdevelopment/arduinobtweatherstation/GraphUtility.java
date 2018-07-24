@@ -141,7 +141,9 @@ public class GraphUtility {
             if(labelCount > 0){
                 graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
             }
+
             graph.getGridLabelRenderer().setHumanRounding(true);
+           // graph.getGridLabelRenderer().setTextSize(35);
             graph.getGridLabelRenderer().reloadStyles();
             java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(context);
             if(time==1) {
@@ -152,6 +154,7 @@ public class GraphUtility {
                 graph.getGridLabelRenderer().setLabelFormatter(
                         new DateAsXAxisLabelFormatter(graph.getContext()));
             }
+            graph.getViewport().scrollToEnd();
         }catch(Exception e){
             Log.d("BTWeather-error21", e.toString());
 

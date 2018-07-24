@@ -38,6 +38,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -45,8 +48,10 @@ import android.widget.Toast;
  */
 public class BluetoothChatFragment extends Fragment {
     private static final String TAG = "BluetoothChatFragment";
-
+    Timer timer = new Timer();
     // Intent request codes
+    private final Handler reconnectHandler = new Handler();
+    private boolean reconnectTimerState = false;
     private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
@@ -55,7 +60,7 @@ public class BluetoothChatFragment extends Fragment {
     //Used for tokenizer
     private String buildOutput ="";
 
-
+    private int timeInMilliseconds = 1000;
     /**
      * Name of the connected device
      */
@@ -160,19 +165,23 @@ public class BluetoothChatFragment extends Fragment {
             switch (msg.what) {
 
                 case Constants.MESSAGE_READ:
-                    reconnectAttempts=0;
+
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //send it to the tokenizer to be processed
                     try{
                         ((MainActivity) getActivity()).setBtConnectedState(true);
+                        //reset counter after connection
+                        reconnectAttempts=0;
+                        reconnectTimerState = false;
+                        //end the timer if running
 
                     }
                     catch(Exception e){
                         Log.d("BTWeather-error5", String.valueOf(e));
                     }
-                    Log.d(Constants.LOG_TAG,"callTokenizer");
+                    //Log.d(Constants.LOG_TAG,"callTokenizer");
                     tokenizer(readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
@@ -185,19 +194,13 @@ public class BluetoothChatFragment extends Fragment {
                     break;
                 case Constants.MESSAGE_TOAST:
 
-                    ((MainActivity) getActivity()).setBtConnectedState(false);
-                    String bt = ((MainActivity) getActivity()).getBT();
-                    if(!(bt.equals("")) && !(bt.equals("empty") )){
-                        if (reconnectAttempts <  10) {
-                            Log.d(Constants.LOG_TAG,"reconnect attempt: " + String.valueOf(reconnectAttempts));
-                            connectDevice(bt, false);
-                            reconnectAttempts++;
-                        }
-                    }
-                    if (null != activity) {
+                   ((MainActivity) getActivity()).setBtConnectedState(false);
+                   if(!reconnectTimerState)
+                        setRepeatingAsyncTask();
+                   if (null != activity) {
                         Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
                                 Toast.LENGTH_SHORT).show();
-                    }
+                   }
                     break;
             }
         }
@@ -342,9 +345,55 @@ public class BluetoothChatFragment extends Fragment {
 
 
     }
-    public void updateBTState(boolean state){
 
-        ((MainActivity) getActivity()).setBtConnectedState(state);
+
+    private void setRepeatingAsyncTask() {
+        try{
+            reconnectTimerState = true;
+            final TimerTask task = new TimerTask() {
+
+                @Override
+                public void run() {
+
+                    reconnectHandler.post(new Runnable() {
+                        public void run() {
+                            Log.d(Constants.LOG_TAGBTCF,"reconnect timer run ");
+                            if(((MainActivity) getActivity()).getBtConnectedState()){
+                                timer.cancel();
+                            }else {
+                                try {
+                                    String bt = ((MainActivity) getActivity()).getBT();
+                                    if (!(bt.equals("")) && !(bt.equals("empty"))) {
+                                        if (reconnectAttempts < 10) {
+                                            Log.d(Constants.LOG_TAG, "reconnect attempt: " + String.valueOf(reconnectAttempts));
+                                            connectDevice(bt, false);
+                                            reconnectAttempts++;
+                                        } else {
+                                            //kill attempt
+                                            timer.cancel();
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    Log.d(Constants.LOG_TAGBTCF, "error2 " + String.valueOf(e));
+                                }
+                            }
+                        }
+                    });
+                };
+            };
+            if(reconnectTimerState){
+                try{
+                    timer.schedule(task, 0, 60 * timeInMilliseconds);
+                    Log.d("BTWeather-storeAsync", "TimerStart");
+                }catch (Exception e) {
+                    Log.d("BTWeather-error11", e.toString());
+                }
+            }else{
+                task.cancel();
+            }
+
+        }catch (Exception e){
+            Log.d(Constants.LOG_TAGBTCF,"error1 " +String.valueOf(e));
+        }
     }
-
 }

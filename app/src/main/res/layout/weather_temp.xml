@@ -48,7 +48,7 @@
             android:layout_below="@+id/tempGrid"
             android:text="@string/title_temp"
             android:layout_marginLeft="5dp"
-            android:textSize="20sp" />
+            android:textSize="18sp" />
 
     </RelativeLayout>
 <!--
