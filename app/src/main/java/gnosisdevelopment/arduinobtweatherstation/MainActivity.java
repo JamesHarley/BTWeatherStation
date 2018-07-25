@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
     private int timeInMilliseconds= 30000;
     private BluetoothChatFragment fragment;
     final Handler handler = new Handler();
+    TextView bluetoothStateText;
 
     private Intent aboutIntent;
     private Intent fullGraphIntent;
@@ -202,9 +203,8 @@ public class MainActivity extends AppCompatActivity {
         }else{
             btConnectedState=b;
         }
-        System.out.println("btconnected " + btConnectedState);
     }
-    protected boolean getBtConnectedState(){
+    public boolean getBtConnectedState(){
         return btConnectedState;
     }
     protected void setTemp() {
@@ -291,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
             weatherView.addView(tempLayout);
             graphTemp = (GraphView) findViewById(R.id.graphTemp);
             try {
-                GraphUtility gu = new GraphUtility(1,1,3,true,true, this,celsius);
+                GraphUtility gu = new GraphUtility(1,1,3,false,false, this,celsius);
                 gu.grapher( this,graphTemp, gu.seriesBuilder(
                         gu.getTempData(gu.getYesterday())));
             }catch(Exception e){
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
             graphHumidity = (GraphView) findViewById(R.id.graphHumidity);
 
             try {
-                GraphUtility gu = new GraphUtility(2,1, 3,true,true,this,celsius);
+                GraphUtility gu = new GraphUtility(2,1, 3,false,false,this,celsius);
                 gu.grapher( this,graphHumidity,
                         gu.seriesBuilder(
                                 gu.getTempData(gu.getYesterday())));
@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             try {
-                GraphUtility gu = new GraphUtility(3,1,3,true,true,this,celsius);
+                GraphUtility gu = new GraphUtility(3,1,3,false,false,this,celsius);
                 gu.grapher( this,graphWind,
                         gu.seriesBuilder(
                                 gu.getTempData(gu.getYesterday())));
@@ -393,7 +393,25 @@ public class MainActivity extends AppCompatActivity {
                 (ViewGroup) findViewById(R.id.controlPanel));
         weatherView = findViewById(R.id.container);
         weatherView.addView(controlLayout);
+        bluetoothStateText= findViewById(R.id.bluetootStateText);
 
+        if(getBtConnectedState()) {
+
+            (mActivity).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    bluetoothStateText.setText("Bluetooth is connected");
+                }
+            });
+        }
+        else {
+            (mActivity).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    bluetoothStateText.setText("Bluetooth is disconnected");
+                }
+            });
+        }
         tempSw = (Switch) findViewById(R.id.tempSwitch);
         humidSw = (Switch) findViewById(R.id.humiditySwitch);
         windSw = (Switch) findViewById(R.id.windSwitch);
@@ -529,25 +547,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 //TODO TEXT NOT UPDATING
-                if(getBtConnectedState()) {
 
-                    (mActivity).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView bluetoothStateText = findViewById(R.id.bluetootStateText);
-                            bluetoothStateText.setText("Bluetooth is connected");
-                        }
-                    });
-                }
-                else {
-                    (mActivity).runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TextView bluetoothStateText = findViewById(R.id.bluetootStateText);
-                            bluetoothStateText.setText("Bluetooth is disconnected");
-                        }
-                    });
-                }
+
 
 
             }
@@ -765,6 +766,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, MainActivity.class);
         if(findViewById(R.id.controlPanel) != null){
             if(findViewById(R.id.controlPanel).getVisibility() == View.VISIBLE){
+                controlPanelDeflator();
                 weatherPanelInflator();
             }else{
                 super.onBackPressed();

@@ -88,7 +88,6 @@ public class BluetoothChatFragment extends Fragment {
         if (mBluetoothAdapter == null) {
             FragmentActivity activity = getActivity();
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
-            activity.finish();
         }
 
 
@@ -107,9 +106,11 @@ public class BluetoothChatFragment extends Fragment {
             // Otherwise, setup the chat session
         } else if (mChatService == null) {
             setupChat();
-            String bt = ((MainActivity) getActivity()).getBT();
-            if(!(bt.equals("")) && !(bt.equals("empty") )){
-                connectDevice(bt,false);
+            if((MainActivity) getActivity() != null) {
+                String bt = ((MainActivity) getActivity()).getBT();
+                if (!(bt.equals("")) && !(bt.equals("empty"))) {
+                    connectDevice(bt, false);
+                }
             }
         }
     }
@@ -119,7 +120,9 @@ public class BluetoothChatFragment extends Fragment {
         super.onDestroy();
         if (mChatService != null) {
             mChatService.stop();
-            ((MainActivity) getActivity()).setBtConnectedState(false);
+            if((MainActivity) getActivity() != null) {
+                ((MainActivity) getActivity()).setBtConnectedState(false);
+            }
         }
     }
 
@@ -153,7 +156,6 @@ public class BluetoothChatFragment extends Fragment {
         // Initialize the BluetoothChatService to perform bluetooth connections
         mChatService = new BluetoothChatService(getActivity(), mHandler);
     }
-    //TODO add method to try reconnection after 1 failed/disconnected event
     /**
      * The Handler that gets information back from the BluetoothChatService
      */
@@ -170,16 +172,17 @@ public class BluetoothChatFragment extends Fragment {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //send it to the tokenizer to be processed
-                    try{
-                        ((MainActivity) getActivity()).setBtConnectedState(true);
-                        //reset counter after connection
-                        reconnectAttempts=0;
-                        reconnectTimerState = false;
-                        //end the timer if running
+                    if((MainActivity) getActivity() != null) {
+                        try {
+                            ((MainActivity) getActivity()).setBtConnectedState(true);
+                            //reset counter after connection
+                            reconnectAttempts = 0;
+                            reconnectTimerState = false;
+                            //end the timer if running
 
-                    }
-                    catch(Exception e){
-                        Log.d("BTWeather-error5", String.valueOf(e));
+                        } catch (Exception e) {
+                            Log.d(Constants.LOG_TAGBTCF + "error-3", String.valueOf(e));
+                        }
                     }
                     //Log.d(Constants.LOG_TAG,"callTokenizer");
                     tokenizer(readMessage);
@@ -193,14 +196,19 @@ public class BluetoothChatFragment extends Fragment {
                     }
                     break;
                 case Constants.MESSAGE_TOAST:
-
-                   ((MainActivity) getActivity()).setBtConnectedState(false);
-                   if(!reconnectTimerState)
-                        setRepeatingAsyncTask();
-                   if (null != activity) {
+                    if((MainActivity) getActivity() != null) {
+                        try {
+                            ((MainActivity) getActivity()).setBtConnectedState(false);
+                            if (!reconnectTimerState)
+                                setRepeatingAsyncTask();
+                        } catch (Exception e) {
+                            Log.d(Constants.LOG_TAGBTCF + "error-4", String.valueOf(e));
+                        }
+                    }
+                    if (null != activity) {
                         Toast.makeText(activity, msg.getData().getString(Constants.TOAST),
                                 Toast.LENGTH_SHORT).show();
-                   }
+                    }
                     break;
             }
         }
@@ -243,10 +251,14 @@ public class BluetoothChatFragment extends Fragment {
                 .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
-        try{
-            ((MainActivity) getActivity()).btDeviceSave(device.getAddress());
-        }catch(Exception e){}
-        // Attempt to connect to the device
+        if((MainActivity) getActivity() != null) {
+            try {
+                ((MainActivity) getActivity()).btDeviceSave(device.getAddress());
+            } catch (Exception e) {
+                Log.d(Constants.LOG_TAGBTCF+"error-6", String.valueOf(e));
+            }
+            // Attempt to connect to the device
+        }
         mChatService.connect(device, secure);
     }
     public void connectDevice(String mac, boolean secure){
@@ -260,7 +272,6 @@ public class BluetoothChatFragment extends Fragment {
         inflater.inflate(R.menu.bluetooth_chat, menu);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -273,7 +284,9 @@ public class BluetoothChatFragment extends Fragment {
             }
             case R.id.btButton: {
                 // Launch the DeviceListActivity to see devices and do scan
-                ((MainActivity) getActivity()).removeBtDevice();
+                if((MainActivity) getActivity() != null) {
+                    ((MainActivity) getActivity()).removeBtDevice();
+                }
                 return true;
             }
             case R.id.aboutButton:{
@@ -324,13 +337,14 @@ public class BluetoothChatFragment extends Fragment {
                             output=buildOutput;
 
                             String [] a =output.split(";");
-                            try {
-                                ((MainActivity) getActivity()).gaugeUpdater(a);
-                            }
-                            catch (Exception e){
+                            if((MainActivity) getActivity() != null) {
+                                try {
 
+                                    ((MainActivity) getActivity()).gaugeUpdater(a);
+                                } catch (Exception e) {
+                                    Log.d(Constants.LOG_TAGBTCF + "error-4", String.valueOf(e));
+                                }
                             }
-
                             //create object and send to mainactivity
                         }
 
@@ -359,26 +373,32 @@ public class BluetoothChatFragment extends Fragment {
                     reconnectHandler.post(new Runnable() {
                         public void run() {
                             Log.d(Constants.LOG_TAGBTCF,"reconnect timer run ");
-                            if(((MainActivity) getActivity()).getBtConnectedState()){
-                                timer.cancel();
-                                Log.d(Constants.LOG_TAGBTCF,"reconnect timer stopped ");
-                            }else {
-                                try {
-                                    String bt = ((MainActivity) getActivity()).getBT();
-                                    if (!(bt.equals("")) && !(bt.equals("empty"))) {
-                                        if (reconnectAttempts < 10) {
-                                            Log.d(Constants.LOG_TAG, "reconnect attempt: " + String.valueOf(reconnectAttempts));
-                                            connectDevice(bt, false);
-                                            reconnectAttempts++;
-                                        } else {
-                                            //kill attempt
-                                            timer.cancel();
+                            try{
+                                if((MainActivity)getActivity() != null) {
+                                    if (((MainActivity) getActivity()).getBtConnectedState()) {
+                                        timer.cancel();
+                                        Log.d(Constants.LOG_TAGBTCF, "reconnect timer stopped ");
+                                    } else {
+                                        try {
+                                            String bt = ((MainActivity) getActivity()).getBT();
+                                            if (!(bt.equals("")) && !(bt.equals("empty"))) {
+                                                if (reconnectAttempts < 10) {
+                                                    Log.d(Constants.LOG_TAG, "reconnect attempt: " + String.valueOf(reconnectAttempts));
+                                                    connectDevice(bt, false);
+                                                    reconnectAttempts++;
+                                                } else {
+                                                    //kill attempt
+                                                    timer.cancel();
 
+                                                }
+                                            }
+                                        } catch (Exception e) {
+                                            Log.d(Constants.LOG_TAGBTCF, "error2 " + String.valueOf(e));
                                         }
                                     }
-                                } catch (Exception e) {
-                                    Log.d(Constants.LOG_TAGBTCF, "error2 " + String.valueOf(e));
                                 }
+                            }catch(Exception e){
+                                Log.d(Constants.LOG_TAGBTCF+"error-5", String.valueOf(e));
                             }
                         }
                     });
@@ -399,4 +419,5 @@ public class BluetoothChatFragment extends Fragment {
             Log.d(Constants.LOG_TAGBTCF,"error1 " +String.valueOf(e));
         }
     }
+
 }

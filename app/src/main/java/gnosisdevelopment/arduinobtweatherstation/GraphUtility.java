@@ -119,7 +119,7 @@ public class GraphUtility {
             //Add 5 percent for easier readability
             if(maxy) {
                 graph.getViewport().setYAxisBoundsManual(true);
-                maxYBound= maxYBound + (maxYBound *.05);
+                maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
                 if(maxYBound ==0){
                     maxYBound=1;
                 }
@@ -130,8 +130,8 @@ public class GraphUtility {
             if(minYBound !=0) {
                 if(miny) {
                     graph.getViewport().setYAxisBoundsManual(true);
-                    minYBound = minYBound - (minYBound * .05);
 
+                    minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
                     Log.d("BTWeather-minYval", String.valueOf(minYBound));
                     //TODO Empty sensors causes crash.
                     graph.getViewport().setMinY(minYBound);
@@ -154,7 +154,7 @@ public class GraphUtility {
                 graph.getGridLabelRenderer().setLabelFormatter(
                         new DateAsXAxisLabelFormatter(graph.getContext()));
             }
-            graph.getViewport().scrollToEnd();
+            //graph.getViewport().scrollToEnd();
         }catch(Exception e){
             Log.d("BTWeather-error21", e.toString());
 
