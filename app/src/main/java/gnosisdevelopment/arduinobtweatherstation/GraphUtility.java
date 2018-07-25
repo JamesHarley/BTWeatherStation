@@ -107,7 +107,7 @@ public class GraphUtility {
             series.setDataPointsRadius(2);
             series.setThickness(2);
 
-            graph.addSeries(series);
+
 
             //graph.addSeries(series);
             graph.getGridLabelRenderer().setGridColor(graphColor);
@@ -154,6 +154,7 @@ public class GraphUtility {
                 graph.getGridLabelRenderer().setLabelFormatter(
                         new DateAsXAxisLabelFormatter(graph.getContext()));
             }
+            graph.addSeries(series);
             //graph.getViewport().scrollToEnd();
         }catch(Exception e){
             Log.d("BTWeather-error21", e.toString());
