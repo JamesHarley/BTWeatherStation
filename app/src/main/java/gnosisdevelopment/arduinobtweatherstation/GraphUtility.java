@@ -119,7 +119,8 @@ public class GraphUtility {
             //Add 5 percent for easier readability
             if(maxy) {
                 graph.getViewport().setYAxisBoundsManual(true);
-                maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
+                maxYBound = maxYBound + (maxYBound* .05);
+                //maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
                 if(maxYBound ==0){
                     maxYBound=1;
                 }
@@ -130,8 +131,8 @@ public class GraphUtility {
             if(minYBound !=0) {
                 if(miny) {
                     graph.getViewport().setYAxisBoundsManual(true);
-
-                    minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
+                    minYBound = minYBound - (minYBound * .05);
+                   // minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
                     Log.d("BTWeather-minYval", String.valueOf(minYBound));
                     //TODO Empty sensors causes crash.
                     graph.getViewport().setMinY(minYBound);
@@ -155,14 +156,14 @@ public class GraphUtility {
                         new DateAsXAxisLabelFormatter(graph.getContext()));
             }
             graph.addSeries(series);
-            //graph.getViewport().scrollToEnd();
+            //
         }catch(Exception e){
             Log.d("BTWeather-error21", e.toString());
 
         }
 
     }
-
+    // TODO Graphs not advancing again showing hours behind instead of latest sensor
     public LineGraphSeries[] seriesBuilder(List<Sensors> sensorsList){
         LineGraphSeries[] seriesArray = new LineGraphSeries[3];
         try{
@@ -221,6 +222,7 @@ public class GraphUtility {
 
         return seriesArray;
     }
+    //TODO min / max not resetting propperly for days/weeks etc
     public void findMaxY (Sensors sensor){
         try{
             //Focus passed from main activity on graph click
