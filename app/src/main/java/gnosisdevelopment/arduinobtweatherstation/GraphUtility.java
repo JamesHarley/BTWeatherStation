@@ -111,19 +111,18 @@ public class GraphUtility {
             graph.addSeries(series);
 
 
-
             //graph.addSeries(series);
             graph.getGridLabelRenderer().setGridColor(graphColor);
             graph.getGridLabelRenderer().setHorizontalLabelsColor(graphColor);
             graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
             graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
 
-
+            graph.getViewport().scrollToEnd();
             //Add 5 percent for easier readability
             if(maxy) {
                 graph.getViewport().setYAxisBoundsManual(true);
                 maxYBound = maxYBound + (maxYBound* .05);
-                //maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
+                maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
                 if(maxYBound ==0){
                     maxYBound=1;
                 }
@@ -135,7 +134,7 @@ public class GraphUtility {
                 if(miny) {
                     graph.getViewport().setYAxisBoundsManual(true);
                     minYBound = minYBound - (minYBound * .05);
-                   // minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
+                    minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
                     Log.d("BTWeather-minYval", String.valueOf(minYBound));
                     //TODO Empty sensors causes crash.
                     graph.getViewport().setMinY(minYBound);
@@ -158,6 +157,7 @@ public class GraphUtility {
                 graph.getGridLabelRenderer().setLabelFormatter(
                         new DateAsXAxisLabelFormatter(graph.getContext()));
             }
+
             //
         }catch(Exception e){
             Log.d("BTWeather-error21", e.toString());
@@ -286,6 +286,13 @@ public class GraphUtility {
     public static String getYesterday(){
         //return new Date(System.currentTimeMillis()-24*60*60*1000);
         long  day = TimeUnit.DAYS.toMillis(1);
+        String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
+                new Date(System.currentTimeMillis() - day)).toString();
+        return start;
+    }
+    public static String getSixHours(){
+        //return new Date(System.currentTimeMillis()-24*60*60*1000);
+        long  day = TimeUnit.HOURS.toMillis(6);
         String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
                 new Date(System.currentTimeMillis() - day)).toString();
         return start;

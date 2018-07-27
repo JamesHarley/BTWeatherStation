@@ -8,6 +8,12 @@
         android:layout_marginBottom="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <View
+            android:id="@+id/hmdDivider1"
+            android:layout_width="match_parent"
+            android:layout_marginTop="120dp"
+            android:layout_height="15dp"
+            android:background="@drawable/horz_divide_up"/>
         <android.support.constraint.ConstraintLayout
             android:id="@+id/humidityGrid"
             android:columnCount="2"
@@ -47,7 +53,15 @@
             android:layout_below="@+id/humidityGrid"
             android:text="@string/title_humidity"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="-10dp"
+            android:layout_marginBottom="10dp"
             android:textSize="18sp" />
+        <View
+
+            android:layout_below="@id/humidityTitle"
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:background="@drawable/horizontal_divide"/>
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
 

@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 GraphUtility gu = new GraphUtility(1,1,3,true,false, this,celsius);
                 gu.grapher( this,graphTemp, gu.seriesBuilder(
-                        gu.getTempData(gu.getYesterday())));
+                        gu.getTempData(gu.getSixHours())));
             }catch(Exception e){
                 Log.d("BTWeather-error24", e.toString());
             }
