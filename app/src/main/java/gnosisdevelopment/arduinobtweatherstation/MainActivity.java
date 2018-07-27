@@ -289,7 +289,7 @@ public class MainActivity extends AppCompatActivity {
             weatherView.addView(tempLayout);
             graphTemp = (GraphView) findViewById(R.id.graphTemp);
             try {
-                GraphUtility gu = new GraphUtility(1,1,3,false,false, this,celsius);
+                GraphUtility gu = new GraphUtility(1,1,0,false,false, this,celsius);
                 gu.grapher( this,graphTemp, gu.seriesBuilder(
                         gu.getTempData(gu.getYesterday())));
             }catch(Exception e){
@@ -318,7 +318,7 @@ public class MainActivity extends AppCompatActivity {
             graphHumidity = (GraphView) findViewById(R.id.graphHumidity);
 
             try {
-                GraphUtility gu = new GraphUtility(2,1, 3,false,false,this,celsius);
+                GraphUtility gu = new GraphUtility(2,1, 0,false,false,this,celsius);
                 gu.grapher( this,graphHumidity,
                         gu.seriesBuilder(
                                 gu.getTempData(gu.getYesterday())));
@@ -346,7 +346,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             try {
-                GraphUtility gu = new GraphUtility(3,1,3,false,false,this,celsius);
+                GraphUtility gu = new GraphUtility(3,1,0,false,false,this,celsius);
                 gu.grapher( this,graphWind,
                         gu.seriesBuilder(
                                 gu.getTempData(gu.getYesterday())));

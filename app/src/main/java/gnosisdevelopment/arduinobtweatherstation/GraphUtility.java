@@ -61,6 +61,8 @@ public class GraphUtility {
         try{
             graph.removeAllSeries();
             LineGraphSeries series = new LineGraphSeries();
+
+            //series.appendData(new DataPoint(0.0,0.0),true,9999999);
             series.clearReference(graph);
             if(focus==0){
                 for(int i = 0; i<seriesArray.length; i++){
@@ -167,10 +169,8 @@ public class GraphUtility {
                 graph.addSeries(series);
 
 
-                //graph.addSeries(series);
-
                 graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
-                graph.getViewport().scrollToEnd();
+                //graph.getViewport().scrollToEnd();
                 Log.d(Constants.LOG_TAG,"MaxY" + String.valueOf(maxYBound));
                 //Add 5 percent for easier readability
                 if(maxy) {
@@ -196,14 +196,30 @@ public class GraphUtility {
                 }else{
                     graph.getViewport().setMinY(minYBound);
                 }
+                /**
+                if(labelCount ==3 ){
+                    //graph.getViewport().setXAxisBoundsManual(true);
+                    //graph.getGridLabelRenderer().setHorizontalLabelsVisible(false);
+                    graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
+                    graph.getViewport().setMaxX(System.currentTimeMillis());
+                    graph.getViewport().setXAxisBoundsManual(true);
+                    graph.getViewport().setMinX(TimeUnit.DAYS.toMillis(1));
+                    graph.getGridLabelRenderer().setNumHorizontalLabels(3);
 
-                if(labelCount > 0){
+                    graph.getGridLabelRenderer().setHumanRounding(false);
+                }else**/ if (labelCount > 0 ){
+
                     graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
                 }
+                if(labelCount == 0){
+                    double tmp = graph.getGridLabelRenderer().getTextSize();
+                    tmp = tmp - (tmp *.5);
+                    graph.getGridLabelRenderer().setTextSize((float) tmp);
+                }
+                graph.getGridLabelRenderer().setHumanRounding(true,true);
 
-                graph.getGridLabelRenderer().setHumanRounding(true);
-                graph.getGridLabelRenderer().invalidate(true, false);
                 graph.getGridLabelRenderer().reloadStyles();
+
                 java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(context);
                 if(time==1) {
                     graph.getGridLabelRenderer().setLabelFormatter(
@@ -216,6 +232,7 @@ public class GraphUtility {
 
                 //
             }
+
         }catch(Exception e){
             Log.d("BTWeather-error21", e.toString());
 
@@ -400,8 +417,8 @@ public class GraphUtility {
                 new Date(System.currentTimeMillis() - month)).toString();
         return start;
     }
-    public static Date getMeTomorrow(){
-        return new Date(System.currentTimeMillis());
+    public static Date getMeNow(){
+        return new Date(System.currentTimeMillis()+1);
     }
 
 
@@ -412,7 +429,7 @@ public class GraphUtility {
         try {
             dataPoints = sDb.sensorsDao().findTempByDate(
                     start,
-                    DateFormat.format("MM-dd-yyyy HH:mm:ss", getMeTomorrow()).toString());
+                    DateFormat.format("MM-dd-yyyy HH:mm:ss", getMeNow()).toString());
 
         } catch (Exception e) {
             Log.d("BTWeather-error8", String.valueOf(e));
@@ -423,4 +440,5 @@ public class GraphUtility {
     public boolean isCelsius() {
         return celsius;
     }
+
 }

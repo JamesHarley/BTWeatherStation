@@ -16,8 +16,9 @@
         <android.support.constraint.ConstraintLayout
             android:id="@+id/humidityGrid"
             android:columnCount="2"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginBottom="-15dp"
             app:layout_constraintWidth_default="wrap"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
@@ -52,13 +53,14 @@
             android:text="@string/title_humidity"
             android:layout_marginLeft="5dp"
             android:layout_marginTop="-10dp"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="-10dp"
             android:textSize="18sp" />
         <View
 
             android:layout_below="@id/humidityTitle"
             android:layout_width="match_parent"
             android:layout_height="15dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/horizontal_divide"/>
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>
