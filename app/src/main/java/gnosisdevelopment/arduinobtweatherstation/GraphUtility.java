@@ -60,7 +60,9 @@ public class GraphUtility {
 
     public void grapher(Context context, GraphView graph, LineGraphSeries[] seriesArray){
         try{
+            graph.removeAllSeries();
             LineGraphSeries series = new LineGraphSeries();
+            series.clearReference(graph);
             if(focus==0){
                 for(int i = 0; i<seriesArray.length; i++){
                     // series = new LineGraphSeries();
@@ -106,6 +108,7 @@ public class GraphUtility {
             }
             series.setDataPointsRadius(2);
             series.setThickness(2);
+            graph.addSeries(series);
 
 
 
@@ -155,7 +158,6 @@ public class GraphUtility {
                 graph.getGridLabelRenderer().setLabelFormatter(
                         new DateAsXAxisLabelFormatter(graph.getContext()));
             }
-            graph.addSeries(series);
             //
         }catch(Exception e){
             Log.d("BTWeather-error21", e.toString());

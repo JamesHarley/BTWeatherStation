@@ -33,6 +33,7 @@ public class FullGraphActivity extends AppCompatActivity {
     private int time = 0;
     GraphUtility gu;
     private boolean celsius;
+    FullGraphActivity fullGraphActivity;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -107,6 +108,8 @@ public class FullGraphActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
+        fullGraphActivity = new FullGraphActivity();
+
 
     }
     @Override
