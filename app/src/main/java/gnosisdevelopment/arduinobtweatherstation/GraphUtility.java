@@ -37,7 +37,6 @@ public class GraphUtility {
     private boolean miny = true;
     private boolean celsius;
     public GraphUtility(int focus, int time, int labelCount,boolean maxy, boolean miny, MainActivity mainActivity, boolean celsius) {
-
         this.focus = focus;
         this.time = time;
         this.labelCount = labelCount;
@@ -57,7 +56,7 @@ public class GraphUtility {
     }
 
 
-
+    //TODO CORRECT Color correct on first tap from mainactivity, then gets darker.
     public void grapher(Context context, GraphView graph, LineGraphSeries[] seriesArray){
         try{
             graph.removeAllSeries();
@@ -71,94 +70,152 @@ public class GraphUtility {
 
                     if(i == 0) {
                         series.setColor(Color.parseColor("#8d1007"));
-                        series.setBackgroundColor(Color.parseColor("#8d1007"));
+                        series.setBackgroundColor(Color.parseColor("#4D6a0c05"));
                     }
                     if(i == 1) {
-                        series.setColor(Color.parseColor("#551a8b"));
-                        series.setBackgroundColor(Color.parseColor("#551a8b"));
+                        series.setColor(Color.parseColor("#00004C"));
+                        series.setBackgroundColor(Color.parseColor("#4D00004C"));
                     }
                     if(i == 2) {
-                        series.setColor(Color.parseColor("#FF0008F0"));
-                        series.setBackgroundColor(Color.parseColor("#FF0008F0"));
+                        series.setColor(Color.parseColor("#006600"));
+                        series.setBackgroundColor(Color.parseColor("#4D006600"));
                     }
 
-                    series.setDataPointsRadius(2);
-                    series.setThickness(2);
-
+                    series.setDataPointsRadius(4);
+                    series.setThickness(4);
+                    graph.getGridLabelRenderer().setGridColor(graphColor);
+                    graph.getGridLabelRenderer().setHorizontalLabelsColor(graphColor);
+                    graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
                     graph.addSeries(series);
+
                 }
-            }
-            if(focus == 1){
-                series = seriesArray[0];
-                series.setDrawBackground(true);
-                series.setColor(Color.parseColor("#8d1007"));
-                series.setBackgroundColor(Color.parseColor("#8d1007"));
-            }
-            if(focus == 2){
-                series = seriesArray[1];
-                series.setDrawBackground(true);
-                series.setColor(Color.parseColor("#8d1007"));
-                series.setBackgroundColor(Color.parseColor("#8d1007"));
-            }
-            if(focus == 3){
-                series = seriesArray[2];
-                series.setDrawBackground(true);
-                series.setColor(Color.parseColor("#8d1007"));
-                series.setBackgroundColor(Color.parseColor("#8d1007"));
-            }
-            series.setDataPointsRadius(2);
-            series.setThickness(2);
-            graph.addSeries(series);
+                graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
 
-
-            //graph.addSeries(series);
-            graph.getGridLabelRenderer().setGridColor(graphColor);
-            graph.getGridLabelRenderer().setHorizontalLabelsColor(graphColor);
-            graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
-            graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
-
-            graph.getViewport().scrollToEnd();
-            //Add 5 percent for easier readability
-            if(maxy) {
-                graph.getViewport().setYAxisBoundsManual(true);
-                maxYBound = maxYBound + (maxYBound* .05);
-                maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
-                if(maxYBound ==0){
-                    maxYBound=1;
-                }
-
-               graph.getViewport().setMaxY(maxYBound);
-            }
-            //Minus 5 percent
-            if(minYBound !=0) {
-                if(miny) {
+                //Add 5 percent for easier readability
+                Log.d(Constants.LOG_TAG,"MaxY" + String.valueOf(maxYBound));
+                if(maxy) {
                     graph.getViewport().setYAxisBoundsManual(true);
-                    minYBound = minYBound - (minYBound * .05);
-                    minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
-                    Log.d("BTWeather-minYval", String.valueOf(minYBound));
-                    //TODO Empty sensors causes crash.
+                    maxYBound = maxYBound + (maxYBound* .05);
+                    maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
+                    if(maxYBound ==0){
+                        maxYBound=1;
+                    }
+
+                    graph.getViewport().setMaxY(maxYBound);
+                }
+                //Minus 5 percent
+
+                Log.d(Constants.LOG_TAG,"MinY" + String.valueOf(minYBound));
+                if(minYBound !=0) {
+                    if(miny) {
+                        graph.getViewport().setYAxisBoundsManual(true);
+                        minYBound = minYBound - (minYBound * .05);
+                        minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
+                        Log.d("BTWeather-minYval", String.valueOf(minYBound));
+                        graph.getViewport().setMinY(minYBound);
+                    }
+                }else{
                     graph.getViewport().setMinY(minYBound);
                 }
-            }
 
-            if(labelCount > 0){
-                graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
-            }
+                if(labelCount > 0){
+                    graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
+                }
 
-            graph.getGridLabelRenderer().setHumanRounding(true);
-           // graph.getGridLabelRenderer().setTextSize(35);
-            graph.getGridLabelRenderer().reloadStyles();
-            java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(context);
-            if(time==1) {
-                graph.getGridLabelRenderer().setLabelFormatter(
-                        new DateAsXAxisLabelFormatter(graph.getContext(),
-                                dateTimeFormatter));
+                graph.getGridLabelRenderer().setHumanRounding(true);
+                // graph.getGridLabelRenderer().setTextSize(35);
+                graph.getGridLabelRenderer().reloadStyles();
+                java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(context);
+                if(time==1) {
+                    graph.getGridLabelRenderer().setLabelFormatter(
+                            new DateAsXAxisLabelFormatter(graph.getContext(),
+                                    dateTimeFormatter));
+                }else{
+                    graph.getGridLabelRenderer().setLabelFormatter(
+                            new DateAsXAxisLabelFormatter(graph.getContext()));
+                }
             }else{
-                graph.getGridLabelRenderer().setLabelFormatter(
-                        new DateAsXAxisLabelFormatter(graph.getContext()));
-            }
+                if(focus == 1){
+                    series = seriesArray[0];
+                    series.setDrawBackground(true);
+                    series.setColor(Color.parseColor("#8d1007"));
+                    series.setBackgroundColor(Color.parseColor("#4D6a0c05"));
+                    graph.getGridLabelRenderer().setGridColor(Color.parseColor("#8d1007"));
+                    graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#8d1007"));
+                    graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#8d1007"));
+                }
+                if(focus == 2){
+                    series = seriesArray[1];
+                    series.setDrawBackground(true);
+                    series.setColor(Color.parseColor("#00004C"));
+                    series.setBackgroundColor(Color.parseColor("#4D00004C"));
+                    graph.getGridLabelRenderer().setGridColor(Color.parseColor("#00004C"));
+                    graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#00004C"));
+                    graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#00004C"));
+                }
+                if(focus == 3){
+                    series = seriesArray[2];
+                    series.setDrawBackground(true);
+                    series.setColor(Color.parseColor("#006600"));
+                    series.setBackgroundColor(Color.parseColor("#4D006600"));
+                    graph.getGridLabelRenderer().setGridColor(Color.parseColor("#006600"));
+                    graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#006600"));
+                    graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#006600"));
+                }
+                series.setDataPointsRadius(2);
+                series.setThickness(2);
+                graph.addSeries(series);
 
-            //
+
+                //graph.addSeries(series);
+
+                graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
+                graph.getViewport().scrollToEnd();
+                Log.d(Constants.LOG_TAG,"MaxY" + String.valueOf(maxYBound));
+                //Add 5 percent for easier readability
+                if(maxy) {
+                    graph.getViewport().setYAxisBoundsManual(true);
+                    maxYBound = maxYBound + (maxYBound* .05);
+                    maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
+                    if(maxYBound ==0){
+                        maxYBound=1;
+                    }
+
+                   graph.getViewport().setMaxY(maxYBound);
+                }
+                //Minus 5 percent
+                if(minYBound !=0) {
+                    if(miny) {
+                        graph.getViewport().setYAxisBoundsManual(true);
+                        minYBound = minYBound - (minYBound * .05);
+                        minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
+                        Log.d("BTWeather-minYval", String.valueOf(minYBound));
+                        //TODO Empty sensors causes crash.
+                        graph.getViewport().setMinY(minYBound);
+                    }
+                }else{
+                    graph.getViewport().setMinY(minYBound);
+                }
+
+                if(labelCount > 0){
+                    graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
+                }
+
+                graph.getGridLabelRenderer().setHumanRounding(true);
+                graph.getGridLabelRenderer().invalidate(true, false);
+                graph.getGridLabelRenderer().reloadStyles();
+                java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(context);
+                if(time==1) {
+                    graph.getGridLabelRenderer().setLabelFormatter(
+                            new DateAsXAxisLabelFormatter(graph.getContext(),
+                                    dateTimeFormatter));
+                }else{
+                    graph.getGridLabelRenderer().setLabelFormatter(
+                            new DateAsXAxisLabelFormatter(graph.getContext()));
+                }
+
+                //
+            }
         }catch(Exception e){
             Log.d("BTWeather-error21", e.toString());
 
@@ -228,8 +285,24 @@ public class GraphUtility {
     public void findMaxY (Sensors sensor){
         try{
             //Focus passed from main activity on graph click
-            if(focus ==1){
-                if(  isCelsius()) {
+            if(focus ==0) {
+                if (isCelsius()) {
+                    if (Double.valueOf(sensor.getmTemp()) > maxYBound) {
+                        maxYBound = Double.valueOf(sensor.getmTemp());
+                    }
+                } else if (mainActivity.cToF(Double.valueOf(sensor.getmTemp())) > maxYBound) {
+                    maxYBound=mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
+                }
+                if( Double.valueOf(sensor.getmHumidity())> maxYBound){
+                    maxYBound = Double.valueOf(sensor.getmHumidity());
+                }
+                if(Double.valueOf(sensor.getmWind())> maxYBound){
+                    maxYBound = Double.valueOf(sensor.getmWind());
+                }
+               /// Log.d(Constants.LOG_TAG,"FindMax: "+String.valueOf(maxYBound));
+            }
+            else if(focus ==1){
+                if( isCelsius()) {
                     if (Double.valueOf(sensor.getmTemp()) > maxYBound) {
                         maxYBound = Double.valueOf(sensor.getmTemp());
                     }
@@ -256,8 +329,24 @@ public class GraphUtility {
     public void findMinY (Sensors sensor){
         if(sensor != null) {
             try {
+                if(focus ==0) {
+                    if (isCelsius()) {
+                        if (Double.valueOf(sensor.getmTemp()) < minYBound) {
+                            minYBound = Double.valueOf(sensor.getmTemp());
+                        }
+                    } else if (mainActivity.cToF(Double.valueOf(sensor.getmTemp())) < minYBound) {
+                        minYBound = mainActivity.cToF(Double.valueOf(sensor.getmTemp()));
+                    }
+                    if (Double.valueOf(sensor.getmHumidity()) < minYBound) {
+                        minYBound = Double.valueOf(sensor.getmHumidity());
+                    }
+                    if (Double.valueOf(sensor.getmWind()) < minYBound) {
+                        minYBound = Double.valueOf(sensor.getmWind());
+                    }
+                   // Log.d(Constants.LOG_TAG,"FindMin: "+String.valueOf(minYBound));
+                }
                 //Focus passed from main activity on graph click
-                if (focus == 1) {
+                else if (focus == 1) {
                     if (isCelsius()) {
                         if (Double.valueOf(sensor.getmTemp()) < minYBound) {
                             minYBound = Double.valueOf(sensor.getmTemp());

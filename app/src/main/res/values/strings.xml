@@ -48,14 +48,17 @@
     <string name="graph_week">Weekly</string>
     <string name="title_activity_full_graph">Graph</string>
 
+    <string name="AllHourly">All Hourly</string>
     <string name="graph_hour_temp">Temperature Hourly</string>
     <string name="graph_day_temp">Temperature Daily</string>
     <string name="graph_week_temp">Temperature Weekly</string>
 
+    <string name="AllDaily">All Daily</string>
     <string name="graph_hour_humid">Humidity Hourly</string>
     <string name="graph_day_humid">Humidity Daily</string>
     <string name="graph_week_humid">Humidity Weekly</string>
 
+    <string name="AllWeekly">All Weekly</string>
     <string name="graph_hour_wind">Wind Hourly</string>
     <string name="graph_day_wind">Wind Daily</string>
     <string name="graph_week_wind">Wind Weekly</string>

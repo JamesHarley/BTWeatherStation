@@ -4,6 +4,10 @@
     <color name="colorPrimaryDark">#6a0c05</color>
     <color name="colorAccent">#03b5ff</color>
     <color name="switch_text_color">#fff</color>
-    <color name="humidityColor">#551a8b</color>
-    <color name="windColor">#0008f0</color>
+    <color name="tempColor">#6a0c05</color>
+    <color name="tempColorT">#806a0c05</color>
+    <color name="humidityColor">#00004C</color>
+    <color name="humidityColorT">#8000004C</color>
+    <color name="windColor">#006600</color>
+    <color name="windColorT">#80006600</color>
 </resources>

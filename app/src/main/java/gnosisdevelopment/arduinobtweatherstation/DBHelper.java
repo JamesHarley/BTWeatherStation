@@ -218,4 +218,5 @@ public class DBHelper extends SQLiteOpenHelper {
         catch (Exception e ){Log.d("BTWeatherget-interval", String.valueOf(e));}
         return -1;
     }
+
 }

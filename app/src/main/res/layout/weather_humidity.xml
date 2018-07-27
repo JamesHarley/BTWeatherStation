@@ -5,21 +5,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:id="@+id/weatherPanelHumidity"
-        android:layout_marginBottom="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <View
             android:id="@+id/hmdDivider1"
             android:layout_width="match_parent"
-            android:layout_marginTop="120dp"
+            android:layout_marginTop="-10dp"
             android:layout_height="15dp"
             android:background="@drawable/horz_divide_up"/>
         <android.support.constraint.ConstraintLayout
             android:id="@+id/humidityGrid"
             android:columnCount="2"
-            android:layout_marginTop="150dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginBottom="-20dp"
+            android:layout_marginTop="15dp"
             app:layout_constraintWidth_default="wrap"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_width="match_parent"
@@ -30,12 +28,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
                 app:layout_constraintWidth_default="wrap"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/humidityColor"
                 android:layout_gravity="left"
                 android:textSize="50sp" />
 
             <com.jjoe64.graphview.GraphView
-                app:seriesColor="@color/colorPrimary"
+                app:seriesColor="@color/humidityColor"
                 android:paddingLeft="15dp"
                 android:layout_width="wrap_content"
                 app:layout_constrainedWidth="true"
@@ -49,7 +47,7 @@
             android:id="@+id/humidityTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/humidityColor"
             android:layout_below="@+id/humidityGrid"
             android:text="@string/title_humidity"
             android:layout_marginLeft="5dp"

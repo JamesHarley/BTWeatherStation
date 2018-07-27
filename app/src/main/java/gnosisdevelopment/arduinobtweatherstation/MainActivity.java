@@ -107,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
     protected  Intent mainIntent;
     private Activity mActivity;
     private int focus;
-   // GrapherUtils graphUtil;
     EditText et;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -181,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
          }
          weatherPanelInflator();
          //getData();
-         //graphUtil= new GrapherUtils();
     }
 
 
@@ -291,9 +289,9 @@ public class MainActivity extends AppCompatActivity {
             weatherView.addView(tempLayout);
             graphTemp = (GraphView) findViewById(R.id.graphTemp);
             try {
-                GraphUtility gu = new GraphUtility(1,1,3,true,false, this,celsius);
+                GraphUtility gu = new GraphUtility(1,1,3,false,false, this,celsius);
                 gu.grapher( this,graphTemp, gu.seriesBuilder(
-                        gu.getTempData(gu.getSixHours())));
+                        gu.getTempData(gu.getYesterday())));
             }catch(Exception e){
                 Log.d("BTWeather-error24", e.toString());
             }
@@ -688,15 +686,45 @@ public class MainActivity extends AppCompatActivity {
         return d1;
     }
     public boolean isTempState() {
-        return tempState;
+        DBHelper mydb = new DBHelper(this);
+        int ts = mydb.getTempState();
+        Log.d(Constants.LOG_TAG,"tempState:" + String.valueOf(ts));
+
+        mydb.close();
+        if(ts == 0){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     public boolean isHumidityState() {
-        return humidityState;
+        DBHelper mydb = new DBHelper(this);
+        int hs = mydb.getHumidState();
+
+        Log.d(Constants.LOG_TAG,"humidState:" + String.valueOf(hs));
+        mydb.close();
+        if(hs == 0){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     public boolean isWindState() {
-        return windState;
+        DBHelper mydb = new DBHelper(this);
+        int ws = mydb.getWindState();
+
+        Log.d(Constants.LOG_TAG,"windState:" + String.valueOf(ws));
+        mydb.close();
+        if(ws == 0){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
     public boolean isCelsius(Context C) {
 

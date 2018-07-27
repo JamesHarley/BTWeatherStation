@@ -5,18 +5,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <RelativeLayout
         android:id="@+id/weatherPanelWind"
-        android:layout_marginBottom="50dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <View
             android:id="@+id/wndDivider1"
             android:layout_width="match_parent"
-            android:layout_marginTop="250dp"
+            android:layout_marginTop="-10dp"
             android:layout_height="15dp"
             android:background="@drawable/horz_divide_up"/>
         <android.support.constraint.ConstraintLayout
             android:id="@+id/windGrid"
-            android:layout_marginTop="280dp"
+            android:layout_marginTop="15dp"
             android:layout_marginLeft="5dp"
             android:layout_marginBottom="-20dp"
             app:layout_constraintWidth_default="wrap"
@@ -29,14 +28,14 @@
                 app:layout_constrainedWidth="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
+                android:textColor="@color/windColor"
                 app:layout_constraintWidth_default="wrap"
                 android:layout_marginRight="20dp"
                 android:layout_gravity="left"
                 android:textSize="50sp" />
 
             <com.jjoe64.graphview.GraphView
-                app:seriesColor="@color/colorPrimary"
+                app:seriesColor="@color/windColor"
                 android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
                 app:layout_constrainedWidth="true"
@@ -49,7 +48,7 @@
             android:id="@+id/windTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPrimary"
+            android:textColor="@color/windColor"
             android:text="@string/title_wind"
             android:layout_below="@+id/windGrid"
             android:layout_marginLeft="5dp"
