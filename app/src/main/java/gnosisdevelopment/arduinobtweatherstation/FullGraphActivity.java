@@ -33,7 +33,6 @@ public class FullGraphActivity extends AppCompatActivity {
     private int time = 0;
     GraphUtility gu;
     private boolean celsius;
-    FullGraphActivity fullGraphActivity;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -106,9 +105,6 @@ public class FullGraphActivity extends AppCompatActivity {
         // Setting the very 1st item as home screen.
         navigation.setSelectedItemId(R.id.graph_hour);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        fullGraphActivity = new FullGraphActivity();
 
 
     }
