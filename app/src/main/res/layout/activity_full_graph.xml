@@ -5,18 +5,13 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/light_back_repeat"
     tools:context=".FullGraphActivity">
 
-    <TextView
-        android:id="@+id/message"
+    <View
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-        android:layout_marginStart="@dimen/activity_horizontal_margin"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/title_home"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="10dp"
+        android:id="@+id/message" />
 
     <com.jjoe64.graphview.GraphView
         android:id="@+id/fullGraph"
@@ -53,7 +48,7 @@
         android:id="@+id/sideGraphMenu"
         android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:orientation="vertical"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/message"
