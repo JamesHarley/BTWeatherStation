@@ -53,11 +53,8 @@ public class About extends AppCompatActivity {
                 "\t<div class=\"main\">\n" +
                 "\t\t<h1>ArduinoBT Weather Station</h1>\n" +
                 "\t\t<p> Version " + BuildConfig.VERSION_NAME+"."+BuildConfig.VERSION_CODE+" </p>\n" +
-                "\t\t<p> Pre release for testing. Current versions graph is very limited. Sensor readings are stored in database once per 30 minutes after the device connects to bluetooth and receives properly formatted input. </p>\n" +
-                "\t\t<p> Next Release:<br />\n" +
-                "\t\tInterval control for sensor storing. <br />\n" +
-                "\t\tWill be adding a full page graph (day/week/month graph view), support for smaller screens (for now horizontal landscape is best on a small screen). <br />\n" +
-                "\t\tExport for database of sensor readings. <br /><br />\n" +
+                "\t\t<p> Pre release for testing. Current versions graph is not working correctly for daily/weekly\n" +
+                "\t\t\n" +
                 "\t\tDatabase can be reached from device at: <a href=\" http://localhost:8080\">access db http://localhost:8080)</a><br /><br /> or by visiting android device ip at <a href=\"http://"+ getDeviceIpAddress()+":8080\">http://"+ getDeviceIpAddress()+":8080</a> on a locally connected computer</p>\n" +
                 "\t\t</p>\n" +
                 "\t\t<p>\n" +
