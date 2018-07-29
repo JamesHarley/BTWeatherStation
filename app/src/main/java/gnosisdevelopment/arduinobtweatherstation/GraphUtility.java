@@ -181,7 +181,6 @@ public class GraphUtility {
     }
 
 
-    // TODO Graphs not advancing again showing hours behind instead of latest sensor
     public LineGraphSeries[] seriesBuilder(List<Sensors> sensorsList){
         LineGraphSeries[] seriesArray = new LineGraphSeries[3];
         try{
@@ -240,7 +239,6 @@ public class GraphUtility {
 
         return seriesArray;
     }
-    //TODO min / max not resetting propperly for days/weeks etc
     public void findMaxY (Sensors sensor){
         try{
             //Focus passed from main activity on graph click

@@ -224,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-//TODO Fix layout for graph spacing to match temp
     protected void setHumidity() {
         if(humidityText != null) {
             if (humidity != -99.99) {
@@ -539,11 +538,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("BTWeather-error26", e.toString());
                     }
                 }
-                //TODO TEXT NOT UPDATING
-
-
-
-
             }
         }));
     }
@@ -741,7 +735,6 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             if(btConnectedState) {
                                 try {
-                                    //TODO When states are false will not store
                                     if (wind != -99.99 && temp != -99.99 & humidity != -99.99) {
                                         DatabaseInitializer.populateAsync(sDb,
                                                 String.valueOf(temp),
