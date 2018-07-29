@@ -45,256 +45,31 @@ public class GraphUtility {
         this.miny = miny;
         this.maxy = maxy;
         this.celsius = celsius;
-        /**
-        try{
-            celsius = mainActivity.isCelsius(mainActivity);
-
-        }catch(Exception e){
-            Log.d("BTWeather-GraphUtility", String.valueOf(e));
-        }
-        **/
-    }
-
-
-    //TODO CORRECT Color correct on first tap from mainactivity, then gets darker.
-    public void grapher(Context context, GraphView graph, LineGraphSeries[] seriesArray){
-        try{
-            graph.removeAllSeries();
-            LineGraphSeries series = new LineGraphSeries();
-
-            //series.appendData(new DataPoint(0.0,0.0),true,9999999);
-            series.clearReference(graph);
-            if(focus==0){
-                for(int i = 0; i<seriesArray.length; i++){
-                    // series = new LineGraphSeries();
-                    series = seriesArray[i];
-                    series.setDrawBackground(true);
-
-                    if(i == 0) {
-                        series.setColor(Color.parseColor("#8d1007"));
-                        series.setBackgroundColor(Color.parseColor("#4D6a0c05"));
-                    }
-                    if(i == 1) {
-                        series.setColor(Color.parseColor("#00004C"));
-                        series.setBackgroundColor(Color.parseColor("#4D00004C"));
-                    }
-                    if(i == 2) {
-                        series.setColor(Color.parseColor("#006600"));
-                        series.setBackgroundColor(Color.parseColor("#4D006600"));
-                    }
-
-                    series.setDataPointsRadius(4);
-                    series.setThickness(4);
-                    graph.getGridLabelRenderer().setGridColor(graphColor);
-                    graph.getGridLabelRenderer().setHorizontalLabelsColor(graphColor);
-                    graph.getGridLabelRenderer().setVerticalLabelsColor(graphColor);
-                    graph.addSeries(series);
-
-                }
-                graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
-
-                //Add 5 percent for easier readability
-                Log.d(Constants.LOG_TAG,"MaxY" + String.valueOf(maxYBound));
-                if(maxy) {
-                    graph.getViewport().setYAxisBoundsManual(true);
-                    maxYBound = maxYBound + (maxYBound* .05);
-                    maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
-                    if(maxYBound ==0){
-                        maxYBound=1;
-                    }
-
-                    graph.getViewport().setMaxY(maxYBound);
-                }
-                //Minus 5 percent
-
-                Log.d(Constants.LOG_TAG,"MinY" + String.valueOf(minYBound));
-                if(minYBound !=0) {
-                    if(miny) {
-                        graph.getViewport().setYAxisBoundsManual(true);
-                        minYBound = minYBound - (minYBound * .05);
-                        minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
-                        Log.d("BTWeather-minYval", String.valueOf(minYBound));
-                        graph.getViewport().setMinY(minYBound);
-                    }
-                }else{
-                    graph.getViewport().setMinY(minYBound);
-                }
-
-                if(labelCount > 0){
-                    graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
-                }
-
-                graph.getGridLabelRenderer().setHumanRounding(true);
-                // graph.getGridLabelRenderer().setTextSize(35);
-                graph.getGridLabelRenderer().reloadStyles();
-                java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(context);
-                if(time==1) {
-                    graph.getGridLabelRenderer().setLabelFormatter(
-                            new DateAsXAxisLabelFormatter(graph.getContext(),
-                                    dateTimeFormatter));
-                }else{
-                    graph.getGridLabelRenderer().setLabelFormatter(
-                            new DateAsXAxisLabelFormatter(graph.getContext()));
-                }
-            }else{
-                if(focus == 1){
-                    series = seriesArray[0];
-                    series.setDrawBackground(true);
-                    series.setColor(Color.parseColor("#8d1007"));
-                    series.setBackgroundColor(Color.parseColor("#4D6a0c05"));
-                    graph.getGridLabelRenderer().setGridColor(Color.parseColor("#8d1007"));
-                    graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#8d1007"));
-                    graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#8d1007"));
-                }
-                if(focus == 2){
-                    series = seriesArray[1];
-                    series.setDrawBackground(true);
-                    series.setColor(Color.parseColor("#00004C"));
-                    series.setBackgroundColor(Color.parseColor("#4D00004C"));
-                    graph.getGridLabelRenderer().setGridColor(Color.parseColor("#00004C"));
-                    graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#00004C"));
-                    graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#00004C"));
-                }
-                if(focus == 3){
-                    series = seriesArray[2];
-                    series.setDrawBackground(true);
-                    series.setColor(Color.parseColor("#006600"));
-                    series.setBackgroundColor(Color.parseColor("#4D006600"));
-                    graph.getGridLabelRenderer().setGridColor(Color.parseColor("#006600"));
-                    graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#006600"));
-                    graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#006600"));
-                }
-                series.setDataPointsRadius(2);
-                series.setThickness(2);
-                graph.addSeries(series);
-
-
-                graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
-                //graph.getViewport().scrollToEnd();
-                Log.d(Constants.LOG_TAG,"MaxY" + String.valueOf(maxYBound));
-                //Add 5 percent for easier readability
-                if(maxy) {
-                    graph.getViewport().setYAxisBoundsManual(true);
-                    maxYBound = maxYBound + (maxYBound* .05);
-                    maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
-                    if(maxYBound ==0){
-                        maxYBound=1;
-                    }
-
-                   graph.getViewport().setMaxY(maxYBound);
-                }
-                //Minus 5 percent
-                if(minYBound !=0) {
-                    if(miny) {
-                        graph.getViewport().setYAxisBoundsManual(true);
-                        minYBound = minYBound - (minYBound * .05);
-                        minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
-                        Log.d("BTWeather-minYval", String.valueOf(minYBound));
-                        //TODO Empty sensors causes crash.
-                        graph.getViewport().setMinY(minYBound);
-                    }
-                }else{
-                    graph.getViewport().setMinY(minYBound);
-                }
-
-                if(labelCount ==3 ){
-                    //graph.getViewport().setXAxisBoundsManual(true);
-                    //graph.getGridLabelRenderer().setHorizontalLabelsVisible(false);
-                    graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
-                    graph.getViewport().setMaxX(System.currentTimeMillis());
-                    graph.getViewport().setXAxisBoundsManual(true);
-                    graph.getViewport().setMinX(TimeUnit.DAYS.toMillis(1));
-                    graph.getGridLabelRenderer().setNumHorizontalLabels(3);
-
-                    graph.getGridLabelRenderer().setHumanRounding(false);
-                }else if (labelCount > 0 ){
-
-                    graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
-                }
-                if(labelCount == 0){
-                    double tmp = graph.getGridLabelRenderer().getTextSize();
-                    tmp = tmp - (tmp *.5);
-                    graph.getGridLabelRenderer().setTextSize((float) tmp);
-                }
-                graph.getGridLabelRenderer().setHumanRounding(true,true);
-
-                //graph.getGridLabelRenderer().reloadStyles();
-
-                java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(context);
-                Log.d(Constants.LOG_TAG,"Time:"+String.valueOf(time));
-                if(time==1) {
-                    graph.getGridLabelRenderer().setLabelFormatter(
-                            new DateAsXAxisLabelFormatter(graph.getContext(),
-                                    dateTimeFormatter));
-                }else{
-                    graph.getGridLabelRenderer().setLabelFormatter(
-                            new DateAsXAxisLabelFormatter(graph.getContext()));
-                }
-                if(labelCount == 7){
-                    graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
-                    graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount); // only 4 because of the space
-
-                    // set manual x bounds to have nice steps
-                    graph.getViewport().setMinX(getWeekDate().getTime());
-                    graph.getViewport().setMaxX(System.currentTimeMillis());
-                    graph.getViewport().setXAxisBoundsManual(true);
-
-                    // as we use dates as labels, the human rounding to nice readable numbers
-                    // is not necessary
-                    graph.getGridLabelRenderer().setHumanRounding(false);
-                    graph.getViewport().scrollToEnd();
-                    graph.getGridLabelRenderer().reloadStyles();
-                }
-                if(labelCount == 8){
-                    graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
-                    graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount); // only 4 because of the space
-
-                    // set manual x bounds to have nice steps
-                    graph.getViewport().setMinX(System.currentTimeMillis()-TimeUnit.DAYS.toMillis(30));
-                    graph.getViewport().setMaxX(System.currentTimeMillis());
-                    graph.getViewport().setXAxisBoundsManual(true);
-
-                    // as we use dates as labels, the human rounding to nice readable numbers
-                    // is not necessary
-                    graph.getGridLabelRenderer().setHumanRounding(false);
-                    graph.getViewport().scrollToEnd();
-                    graph.getGridLabelRenderer().reloadStyles();
-                    graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount); // only 4
-                }
-                //
-            }
-
-        }catch(Exception e){
-            Log.d("BTWeather-error21", e.toString());
-
-        }
 
     }
 
-
-    public void grapherWeek(Context context, GraphView graph, LineGraphSeries[] seriesArray){
+    public void grapher(Context context, GraphView graph, LineGraphSeries[] seriesArray, Double start){
         try{
             graph.removeAllSeries();
+
             graph.getGridLabelRenderer().resetStyles();
             LineGraphSeries series = new LineGraphSeries();
-
-            //series.appendData(new DataPoint(0.0,0.0),true,9999999);
             series.clearReference(graph);
-            if(focus==0){
-                for(int i = 0; i<seriesArray.length; i++){
+            if(focus==0) {
+                for (int i = 0; i < seriesArray.length; i++) {
                     // series = new LineGraphSeries();
                     series = seriesArray[i];
                     series.setDrawBackground(true);
 
-                    if(i == 0) {
+                    if (i == 0) {
                         series.setColor(Color.parseColor("#8d1007"));
                         series.setBackgroundColor(Color.parseColor("#4D6a0c05"));
                     }
-                    if(i == 1) {
+                    if (i == 1) {
                         series.setColor(Color.parseColor("#00004C"));
                         series.setBackgroundColor(Color.parseColor("#4D00004C"));
                     }
-                    if(i == 2) {
+                    if (i == 2) {
                         series.setColor(Color.parseColor("#006600"));
                         series.setBackgroundColor(Color.parseColor("#4D006600"));
                     }
@@ -307,136 +82,102 @@ public class GraphUtility {
                     graph.addSeries(series);
 
                 }
-                graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
-
-                //Add 5 percent for easier readability
-                Log.d(Constants.LOG_TAG,"MaxY" + String.valueOf(maxYBound));
-                if(maxy) {
-                    graph.getViewport().setYAxisBoundsManual(true);
-                    maxYBound = maxYBound + (maxYBound* .05);
-                    maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
-                    if(maxYBound ==0){
-                        maxYBound=1;
-                    }
-
-                    graph.getViewport().setMaxY(maxYBound);
-                }
-                //Minus 5 percent
-
-                Log.d(Constants.LOG_TAG,"MinY" + String.valueOf(minYBound));
-                if(minYBound !=0) {
-                    if(miny) {
-                        graph.getViewport().setYAxisBoundsManual(true);
-                        minYBound = minYBound - (minYBound * .05);
-                        minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
-                        Log.d("BTWeather-minYval", String.valueOf(minYBound));
-                        graph.getViewport().setMinY(minYBound);
-                    }
-                }else{
-                    graph.getViewport().setMinY(minYBound);
-                }
-
-                if(labelCount > 0){
-                    graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
-                }
-
-                graph.getGridLabelRenderer().setHumanRounding(true);
-                // graph.getGridLabelRenderer().setTextSize(35);
-                graph.getGridLabelRenderer().reloadStyles();
-                java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(context);
-                graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
-                graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount); // only 4 because of the space
-
-                // set manual x bounds to have nice steps
-                graph.getViewport().setMinX(getWeekDate().getTime());
-                graph.getViewport().setMaxX(System.currentTimeMillis());
-                graph.getViewport().setXAxisBoundsManual(true);
-
-                // as we use dates as labels, the human rounding to nice readable numbers
-                // is not necessary
-                graph.getGridLabelRenderer().setHumanRounding(false);
-                graph.getViewport().scrollToEnd();
-                graph.getGridLabelRenderer().reloadStyles();
-            }else{
-                if(focus == 1){
-                    series = seriesArray[0];
-                    series.setDrawBackground(true);
-                    series.setColor(Color.parseColor("#8d1007"));
-                    series.setBackgroundColor(Color.parseColor("#4D6a0c05"));
-                    graph.getGridLabelRenderer().setGridColor(Color.parseColor("#8d1007"));
-                    graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#8d1007"));
-                    graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#8d1007"));
-                }
-                if(focus == 2){
-                    series = seriesArray[1];
-                    series.setDrawBackground(true);
-                    series.setColor(Color.parseColor("#00004C"));
-                    series.setBackgroundColor(Color.parseColor("#4D00004C"));
-                    graph.getGridLabelRenderer().setGridColor(Color.parseColor("#00004C"));
-                    graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#00004C"));
-                    graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#00004C"));
-                }
-                if(focus == 3){
-                    series = seriesArray[2];
-                    series.setDrawBackground(true);
-                    series.setColor(Color.parseColor("#006600"));
-                    series.setBackgroundColor(Color.parseColor("#4D006600"));
-                    graph.getGridLabelRenderer().setGridColor(Color.parseColor("#006600"));
-                    graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#006600"));
-                    graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#006600"));
-                }
+            }
+            if(focus == 1){
+                series = seriesArray[0];
+                series.setDrawBackground(true);
+                series.setColor(Color.parseColor("#8d1007"));
+                series.setBackgroundColor(Color.parseColor("#4D6a0c05"));
+                graph.getGridLabelRenderer().setGridColor(Color.parseColor("#8d1007"));
+                graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#8d1007"));
+                graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#8d1007"));
                 series.setDataPointsRadius(2);
                 series.setThickness(2);
                 graph.addSeries(series);
+            }
+            if(focus == 2){
+                series = seriesArray[1];
+                series.setDrawBackground(true);
+                series.setColor(Color.parseColor("#00004C"));
+                series.setBackgroundColor(Color.parseColor("#4D00004C"));
+                graph.getGridLabelRenderer().setGridColor(Color.parseColor("#00004C"));
+                graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#00004C"));
+                graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#00004C"));
+                series.setDataPointsRadius(2);
+                series.setThickness(2);
+                graph.addSeries(series);
+            }
+            if(focus == 3){
+                series = seriesArray[2];
+                series.setDrawBackground(true);
+                series.setColor(Color.parseColor("#006600"));
+                series.setBackgroundColor(Color.parseColor("#4D006600"));
+                graph.getGridLabelRenderer().setGridColor(Color.parseColor("#006600"));
+                graph.getGridLabelRenderer().setHorizontalLabelsColor(Color.parseColor("#006600"));
+                graph.getGridLabelRenderer().setVerticalLabelsColor(Color.parseColor("#006600"));
+                series.setDataPointsRadius(2);
+                series.setThickness(2);
+                graph.addSeries(series);
+            }
 
 
-                //graph.getViewport().scrollToEnd();
-                Log.d(Constants.LOG_TAG,"MaxY" + String.valueOf(maxYBound));
-                //Add 5 percent for easier readability
-                if(maxy) {
-                    graph.getViewport().setYAxisBoundsManual(true);
-                    maxYBound = maxYBound + (maxYBound* .05);
-                    maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
-                    if(maxYBound ==0){
-                        maxYBound=1;
-                    }
+            graph.getGridLabelRenderer().setGridStyle(GridLabelRenderer.GridStyle.BOTH);
 
-                    graph.getViewport().setMaxY(maxYBound);
+            //Add 5 percent for easier readability
+            Log.d(Constants.LOG_TAG,"MaxY" + String.valueOf(maxYBound));
+            if(maxy) {
+                graph.getViewport().setYAxisBoundsManual(true);
+                maxYBound = maxYBound + (maxYBound* .05);
+                maxYBound= 5*(Math.ceil(Math.abs(maxYBound/5)));
+                if(maxYBound ==0){
+                    maxYBound=1;
                 }
-                //Minus 5 percent
-                if(minYBound !=0) {
-                    if(miny) {
-                        graph.getViewport().setYAxisBoundsManual(true);
-                        minYBound = minYBound - (minYBound * .05);
-                        minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
-                        Log.d("BTWeather-minYval", String.valueOf(minYBound));
-                        //TODO Empty sensors causes crash.
-                        graph.getViewport().setMinY(minYBound);
-                    }
-                }else{
+
+                graph.getViewport().setMaxY(maxYBound);
+            }
+            //Minus 5 percent
+
+            Log.d(Constants.LOG_TAG,"MinY" + String.valueOf(minYBound));
+            if(minYBound !=0) {
+                if(miny) {
+                    graph.getViewport().setYAxisBoundsManual(true);
+                    minYBound = minYBound - (minYBound * .05);
+                    minYBound= 5*(Math.floor(Math.abs(minYBound/5)));
+                    Log.d("BTWeather-minYval", String.valueOf(minYBound));
                     graph.getViewport().setMinY(minYBound);
                 }
-                graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
-                graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount); // only 4 because of the space
-
-                // set manual x bounds to have nice steps
-                graph.getViewport().setMinX(getWeekDate().getTime());
-                graph.getViewport().setMaxX(System.currentTimeMillis());
-                graph.getViewport().setXAxisBoundsManual(true);
-
-                // as we use dates as labels, the human rounding to nice readable numbers
-                // is not necessary
-                graph.getGridLabelRenderer().setHumanRounding(false);
-                graph.getViewport().scrollToEnd();
-                graph.getGridLabelRenderer().reloadStyles();
-
+            }else{
+                graph.getViewport().setMinY(minYBound);
             }
+
+            if(labelCount > 0){
+                graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount);
+            }
+            if(time==1) {
+                java.text.DateFormat dateTimeFormatter = DateFormat.getTimeFormat(context);
+                graph.getGridLabelRenderer().setLabelFormatter(
+                        new DateAsXAxisLabelFormatter(graph.getContext(),
+                                dateTimeFormatter));
+            }else{
+                graph.getGridLabelRenderer().setLabelFormatter(new DateAsXAxisLabelFormatter(context));
+            }
+
+            //graph.getGridLabelRenderer().setNumHorizontalLabels(labelCount); // only 4 because of the space
+
+            // set manual x bounds to have nice steps
+            graph.getViewport().setMinX(start);
+            graph.getViewport().setMaxX(System.currentTimeMillis());
+            graph.getViewport().setXAxisBoundsManual(true);
+
+            // as we use dates as labels, the human rounding to nice readable numbers
+            // is not necessary
+            graph.getGridLabelRenderer().setHumanRounding(false,true);
+            //graph.getGridLabelRenderer().reloadStyles();
 
         }catch(Exception e){
             Log.d("BTWeather-error21", e.toString());
 
         }
-
     }
 
 
@@ -597,11 +338,10 @@ public class GraphUtility {
                 new Date(System.currentTimeMillis() - day)).toString();
         return start;
     }
-    public static String getSixHours(){
+    public static double getYesterdayDouble(){
         //return new Date(System.currentTimeMillis()-24*60*60*1000);
-        long  day = TimeUnit.HOURS.toMillis(6);
-        String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
-                new Date(System.currentTimeMillis() - day)).toString();
+        long  day = TimeUnit.DAYS.toMillis(1);
+        double start= new Date(System.currentTimeMillis() - day).getTime();
         return start;
     }
     public static String getWeek(){
@@ -611,10 +351,10 @@ public class GraphUtility {
                 new Date(System.currentTimeMillis() - week)).toString();
         return start;
     }
-    public static Date getWeekDate(){
+    public static double getWeekDouble(){
         //return new Date(System.currentTimeMillis()-24*60*60*1000);
         long  week = TimeUnit.DAYS.toMillis(7);
-        Date start=  new Date(System.currentTimeMillis() - week);
+       double start=  new Date(System.currentTimeMillis() - week).getTime();
         return start;
     }
     public static String getMonth(){
@@ -622,6 +362,12 @@ public class GraphUtility {
         long  month = TimeUnit.DAYS.toMillis(30);
         String start= DateFormat.format("MM-dd-yyyy HH:mm:ss",
                 new Date(System.currentTimeMillis() - month)).toString();
+        return start;
+    }
+    public static double getMonthDouble(){
+        //return new Date(System.currentTimeMillis()-24*60*60*1000);
+        long  month = TimeUnit.DAYS.toMillis(30);
+        double start= new Date(System.currentTimeMillis() - month).getTime();
         return start;
     }
     public static Date getMeNow(){

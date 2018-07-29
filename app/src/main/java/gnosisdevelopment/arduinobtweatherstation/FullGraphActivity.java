@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class FullGraphActivity extends AppCompatActivity {
-    GraphView graph;
+
     private final static int graphColor = Color.parseColor("#6a0c05");
     private MainActivity mainActivity;
     private int focus =0;
@@ -49,8 +49,16 @@ public class FullGraphActivity extends AppCompatActivity {
                         getSupportActionBar().setTitle(R.string.AllHourly);
 
                         try {
+                            GraphView graph2;
+                            graph2 = (GraphView) findViewById(R.id.fullGraph2);
+                            graph2.setVisibility(View.INVISIBLE);
+                            graph2 = (GraphView) findViewById(R.id.fullGraph3);
+                            graph2.setVisibility(View.INVISIBLE);
+                            GraphView graph;
+                            graph = (GraphView) findViewById(R.id.fullGraph);
+                            graph.setVisibility(View.VISIBLE);
                             gu = new GraphUtility(focus, time, 6, true, true, mainActivity, celsius);
-                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getYesterday())));
+                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getYesterday())),gu.getYesterdayDouble());
                         } catch (Exception e) {
                             Log.d("BTWeather-error15", e.toString());
                         }
@@ -62,8 +70,18 @@ public class FullGraphActivity extends AppCompatActivity {
                         if (focus == 3)
                             getSupportActionBar().setTitle(R.string.graph_hour_wind);
                         try {
+                            GraphView graph2;
+                            graph2 = (GraphView) findViewById(R.id.fullGraph2);
+                            graph2.setVisibility(View.INVISIBLE);
+                            graph2 = (GraphView) findViewById(R.id.fullGraph3);
+                            graph2.setVisibility(View.INVISIBLE);
+                            GraphView graph;
+                            graph = (GraphView) findViewById(R.id.fullGraph);
+                            graph.setVisibility(View.VISIBLE);
+                            graph.getGridLabelRenderer().resetStyles();
+                            graph.removeAllSeries();
                             gu = new GraphUtility(focus, time, 6, true, true, mainActivity, celsius);
-                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getYesterday())));
+                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getYesterday())),gu.getYesterdayDouble());
                         } catch (Exception e) {
                             Log.d("BTWeather-error15", e.toString());
                         }
@@ -74,8 +92,18 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus==0){
                         getSupportActionBar().setTitle(R.string.AllDaily);
                         try {
-                            gu = new GraphUtility(focus, time, 6, true, true, mainActivity, celsius);
-                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getWeek())));
+                            GraphView graph2;
+                            graph2 = (GraphView) findViewById(R.id.fullGraph);
+                            graph2.setVisibility(View.INVISIBLE);
+                            graph2 = (GraphView) findViewById(R.id.fullGraph3);
+                            graph2.setVisibility(View.INVISIBLE);
+                            GraphView graph;
+                            graph = (GraphView) findViewById(R.id.fullGraph2);
+                            graph.setVisibility(View.VISIBLE);
+                            graph.getGridLabelRenderer().resetStyles();
+                            graph.removeAllSeries();
+                            gu = new GraphUtility(focus, time, 7, true, true, mainActivity, celsius);
+                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getWeek())),gu.getWeekDouble());
                         } catch (Exception e) {
                             Log.d("BTWeather-error15", e.toString());
                         }
@@ -87,8 +115,18 @@ public class FullGraphActivity extends AppCompatActivity {
                         if (focus == 3)
                             getSupportActionBar().setTitle(R.string.graph_day_wind);
                         try {
-                            gu = new GraphUtility(focus, time, 6, true, true, mainActivity, celsius);
-                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getWeek())));
+                            GraphView graph2;
+                            graph2 = (GraphView) findViewById(R.id.fullGraph);
+                            graph2.setVisibility(View.INVISIBLE);
+                            graph2 = (GraphView) findViewById(R.id.fullGraph3);
+                            graph2.setVisibility(View.INVISIBLE);
+                            GraphView graph;
+                            graph = (GraphView) findViewById(R.id.fullGraph2);
+                            graph.setVisibility(View.VISIBLE);
+                            graph.getGridLabelRenderer().resetStyles();
+                            graph.removeAllSeries();
+                            gu = new GraphUtility(focus, time, 7, true, true, mainActivity, celsius);
+                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getWeek())),gu.getWeekDouble());
                         } catch (Exception e) {
                             Log.d("BTWeather-error15", e.toString());
                         }
@@ -99,8 +137,18 @@ public class FullGraphActivity extends AppCompatActivity {
                     if(focus==0){
                         getSupportActionBar().setTitle(R.string.AllWeekly);
                         try {
-                            gu = new GraphUtility(focus, time, 6, false, false, mainActivity, celsius);
-                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getMonth())));
+                            GraphView graph2;
+                            graph2 = (GraphView) findViewById(R.id.fullGraph);
+                            graph2.setVisibility(View.INVISIBLE);
+                            graph2 = (GraphView) findViewById(R.id.fullGraph2);
+                            graph2.setVisibility(View.INVISIBLE);
+                            GraphView graph;
+                            graph = (GraphView) findViewById(R.id.fullGraph3);
+                            graph.setVisibility(View.VISIBLE);
+                            graph.getGridLabelRenderer().resetStyles();
+                            graph.removeAllSeries();
+                            gu = new GraphUtility(focus, time, 8, false, false, mainActivity, celsius);
+                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getMonth())),gu.getMonthDouble());
                         } catch (Exception e) {
                             Log.d("BTWeather-error15", e.toString());
                         }
@@ -112,8 +160,18 @@ public class FullGraphActivity extends AppCompatActivity {
                         if (focus == 3)
                             getSupportActionBar().setTitle(R.string.graph_week_wind);
                         try {
-                            gu = new GraphUtility(focus, time, 6, true, true, mainActivity, celsius);
-                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getMonth())));
+                            GraphView graph2;
+                            graph2 = (GraphView) findViewById(R.id.fullGraph);
+                            graph2.setVisibility(View.INVISIBLE);
+                            graph2 = (GraphView) findViewById(R.id.fullGraph2);
+                            graph2.setVisibility(View.INVISIBLE);
+                            GraphView graph;
+                            graph = (GraphView) findViewById(R.id.fullGraph3);
+                            graph.getGridLabelRenderer().resetStyles();
+                            graph.removeAllSeries();
+                            graph.setVisibility(View.VISIBLE);
+                            gu = new GraphUtility(focus, time, 8, true, true, mainActivity, celsius);
+                            gu.grapher(getApplicationContext(), graph, gu.seriesBuilder(gu.getTempData(gu.getMonth())),gu.getMonthDouble());
                         } catch (Exception e) {
                             Log.d("BTWeather-error15", e.toString());
                         }
@@ -135,7 +193,7 @@ public class FullGraphActivity extends AppCompatActivity {
         final BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.graphMenu);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         mainActivity = new MainActivity();
-        graph = (GraphView) findViewById(R.id.fullGraph);
+
         // Setting the very 1st item as home screen.
         navigation.setSelectedItemId(R.id.graph_hour);
         final Button buttonTemp = findViewById(R.id.graphBtnA);

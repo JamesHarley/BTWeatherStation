@@ -22,6 +22,24 @@
         app:layout_constraintBottom_toTopOf="@+id/graphMenu"
         app:layout_constraintTop_toBottomOf="@+id/message"
         app:seriesColor="@color/colorPrimary" />
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/fullGraph2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        android:layout_marginRight="55dp"
+        app:layout_constraintBottom_toTopOf="@+id/graphMenu"
+        app:layout_constraintTop_toBottomOf="@+id/message"
+        app:seriesColor="@color/colorPrimary" />
+    <com.jjoe64.graphview.GraphView
+        android:id="@+id/fullGraph3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
+        android:layout_marginRight="55dp"
+        app:layout_constraintBottom_toTopOf="@+id/graphMenu"
+        app:layout_constraintTop_toBottomOf="@+id/message"
+        app:seriesColor="@color/colorPrimary" />
         <!--<include layout="@layout/content_graph" />-->
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/graphMenu"
