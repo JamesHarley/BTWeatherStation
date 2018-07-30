@@ -33,7 +33,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-
 import java.util.Set;
 
 
@@ -174,14 +173,20 @@ public class DeviceListActivity extends Activity {
 
             // Get the device MAC address, which is the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
-            String address = info.substring(info.length() - 17);
+            if(((TextView) v).getText().toString().matches(getResources().getText(R.string.none_found).toString())){
+                Intent intentOpenBluetoothSettings = new Intent();
+                intentOpenBluetoothSettings.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+                startActivity(intentOpenBluetoothSettings);
+            }
+            else {
+                String address = info.substring(info.length() - 17);
+                // Create the result Intent and include the MAC address
+                Intent intent = new Intent();
+                intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+                setResult(Activity.RESULT_OK, intent);
+                // Set result and finish this Activity
+            }
 
-            // Create the result Intent and include the MAC address
-            Intent intent = new Intent();
-            intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
-
-            // Set result and finish this Activity
-            setResult(Activity.RESULT_OK, intent);
             finish();
         }
     };

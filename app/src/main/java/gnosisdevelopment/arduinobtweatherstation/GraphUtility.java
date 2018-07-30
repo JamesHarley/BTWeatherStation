@@ -239,6 +239,7 @@ public class GraphUtility {
 
         return seriesArray;
     }
+    //TODO if celsius findmax not working for humidity above temp for ALL sensors in weekly view, works in daily
     public void findMaxY (Sensors sensor){
         try{
             //Focus passed from main activity on graph click
